@@ -43,14 +43,15 @@ describe('Document', function() {
             class ReferenceeModel extends Document {
                 constructor() {
                     super('referencee1');
-                    this.schema({ str: { type: String } });
+                    this.str = String;
                 }
             }
 
             class ReferencerModel extends Document {
                 constructor() {
                     super('referencer1');
-                    this.schema({ ref: { type: ReferenceeModel }, num: { type: Number } });
+                    this.ref = ReferenceeModel;
+                    this.num = { type: Number };
                 }
             }
 
@@ -85,12 +86,12 @@ describe('Document', function() {
             class ReferencerModel extends Document {
                 constructor() {
                     super('referencer2');
-                    this.schema({ refs: { type: [ReferenceeModel] }, num: { type: Number } });
+                    this.refs = [ReferenceeModel];
+                    this.num = Number;
                 }
             }
 
             var data = ReferencerModel.create();
-            data.refs = [];
             data.refs.push(ReferenceeModel.create());
             data.refs.push(ReferenceeModel.create());
             data.refs[0].str = 'string1';
@@ -114,6 +115,67 @@ describe('Document', function() {
                 expect(d.refs[1] instanceof ReferenceeModel).to.be.true;
                 expect(d.refs[0].str).to.be.equal('string1');
                 expect(d.refs[1].str).to.be.equal('string2');
+            }).then(done, done);
+        });
+
+        it('should allow circular references', function(done) {
+
+            class Employee extends Document {
+                constructor() {
+                    super('employee');
+                    this.name = String;
+                    this.boss = Boss;
+                }
+            }
+
+            class Boss extends Document {
+                constructor() {
+                    super('boss');
+                    this.salary = Number;
+                    this.employees = [Employee];
+                }
+            }
+
+            var employee = Employee.create();
+            employee.name = 'Scott';
+
+            var boss = Boss.create();
+            boss.salary = 10000000;
+
+            employee.boss = boss;
+
+            boss.save().then(function(b) {
+                validateId(b);
+
+                return employee.save();
+            }).then(function(e) {
+                validateId(e);
+                validateId(e.boss);
+
+                boss.employees.push(employee);
+
+                return boss.save();
+            }).then(function(b) {
+                validateId(b);
+                validateId(b.employees[0]);
+                validateId(b.employees[0].boss);
+
+                return Boss.loadOne({ salary: 10000000 });
+            }).then(function(b) {
+                // If we had an issue with an infinite loop
+                // of loading circular dependencies then the
+                // test probably would have crashed by now,
+                // so we're good.
+
+                validateId(b);
+
+                // Validate that boss employee ref was loaded
+                validateId(b.employees[0]);
+
+                // .loadOne should have only loaded 1 level
+                // of references, so the boss's reference
+                // to the employee is still the ID.
+                expect(b.employees[0].boss).to.be.a('string');
             }).then(done, done);
         });
 

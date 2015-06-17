@@ -95,6 +95,36 @@ describe('Client', function() {
         });
     });
 
+    describe('#count()', function() {
+        it('should return 0 objects from the collection', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function(datas) {
+                validateId(datas[0]);
+                validateId(datas[1]);
+                return Data.count({ number: 3 });
+            }).then(function(count) {
+                expect(count).to.be.equal(0);
+            }).then(done, done);
+        });
+
+        it('should return 2 matching objects from the collection', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function(datas) {
+                validateId(datas[0]);
+                validateId(datas[1]);
+                return Data.count({});
+            }).then(function(count) {
+                expect(count).to.be.equal(2);
+            }).then(done, done);
+        });
+    });
+
     describe('#delete()', function() {
         it('should remove instance from the collection', function(done) {
 

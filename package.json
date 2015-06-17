@@ -3,6 +3,22 @@
     "version"     : "0.0.1",
     "description" : "A lightweight ES6 ODM for NoSQL databases.",
     "author"      : "Scott Robinson",
+    "keywords"    : [
+        "es6",
+        "odm",
+        "mongodb",
+        "nedb",
+        "nosql",
+        "document",
+        "model",
+        "schema",
+        "database",
+        "data",
+        "datastore",
+        "query",
+        "db"
+    ],
+    "license": "MIT",
     "scripts": {
         "test": "mocha --harmony-proxies"
     },
@@ -13,9 +29,11 @@
         "lodash": "3.9.3",
         "harmony-reflect": "1.3.0"
     },
-    "devDependencies": {
+    "optionalDependencies": {
         "mongodb": "2.0.33",
-        "nedb": "1.1.2",
+        "nedb": "1.1.2"
+    },
+    "devDependencies": {
         "chai": "3.0.0",
         "mocha": "2.2.5"
     },
