@@ -49,36 +49,40 @@ Before using any document methods, you must first connect to your underlying dat
 
 So to connect to an NeDB database, use the following:
 
-	var connect = require('camo').connect;
-	
-	var database;
-	var url = 'nedb:///Users/scott/data/animals';
-	connect(url).then(function(db) {
-	    database = db;
-	});
+```javascript
+var connect = require('camo').connect;
+
+var database;
+var url = 'nedb:///Users/scott/data/animals';
+connect(url).then(function(db) {
+    database = db;
+});
+```
 
 ### Declare Your Document
 All models must inherit from `Document`, which handles much of the interface to your backend NoSQL database.
 
-	var Document = require('camo').Document;
+```javascript
+var Document = require('camo').Document;
 
-	class Company extends Document {
-	    constructor() {
-	        super('boss');
+class Company extends Document {
+    constructor() {
+        super('boss');
 
-	        this.name = String;
-	        this.valuation = {
-	        	type: Number,
-	        	default: 10000000000,
-	        	min: 0
-	        };
-	        this.employees = [String];
-	        this.dateFounded = {
-	        	type: Date,
-	        	default: Date.now
-	        };
-	    }
-	}
+        this.name = String;
+        this.valuation = {
+        	type: Number,
+        	default: 10000000000,
+        	min: 0
+        };
+        this.employees = [String];
+        this.dateFounded = {
+        	type: Date,
+        	default: Date.now
+        };
+    }
+}
+```
 
 Notice how the schema is declared right in the constructor as member variables. All _public_ member variables (variables that don't start with an underscore [_]) are added to the schema. The `'boss'` string sent to the parent constructor tells us the collection name to use for that document type.
 
@@ -97,13 +101,15 @@ Arrays can either be declared as either un-typed (`[]`), or typed (`[String]`). 
 
 To declare a member variable in the schema, either directly assign it one of the types above, or assign it an object with options. Like this:
 
-	this.primeNumber = {
-		type: Number,
-		default: 2,
-		min: 0,
-		max: 25,
-		choices: [2, 3, 5, 7, 11, 13, 17, 19, 23]
-	}
+```javascript
+this.primeNumber = {
+	type: Number,
+	default: 2,
+	min: 0,
+	max: 25,
+	choices: [2, 3, 5, 7, 11, 13, 17, 19, 23]
+}
+```
 
 The `default` option supports both values and no-argument functions (like `Date.now`). Currently the supported options are:
 
@@ -115,35 +121,39 @@ The `default` option supports both values and no-argument functions (like `Date.
 
 To reference another document, just use its class name as the type.
 
-	class Dog extends Document {
-	    constructor() {
-	        super('dog');
+```javascript
+class Dog extends Document {
+    constructor() {
+        super('dog');
 
-	        this.name = String;
-	        this.breed = String;
-	    }
-	}
+        this.name = String;
+        this.breed = String;
+    }
+}
 
-	class Person extends Document {
-	    constructor() {
-	        super('person');
+class Person extends Document {
+    constructor() {
+        super('person');
 
-	        this.pet = Dog;
-	        this.name = String;
-	        this.age = String;
-	    }
-	}
+        this.pet = Dog;
+        this.name = String;
+        this.age = String;
+    }
+}
+```
 
 ### Creating and Saving
 To create a new instance of our document, we need to use the `.create()` method, which handles all of the construction for us.
 
-	var lassie = Dog.create();
-	lassie.name = 'Lassie';
-	lassie.breed = 'Collie';
+```javascript
+var lassie = Dog.create();
+lassie.name = 'Lassie';
+lassie.breed = 'Collie';
 
-	lassie.save().then(function(l) {
-		console.log(l.id);
-	});
+lassie.save().then(function(l) {
+	console.log(l.id);
+});
+```
 
 Once a document is saved, it will automatically be assigned a unique identifier by the backend database. This ID can be accessed by either `.id` or `._id`.
 
@@ -157,10 +167,12 @@ Both the load and delete methods following closely (but not always exactly) to t
 
 The `.loadOne()` method will return the first document found, even if multiple documents match the query. `.loadMany()` will return all documents matching the query. Each should be called as static methods on the document type you want to load.
 
-	Dog.loadOne({ name: 'Lassie' }).then(function(l) {
-		console.log('Got Lassie!');
-		console.log('Her unique ID is', l.id);
-	});
+```javascript
+Dog.loadOne({ name: 'Lassie' }).then(function(l) {
+	console.log('Got Lassie!');
+	console.log('Her unique ID is', l.id);
+});
+```
 
 ### Deleting
 To remove documents fromt the database, use one of the following:
@@ -171,16 +183,20 @@ To remove documents fromt the database, use one of the following:
 
 The `.delete()` method should only be used on an instantiated document with a valid `id`. The other two methods should be used on the class of the document(s) you want to delete.
 
-	Dog.deleteMany({ breed: 'Collie' }).then(function(numDeleted) {
-		console.log('Deleted', numDeleted, 'Collies from the database.');
-	});
+```javascript
+Dog.deleteMany({ breed: 'Collie' }).then(function(numDeleted) {
+	console.log('Deleted', numDeleted, 'Collies from the database.');
+});
+```
 
 ### Counting
 To get the number of matching documents for a query without actually retrieving all of the data, use the `.count()` method.
 
-	Dog.count({ breed: 'Collie' }).then(function(count) {
-		console.log('Found', count, 'Collies.');
-	});
+```javascript
+Dog.count({ breed: 'Collie' }).then(function(count) {
+	console.log('Found', count, 'Collies.');
+});
+```
 
 
 ## Copyright & License
