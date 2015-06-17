@@ -1,5 +1,4 @@
 # Camo
-### A lightweight ES6 ODM for Mongo-like databases.
 
 ## Why do we need another ODM?
 Short answer, we probably don't. Camo was created for two reasons: to bring traditional-style classes to [MongoDB](https://www.mongodb.com/) JavaScript, and to support [NeDB](https://github.com/louischatriot/nedb) as a backend (which is much like the SQLite-alternative to Mongo).
