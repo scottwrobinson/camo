@@ -183,7 +183,7 @@ describe('Document', function() {
 
             class StringModel extends Document {
                 constructor() {
-                    super('data');
+                    super('strings');
                     this.schema({ str: { type: String } });
                 }
             }
@@ -201,7 +201,7 @@ describe('Document', function() {
 
             class NumberModel extends Document {
                 constructor() {
-                    super('data');
+                    super('numbers1');
                     this.schema({ num: { type: Number } });
                 }
             }
@@ -219,7 +219,7 @@ describe('Document', function() {
 
             class BooleanModel extends Document {
                 constructor() {
-                    super('data');
+                    super('booleans');
                     this.schema({ bool: { type: Boolean } });
                 }
             }
@@ -237,7 +237,7 @@ describe('Document', function() {
 
             class DateModel extends Document {
                 constructor() {
-                    super('data');
+                    super('dates');
                     this.schema({ date: { type: Date } });
                 }
             }
@@ -256,7 +256,7 @@ describe('Document', function() {
 
             class ObjectModel extends Document {
                 constructor() {
-                    super('data');
+                    super('objects');
                     this.schema({ obj: { type: Object } });
                 }
             }
@@ -275,7 +275,7 @@ describe('Document', function() {
 
             class BufferModel extends Document {
                 constructor() {
-                    super('data');
+                    super('buffers');
                     this.schema({ buf: { type: Buffer } });
                 }
             }
@@ -293,7 +293,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('data');
+                    super('arrays');
                     this.schema({ arr: { type: Array } });
                 }
             }
@@ -314,7 +314,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('data');
+                    super('arrays');
                     this.schema({ arr: { type: [String] } });
                 }
             }
@@ -335,7 +335,7 @@ describe('Document', function() {
 
             class NumberModel extends Document {
                 constructor() {
-                    super('data');
+                    super('numbers2');
                     this.schema({ num: { type: Number } });
                 }
             }
@@ -354,7 +354,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('data');
+                    super('arrays');
                     this.schema({ arr: { type: [String] } });
                 }
             }
