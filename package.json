@@ -18,6 +18,11 @@
         "query",
         "db"
     ],
+    "homepage": "https://github.com/scottwrobinson/camo",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:scottwrobinson/camo.git"
+    },
     "license": "MIT",
     "scripts": {
         "test": "mocha --harmony-proxies"
