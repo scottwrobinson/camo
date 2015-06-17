@@ -1,5 +1,18 @@
 # Camo
 
+## Jump To
+* <a href="#why-do-we-need-another-odm">Why do we need another ODM?</a>
+* <a href="#advantages">Advantages</a>
+* <a href="#install-and-run">Install and Run</a>
+* <a href="#quick-start">Quick Start</a>
+  * <a href="#connect-to-the-database">Connect to the Database</a>
+  * <a href="#declaring-your-document">Declaring Your Document</a>
+  * <a href="#creating-and-saving">Creating and Saving</a>
+  * <a href="#loading">Loading</a>
+  * <a href="#deleting">Deleting</a>
+  * <a href="#counting">Counting</a>
+* <a href="#copyright-license">Copyright & License</a>
+
 ## Why do we need another ODM?
 Short answer, we probably don't. Camo was created for two reasons: to bring traditional-style classes to [MongoDB](https://www.mongodb.com/) JavaScript, and to support [NeDB](https://github.com/louischatriot/nedb) as a backend (which is much like the SQLite-alternative to Mongo).
 
@@ -8,7 +21,7 @@ Throughout development this eventually turned in to a library full of [ES6](http
 ## Advantages
 So, why use Camo?
 
-- **ES6**: Although ES6 hasn't hit mainstream Node yet, it will soon (io.js is currently being merged with Node at the time of this writing). With all of these new features coming out soon, Camo is getting a head start in writing tested and proven ES6 code.
+- **ES6**: Although ES6 hasn't hit mainstream Node yet, it will soon (io.js is currently being merged with Node at the time of this writing). With all of these new features coming out soon, Camo is getting a head start in writing tested and proven ES6 code. This also means that native Promises are built-in to Camo, so no more `promisify`-ing your ODM or waiting for Promise support to be added.
 - **Easy to use**: While JavaScript is a great language overall, it isn't always the easiest for beginners to pick up. Camo aims to ease that transition by providing familiar-looking classes and a simple interface. Also, there is no need to install a full MongoDB instance to get started with the support of NeDB.
 - **Multiple backends**: Camo was designed and built with multiple Mongo-like backends in mind, like NeDB, LokiJS\*, and TaffyDB\*. With NeDB support, for example, you don't need to install a full MongoDB instance for development or for smaller projects. This also allows you to use Camo in the browser, since it supports in-memory storage.
 - **Lightweight**: Camo is just a very thin wrapper around the backend databases, which mean you won't be sacrificing performance.
@@ -37,6 +50,8 @@ To run your application using Camo, as of now you must also use the `--harmony-p
 We show this using the `node` command instead of `iojs` since io.js is typically aliased behind `node` when installed with Mac's [Homebrew](http://brew.sh/).
 
 ## Quick Start
+Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (load, save, delete, etc) will return a Promise. No more callback hell :)
+
 ### Connect to the Database
 Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URL string used for connecting. The URL string usually describes the network location or file location of the database.
 
@@ -59,7 +74,7 @@ connect(url).then(function(db) {
 });
 ```
 
-### Declare Your Document
+### Declaring Your Document
 All models must inherit from `Document`, which handles much of the interface to your backend NoSQL database.
 
 ```javascript
