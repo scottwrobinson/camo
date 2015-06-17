@@ -39,6 +39,7 @@
     },
     "jshintConfig": {
         "node": true,
+        "mocha": true,
         "esnext": true
     }
 }
