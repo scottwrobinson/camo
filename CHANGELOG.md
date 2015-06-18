@@ -1,3 +1,15 @@
+## 0.2.0 (2015-06-17)
+
+Features:
+
+ - Added the following Document hooks:
+   - `preValidate()`
+   - `postValidate()`
+   - `preSave()`
+   - `postSave()`
+   - `preDelete()`
+   - `postDelete()`
+
 ## 0.1.1 (2015-06-17)
 
 Features:

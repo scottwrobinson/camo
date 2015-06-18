@@ -213,6 +213,45 @@ Dog.count({ breed: 'Collie' }).then(function(count) {
 });
 ```
 
+### Hooks
+Camo provides hooks for you to execute code before and after critical parts of your database interactions. For each hook you use, you may return a value (which, as of now, will be discarded) or a Promise for executing asynchronous code. Using Promises, we don't need to provide separate async and sync hooks, thus making your code simpler and easier to understand.
+
+In order to create a hook, you must override a class method. The hooks currently provided, and their corresponding methods, are:
+
+- pre-validate: `preValidate()`
+- post-validate: `postValidate()`
+- pre-save: `preSave()`
+- post-save: `postSave()`
+- pre-delete: `preDelete()`
+- post-delete: `postDelete()`
+
+Here is an example of using a hook (pre-delete, in this case):
+```javascript
+class Company extends Document {
+    constructor() {
+        super('company');
+
+        this.employees = [Person]
+    }
+
+    preDelete() {
+        var deletes = [];
+        this.employees.forEach(function(e) {
+            var p = new Promise(function(resolve, reject) {
+                resolve(e.delete());
+            });
+
+            deletes.push(p);
+        });
+
+        return Promise.all(deletes);
+    }
+}
+```
+
+The code above shows a pre-delete hook that deletes all the employees of the company before it itself is deleted. As you can see, this is much more convenient than needing to always remember to delete referenced employees in the application code.
+
+**Note**: The `.preDelete()` and `.postDelete()` hooks are _only_ called when calling `.delete()` on a Document instance. Calling `.deleteOne()` or `.deleteMany()` will **not** trigger the hook methods.
 
 ## Copyright & License
 Copyright (c) 2015 Scott Robinson
