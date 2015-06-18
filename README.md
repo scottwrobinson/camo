@@ -11,6 +11,7 @@
   * <a href="#loading">Loading</a>
   * <a href="#deleting">Deleting</a>
   * <a href="#counting">Counting</a>
+  * <a href="#hooks">Hooks</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 ## Why do we need another ODM?
