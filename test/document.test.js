@@ -5,6 +5,7 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
+var isModel = require('../lib/validate').isModel;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
@@ -14,6 +15,7 @@ describe('Document', function() {
 
     // TODO: Should probably use mock database client...
     var url = 'nedb://' + __dirname + '/nedbdata';
+    //var url = 'mongodb://localhost/camo_test';
     var database = null;
 
     before(function(done) {
@@ -60,11 +62,11 @@ describe('Document', function() {
             data.ref.str = 'some data';
             data.num = 1;
 
-            data.ref.save().then(function(d) {
-                validateId(d);
+            data.ref.save().then(function() {
+                validateId(data.ref);
                 return data.save();
-            }).then(function(d) {
-                validateId(d);
+            }).then(function() {
+                validateId(data);
                 return ReferencerModel.loadOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
@@ -98,14 +100,14 @@ describe('Document', function() {
             data.refs[1].str = 'string2';
             data.num = 1;
 
-            data.refs[0].save().then(function(d) {
-                validateId(d);
+            data.refs[0].save().then(function() {
+                validateId(data.refs[0]);
                 return data.refs[1].save();
-            }).then(function(d) {
-                validateId(d);
+            }).then(function() {
+                validateId(data.refs[1]);
                 return data.save();
-            }).then(function(d) {
-                validateId(d);
+            }).then(function() {
+                validateId(data);
                 return ReferencerModel.loadOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
@@ -144,21 +146,21 @@ describe('Document', function() {
 
             employee.boss = boss;
 
-            boss.save().then(function(b) {
-                validateId(b);
+            boss.save().then(function() {
+                validateId(boss);
 
                 return employee.save();
-            }).then(function(e) {
-                validateId(e);
-                validateId(e.boss);
+            }).then(function() {
+                validateId(employee);
+                validateId(employee.boss);
 
                 boss.employees.push(employee);
 
                 return boss.save();
-            }).then(function(b) {
-                validateId(b);
-                validateId(b.employees[0]);
-                validateId(b.employees[0].boss);
+            }).then(function() {
+                validateId(boss);
+                validateId(boss.employees[0]);
+                validateId(boss.employees[0].boss);
 
                 return Boss.loadOne({ salary: 10000000 });
             }).then(function(b) {
@@ -175,7 +177,8 @@ describe('Document', function() {
                 // .loadOne should have only loaded 1 level
                 // of references, so the boss's reference
                 // to the employee is still the ID.
-                expect(b.employees[0].boss).to.be.a('string');
+                expect(b.employees[0].boss).to.not.be.null;
+                expect(!isModel(b.employees[0].boss)).to.be.true;
             }).then(done, done);
         });
 
@@ -191,9 +194,9 @@ describe('Document', function() {
             var data = StringModel.create();
             data.str = 'hello';
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.str).to.be.equal('hello');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.str).to.be.equal('hello');
             }).then(done, done);
         });
 
@@ -209,9 +212,9 @@ describe('Document', function() {
             var data = NumberModel.create();
             data.num = 26;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.num).to.be.equal(26);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.num).to.be.equal(26);
             }).then(done, done);
         });
 
@@ -227,9 +230,9 @@ describe('Document', function() {
             var data = BooleanModel.create();
             data.bool = true;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.bool).to.be.equal(true);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.bool).to.be.equal(true);
             }).then(done, done);
         });
 
@@ -246,9 +249,9 @@ describe('Document', function() {
             var date = new Date();
             data.date = date;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.date).to.be.equal(date);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.date).to.be.equal(date);
             }).then(done, done);
         });
 
@@ -264,10 +267,10 @@ describe('Document', function() {
             var data = ObjectModel.create();
             data.obj = { hi: 'bye'};
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.obj.hi).to.not.be.null;
-                expect(d.obj.hi).to.be.equal('bye');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.obj.hi).to.not.be.null;
+                expect(data.obj.hi).to.be.equal('bye');
             }).then(done, done);
         });
 
@@ -283,9 +286,9 @@ describe('Document', function() {
             var data = BufferModel.create();
             data.buf = new Buffer('hello');
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.buf.toString('ascii')).to.be.equal('hello');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.buf.toString('ascii')).to.be.equal('hello');
             }).then(done, done);
         });
 
@@ -301,12 +304,12 @@ describe('Document', function() {
             var data = ArrayModel.create();
             data.arr = [1, 'number', true];
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.arr).to.have.length(3);
-                expect(d.arr).to.include(1);
-                expect(d.arr).to.include('number');
-                expect(d.arr).to.include(true);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.arr).to.have.length(3);
+                expect(data.arr).to.include(1);
+                expect(data.arr).to.include('number');
+                expect(data.arr).to.include(true);
             }).then(done, done);
         });
 
@@ -322,12 +325,12 @@ describe('Document', function() {
             var data = ArrayModel.create();
             data.arr = ['1', '2', '3'];
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.arr).to.have.length(3);
-                expect(d.arr).to.include('1');
-                expect(d.arr).to.include('2');
-                expect(d.arr).to.include('3');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.arr).to.have.length(3);
+                expect(data.arr).to.include('1');
+                expect(data.arr).to.include('2');
+                expect(data.arr).to.include('3');
             }).then(done, done);
         });
 
@@ -343,7 +346,7 @@ describe('Document', function() {
             var data = NumberModel.create();
             data.num = '1';
 
-            data.save().then(function(d) {
+            data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
@@ -362,7 +365,7 @@ describe('Document', function() {
             var data = ArrayModel.create();
             data.arr = [1, 2, 3];
 
-            data.save().then(function(d) {
+            data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
@@ -375,9 +378,9 @@ describe('Document', function() {
 
             var data = Data.create();
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.source).to.be.equal('reddit');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.source).to.be.equal('reddit');
             }).then(done, done);
         });
 
@@ -385,9 +388,9 @@ describe('Document', function() {
 
             var data = Data.create();
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.date).to.be.lessThan(Date.now());
+            data.save().then(function() {
+                validateId(data);
+                expect(data.date).to.be.lessThan(Date.now());
             }).then(done, done);
         });
     });
@@ -398,9 +401,9 @@ describe('Document', function() {
             var data = Data.create();
             data.source = 'wired';
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.source).to.be.equal('wired');
+            data.save().then(function() {
+                validateId(data);
+                expect(data.source).to.be.equal('wired');
             }).then(done, done);
         });
 
@@ -409,7 +412,7 @@ describe('Document', function() {
             var data = Data.create();
             data.source = 'google';
 
-            data.save().then(function(d) {
+            data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
@@ -423,9 +426,9 @@ describe('Document', function() {
             var data = Data.create();
             data.item = 1;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.item).to.be.equal(1);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.item).to.be.equal(1);
             }).then(done, done);
         });
 
@@ -434,9 +437,9 @@ describe('Document', function() {
             var data = Data.create();
             data.item = 0;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.item).to.be.equal(0);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.item).to.be.equal(0);
             }).then(done, done);
         });
 
@@ -445,7 +448,7 @@ describe('Document', function() {
             var data = Data.create();
             data.item = -1;
 
-            data.save().then(function(d) {
+            data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
@@ -459,9 +462,9 @@ describe('Document', function() {
             var data = Data.create();
             data.item = 99;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.item).to.be.equal(99);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.item).to.be.equal(99);
             }).then(done, done);
         });
 
@@ -470,9 +473,9 @@ describe('Document', function() {
             var data = Data.create();
             data.item = 100;
 
-            data.save().then(function(d) {
-                validateId(d);
-                expect(d.item).to.be.equal(100);
+            data.save().then(function() {
+                validateId(data);
+                expect(data.item).to.be.equal(100);
             }).then(done, done);
         });
 
@@ -481,7 +484,7 @@ describe('Document', function() {
             var data = Data.create();
             data.item = 101;
 
-            data.save().then(function(d) {
+            data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
@@ -532,8 +535,8 @@ describe('Document', function() {
 
             var person = Person.create();
 
-            person.save().then(function(p) {
-                validateId(p);
+            person.save().then(function() {
+                validateId(person);
 
                 // Pre/post save and validate should be called
                 expect(preValidateCalled).to.be.equal(true);
@@ -546,7 +549,9 @@ describe('Document', function() {
                 expect(postDeleteCalled).to.be.equal(false);
 
                 return person.delete();
-            }).then(function() {
+            }).then(function(numDeleted) {
+                expect(numDeleted).to.be.equal(1);
+
                 expect(preDeleteCalled).to.be.equal(true);
                 expect(postDeleteCalled).to.be.equal(true);
             }).then(done, done);

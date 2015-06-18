@@ -13,12 +13,13 @@ var validateId = require('./util').validateId;
 describe('Client', function() {
 
     var url = 'nedb://' + __dirname + '/nedbdata';
+    //var url = 'mongodb://localhost/camo_test';
     var database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
             database = db;
-            return database.clearCollection('data');
+            return database.dropDatabase();
         }).then(function() {
             return done();
         });
@@ -29,17 +30,11 @@ describe('Client', function() {
     });
 
     afterEach(function(done) {
-        database.clearCollection('data').then(function() {
-            database.driver().data.persistence.compactDatafile();
-        }).then(done, done);
+        database.dropDatabase().then(function() {}).then(done, done);
     });
 
     after(function(done) {
-        database.dropDatabase().then(function() {
-            _.keys(database.driver()).forEach(function(key) {
-                database.driver()[key].persistence.compactDatafile();
-            });
-        }).then(done, done);
+        database.dropDatabase().then(function() {}).then(done, done);
     }); 
 
     describe('#save()', function() {
@@ -47,9 +42,9 @@ describe('Client', function() {
 
             var data = getData1();
 
-            data.save().then(function(d) {
-                validateId(d);
-                validateData1(d);
+            data.save().then(function() {
+                validateId(data);
+                validateData1(data);
             }).then(done, done);
         });
     });
@@ -59,8 +54,8 @@ describe('Client', function() {
 
             var data = getData1();
 
-            data.save().then(function(d) {
-                validateId(d);
+            data.save().then(function() {
+                validateId(data);
                 return Data.loadOne({item:99});
             }).then(function(d) {
                 validateId(d);
@@ -75,9 +70,9 @@ describe('Client', function() {
             var data1 = getData1();
             var data2 = getData2();
 
-            Promise.all([data1.save(), data2.save()]).then(function(datas) {
-                validateId(datas[0]);
-                validateId(datas[1]);
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
                 return Data.loadMany({});
             }).then(function(datas) {
                 expect(datas).to.have.length(2);
@@ -101,9 +96,9 @@ describe('Client', function() {
             var data1 = getData1();
             var data2 = getData2();
 
-            Promise.all([data1.save(), data2.save()]).then(function(datas) {
-                validateId(datas[0]);
-                validateId(datas[1]);
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
                 return Data.count({ number: 3 });
             }).then(function(count) {
                 expect(count).to.be.equal(0);
@@ -115,9 +110,9 @@ describe('Client', function() {
             var data1 = getData1();
             var data2 = getData2();
 
-            Promise.all([data1.save(), data2.save()]).then(function(datas) {
-                validateId(datas[0]);
-                validateId(datas[1]);
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
                 return Data.count({});
             }).then(function(count) {
                 expect(count).to.be.equal(2);
@@ -130,9 +125,9 @@ describe('Client', function() {
 
             var data = getData1();
 
-            data.save().then(function(d) {
-                validateId(d);
-                return d.delete();
+            data.save().then(function() {
+                validateId(data);
+                return data.delete();
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(1);
                 return Data.loadOne({item:99});
@@ -147,8 +142,8 @@ describe('Client', function() {
 
             var data = getData1();
 
-            data.save().then(function(d) {
-                validateId(d);
+            data.save().then(function() {
+                validateId(data);
                 return Data.deleteOne({number: 1});
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(1);
@@ -165,9 +160,9 @@ describe('Client', function() {
             var data1 = getData1();
             var data2 = getData2();
 
-            Promise.all([data1.save(), data2.save()]).then(function(datas) {
-                validateId(datas[0]);
-                validateId(datas[1]);
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
                 return Data.deleteMany({});
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(2);
@@ -184,9 +179,9 @@ describe('Client', function() {
             var data1 = getData1();
             var data2 = getData2();
 
-            Promise.all([data1.save(), data2.save()]).then(function(datas) {
-                validateId(datas[0]);
-                validateId(datas[1]);
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
                 return Data.clearCollection();
             }).then(function() {
                 return Data.loadMany();

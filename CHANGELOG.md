@@ -1,3 +1,9 @@
+## 0.3.0 (2015-06-18)
+
+Features:
+ - Added support for MongoDB using [node-mongodb-native](https://www.npmjs.com/package/mongodb) as the backend.
+ - Added `.toCanonicalId()` and `.isNativeId()` to `DatabaseClient` and its child classes.
+
 ## 0.2.1 (2015-06-17)
 
  - README fix.
