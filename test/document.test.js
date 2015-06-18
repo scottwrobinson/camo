@@ -488,4 +488,68 @@ describe('Document', function() {
             }).then(done, done);
         });
     });
+
+    describe('hooks', function() {
+        it('should call all pre and post functions', function(done) {
+
+            var preValidateCalled = false;
+            var preSaveCalled = false;
+            var preDeleteCalled = false;
+
+            var postValidateCalled = false;
+            var postSaveCalled = false;
+            var postDeleteCalled = false;
+
+            class Person extends Document {
+                constructor() {
+                    super('person');
+                }
+
+                preValidate() {
+                    preValidateCalled = true;
+                }
+
+                postValidate() {
+                    postValidateCalled = true;
+                }
+
+                preSave() {
+                    preSaveCalled = true;
+                }
+
+                postSave() {
+                    postSaveCalled = true;
+                }
+
+                preDelete() {
+                    preDeleteCalled = true;
+                }
+
+                postDelete() {
+                    postDeleteCalled = true;
+                }
+            }
+
+            var person = Person.create();
+
+            person.save().then(function(p) {
+                validateId(p);
+
+                // Pre/post save and validate should be called
+                expect(preValidateCalled).to.be.equal(true);
+                expect(preSaveCalled).to.be.equal(true);
+                expect(postValidateCalled).to.be.equal(true);
+                expect(postSaveCalled).to.be.equal(true);
+                
+                // Pre/post delete should not have been called yet
+                expect(preDeleteCalled).to.be.equal(false);
+                expect(postDeleteCalled).to.be.equal(false);
+
+                return person.delete();
+            }).then(function() {
+                expect(preDeleteCalled).to.be.equal(true);
+                expect(postDeleteCalled).to.be.equal(true);
+            }).then(done, done);
+        });
+    });
 });
