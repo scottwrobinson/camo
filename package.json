@@ -1,53 +1,53 @@
 {
-    "name"        : "camo",
-    "version"     : "0.3.0",
-    "description" : "A lightweight ES6 ODM for Mongo-like databases.",
-    "author": {
-        "name": "Scott Robinson",
-        "email": "s.w.robinson@gmail.com"
-    },
-    "keywords"    : [
-        "es6",
-        "odm",
-        "mongodb",
-        "nedb",
-        "nosql",
-        "document",
-        "model",
-        "schema",
-        "database",
-        "data",
-        "datastore",
-        "query",
-        "db"
-    ],
-    "homepage": "https://github.com/scottwrobinson/camo",
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:scottwrobinson/camo.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "test": "mocha --harmony-proxies"
-    },
-    "engines": {
-        "iojs": "~2.2.1"
-    },
-    "dependencies": {
-        "lodash": "3.9.3",
-        "harmony-reflect": "1.3.0"
-    },
-    "optionalDependencies": {
-        "mongodb": "2.0.33",
-        "nedb": "1.1.2"
-    },
-    "devDependencies": {
-        "chai": "3.0.0",
-        "mocha": "2.2.5"
-    },
-    "jshintConfig": {
-        "node": true,
-        "mocha": true,
-        "esnext": true
-    }
+  "name": "camo",
+  "version": "0.3.0",
+  "description": "A lightweight ES6 ODM for Mongo-like databases.",
+  "author": {
+    "name": "Scott Robinson",
+    "email": "s.w.robinson@gmail.com"
+  },
+  "keywords": [
+    "es6",
+    "odm",
+    "mongodb",
+    "nedb",
+    "nosql",
+    "document",
+    "model",
+    "schema",
+    "database",
+    "data",
+    "datastore",
+    "query",
+    "db"
+  ],
+  "homepage": "https://github.com/scottwrobinson/camo",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:scottwrobinson/camo.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha --harmony-proxies"
+  },
+  "engines": {
+    "iojs": "~2.2.1"
+  },
+  "dependencies": {
+    "harmony-reflect": "1.3.0",
+    "lodash": "3.9.3"
+  },
+  "optionalDependencies": {
+    "mongodb": "2.0.33",
+    "nedb": "1.1.2"
+  },
+  "devDependencies": {
+    "chai": "3.0.0",
+    "mocha": "2.2.5"
+  },
+  "jshintConfig": {
+    "node": true,
+    "mocha": true,
+    "esnext": true
+  }
 }
