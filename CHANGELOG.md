@@ -1,3 +1,8 @@
+## 0.3.1 (2015-06-19)
+
+Bugfix:
+ - Moved Proxy/Reflect shim to index. Seems to fix problem where shim broke Proxies (even worse).
+
 ## 0.3.0 (2015-06-18)
 
 Features:
