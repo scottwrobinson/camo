@@ -1,3 +1,8 @@
+## 0.3.2 (2015-06-19)
+
+Bugfix:
+ - Added forked version of `harmony-reflect`. Only difference is it uses a global to ensure it runs only once.
+
 ## 0.3.1 (2015-06-19)
 
 Bugfix:
