@@ -1,3 +1,14 @@
+## 0.4.0 (2015-06-22)
+
+Features:
+ - Changed `.isModel()` to `.isDocument()`.
+ - Added `EmbeddedDocument` class and tests.
+   + The following features work with `EmbeddedDocument`s:
+     = Schema options: default, min, max, type, choices
+     = All types supported in `Document` also work in `EmbeddedDocument`
+     = Array of `EmbeddedDocument`s
+     = Pre/post validate, save, and delete hooks
+
 ## 0.3.2 (2015-06-19)
 
 Bugfix:

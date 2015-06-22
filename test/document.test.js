@@ -5,7 +5,7 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
-var isModel = require('../lib/validate').isModel;
+var isDocument = require('../lib/validate').isDocument;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
@@ -178,7 +178,7 @@ describe('Document', function() {
                 // of references, so the boss's reference
                 // to the employee is still the ID.
                 expect(b.employees[0].boss).to.not.be.null;
-                expect(!isModel(b.employees[0].boss)).to.be.true;
+                expect(!isDocument(b.employees[0].boss)).to.be.true;
             }).then(done, done);
         });
 

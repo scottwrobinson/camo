@@ -7,6 +7,7 @@
 * <a href="#quick-start">Quick Start</a>
   * <a href="#connect-to-the-database">Connect to the Database</a>
   * <a href="#declaring-your-document">Declaring Your Document</a>
+    * <a href="#embedded-documents">Embedded Documents</a>
   * <a href="#creating-and-saving">Creating and Saving</a>
   * <a href="#loading">Loading</a>
   * <a href="#deleting">Deleting</a>
@@ -76,7 +77,7 @@ connect(url).then(function(db) {
 ```
 
 ### Declaring Your Document
-All models must inherit from `Document`, which handles much of the interface to your backend NoSQL database.
+All models must inherit from the `Document` class, which handles much of the interface to your backend NoSQL database.
 
 ```javascript
 var Document = require('camo').Document;
@@ -111,9 +112,10 @@ Currently supported variable types are:
 - `Date`
 - `Object`
 - `Array`
+- `EmbeddedDocument`
 - Document Reference
 
-Arrays can either be declared as either un-typed (`[]`), or typed (`[String]`). Typed arrays are enforced by Camo and an `Error` will be thrown if a value of the wrong type is saved in the array. Arrays of references are also supported.
+Arrays can either be declared as either un-typed (using `Array` or `[]`), or typed (using the `[TYPE]` syntax, like `[String]`). Typed arrays are enforced by Camo on `.save()` and an `Error` will be thrown if a value of the wrong type is saved in the array. Arrays of references are also supported.
 
 To declare a member variable in the schema, either directly assign it one of the types above, or assign it an object with options. Like this:
 
@@ -157,6 +159,47 @@ class Person extends Document {
     }
 }
 ```
+
+#### Embedded Documents
+Embedded documents can also be used within `Document`s. You must declare them separately from the main `Document` that it is being used in. `EmbeddedDocument`s are good for when you need an `Object`, but also need enforced schemas, validation, defaults, hooks, and member functions. All of the options (type, default, min, etc) mentioned above work on `EmbeddedDocument`s as well.
+
+```javascript
+var Document = require('camo').Document;
+var EmbeddedDocument = require('camo').EmbeddedDocument;
+
+class Money extends EmbeddedDocument {
+    constructor() {
+        super();
+
+        this.value = {
+            type: Number,
+            choices: [1, 5, 10, 20, 50, 100]
+        };
+
+        this.currency = {
+            type: String,
+            default: 'usd'
+        }
+    }
+}
+
+class Wallet extends Document {
+    constructor() {
+        super('wallet');
+        this.contents = [Money];
+    }
+}
+
+var wallet = Wallet.create();
+wallet.contents.push(Money.create());
+wallet.contents[0].value = 5;
+wallet.contents.push(Money.create());
+wallet.contents[1].value = 100;
+
+wallet.save().then(function() {
+    console.log('Both Wallet and Money objects were saved!');
+});
+````
 
 ### Creating and Saving
 To create a new instance of our document, we need to use the `.create()` method, which handles all of the construction for us.
@@ -215,7 +258,9 @@ Dog.count({ breed: 'Collie' }).then(function(count) {
 ```
 
 ### Hooks
-Camo provides hooks for you to execute code before and after critical parts of your database interactions. For each hook you use, you may return a value (which, as of now, will be discarded) or a Promise for executing asynchronous code. Using Promises, we don't need to provide separate async and sync hooks, thus making your code simpler and easier to understand.
+Camo provides hooks for you to execute code before and after critical parts of your database interactions. For each hook you use, you may return a value (which, as of now, will be discarded) or a Promise for executing asynchronous code. Using Promises throughout Camo allows us to not have to provide separate async and sync hooks, thus making your code simpler and easier to understand.
+
+Hooks can be used not only on `Document` objects, but `EmbeddedDocument` objects as well. The embedded object's hooks will be called when it's parent `Document` is saved/validated/deleted (depending on the hook you provide).
 
 In order to create a hook, you must override a class method. The hooks currently provided, and their corresponding methods, are:
 
