@@ -39,6 +39,189 @@ describe('Document', function() {
         database.dropDatabase().then(function() {}).then(done, done);
     });
 
+    describe('instantiation', function() {
+        it('should allow creation of instance', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+            }
+
+            var user = User.create();
+            user.firstName = 'Billy';
+            user.lastName = 'Bob';
+
+            user.save().then(function() {
+                validateId(user);
+            }).then(done, done);
+        });
+
+        it('should allow creation of instance with data', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                    this.nicknames = [String];
+                }
+            }
+
+            var user = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                nicknames: ['Bill', 'William', 'Will']
+            });
+
+            expect(user.firstName).to.be.equal('Billy');
+            expect(user.lastName).to.be.equal('Bob');
+            expect(user.nicknames).to.have.length(3);
+            expect(user.nicknames).to.include('Bill');
+            expect(user.nicknames).to.include('William');
+            expect(user.nicknames).to.include('Will');
+            
+            done();
+        });
+
+        it('should allow creation of instance with references', function(done) {
+
+            class Coffee extends Document {
+                constructor() {
+                    super('coffee');
+                    this.temp = Number;
+                }
+            }
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.drinks = [Coffee];
+                }
+            }
+
+            var coffee = Coffee.create();
+            coffee.temp = 105;
+
+            coffee.save().then(function() {
+                var user = User.create({ drinks: [coffee] });
+                expect(user.drinks).to.have.length(1);
+            }).then(done, done);
+        });
+    });
+
+    describe('class', function() {
+        it('should allow use of member variables in getters', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+
+                get fullName() {
+                    return this.firstName + ' ' + this.lastName;
+                }
+            }
+
+            var user = User.create();
+            user.firstName = 'Billy';
+            user.lastName = 'Bob';
+
+            user.save().then(function() {
+                validateId(user);
+                expect(user.fullName).to.be.equal('Billy Bob');
+            }).then(done, done);
+        });
+
+        it('should allow use of member variables in setters', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+
+                get fullName() {
+                    return this.firstName + ' ' + this.lastName;
+                }
+
+                set fullName(name) {
+                    var nameArr = name.split(' ');
+                    this.firstName = nameArr[0];
+                    this.lastName = nameArr[1];
+                }
+            }
+
+            var user = User.create();
+            user.fullName = 'Billy Bob';
+
+            user.save().then(function() {
+                validateId(user);
+                expect(user.firstName).to.be.equal('Billy');
+                expect(user.lastName).to.be.equal('Bob');
+            }).then(done, done);
+        });
+
+        it('should allow use of member variables in methods', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+
+                fullName() {
+                    return this.firstName + ' ' + this.lastName;
+                }
+            }
+
+            var user = User.create();
+            user.firstName = 'Billy';
+            user.lastName = 'Bob';
+
+            user.save().then(function() {
+                validateId(user);
+                expect(user.fullName()).to.be.equal('Billy Bob');
+            }).then(done, done);
+        });
+
+        it('should allow schemas to be extended', function(done) {
+
+            class User extends Document {
+                constructor(collection) {
+                    super(collection);
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+            }
+
+            class ProUser extends User {
+                constructor() {
+                    super('prouser');
+                    this.paymentMethod = String;
+                }
+            }
+
+            var user = ProUser.create();
+            user.firstName = 'Billy';
+            user.lastName = 'Bob';
+            user.paymentMethod = 'cash';
+
+            user.save().then(function() {
+                validateId(user);
+                expect(user.firstName).to.be.equal('Billy');
+                expect(user.lastName).to.be.equal('Bob');
+                expect(user.paymentMethod).to.be.equal('cash');
+            }).then(done, done);
+        });
+    });
+
     describe('types', function() {
         it('should allow reference types', function(done) {
 

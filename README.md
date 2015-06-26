@@ -205,9 +205,10 @@ wallet.save().then(function() {
 To create a new instance of our document, we need to use the `.create()` method, which handles all of the construction for us.
 
 ```javascript
-var lassie = Dog.create();
-lassie.name = 'Lassie';
-lassie.breed = 'Collie';
+var lassie = Dog.create({
+    name: 'Lassie',
+    breed: 'Collie'
+});
 
 lassie.save().then(function(l) {
 	console.log(l.id);
