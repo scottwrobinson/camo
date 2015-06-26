@@ -1,3 +1,18 @@
+## 0.5.0 (2015-06-26)
+
+Features:
+ - Exposed `getClient()` method for retrieving the active Camo client.
+ - Added `options` parameter to `connect()` so options can be passed to backend DB client.
+ - Static method `Document.fromData()` is now a private helper method. Static method `.create()` should be used instead.
+
+Bugfixes:
+ - In `Document._fromData()`, added check to see if ID exists before assigning
+ - Changed `BaseDocument._fromData()` so it returns data in same form as it was passed.
+   + i.e. Array of data returned as array, single object returned as single object.
+ - Fixed bug where assigning an array of Documents in `.create()` lost the references.
+ - Stopped using the depracated `_.extend()` alias. Now using `_.assign()` instead. ([#1](https://github.com/scottwrobinson/camo/issues/1)).
+ - Fixed `get` and `set` issue with Proxy ([#3](https://github.com/scottwrobinson/camo/issues/3)).
+
 ## 0.4.0 (2015-06-22)
 
 Features:
