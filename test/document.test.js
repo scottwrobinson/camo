@@ -303,6 +303,92 @@ describe('Document', function() {
             }).then(done, done);
         });
 
+        it('should allow references to be saved using the object or its id', function(done) {
+            class ReferenceeModel extends Document {
+                constructor() {
+                    super('referencee3');
+                    this.str = String;
+                }
+            }
+
+            class ReferencerModel extends Document {
+                constructor() {
+                    super('referencer3');
+                    this.ref1 = ReferenceeModel;
+                    this.ref2 = ReferenceeModel;
+                    this.num = { type: Number };
+                }
+            }
+
+            var data = ReferencerModel.create();
+            data.ref1 = ReferenceeModel.create();
+            var ref2 = ReferenceeModel.create();
+            data.ref1.str = 'string1';
+            ref2.str = 'string2';
+            data.num = 1;
+
+            data.ref1.save().then(function() {
+                validateId(data.ref1);
+                return data.save();
+            }).then(function() {
+                validateId(data);
+                return ref2.save();
+            }).then(function() {
+                validateId(ref2);
+                data.ref2 = ref2.id;
+                return data.save();
+            }).then(function() {
+                return ReferencerModel.loadOne({num: 1});
+            }).then(function(d) {
+                validateId(d.ref1);
+                validateId(d.ref2);
+                expect(d.ref1.str).to.be.equal('string1');
+                expect(d.ref2.str).to.be.equal('string2');
+            }).then(done, done);
+        });
+
+        it('should allow array of references to be saved using the object or its id', function(done) {
+            class ReferenceeModel extends Document {
+                constructor() {
+                    super('referencee4');
+                    this.schema({ str: { type: String } });
+                }
+            }
+
+            class ReferencerModel extends Document {
+                constructor() {
+                    super('referencer4');
+                    this.refs = [ReferenceeModel];
+                    this.num = Number;
+                }
+            }
+
+            var data = ReferencerModel.create();
+            data.refs.push(ReferenceeModel.create());
+            var ref2 = ReferenceeModel.create();
+            data.refs[0].str = 'string1';
+            ref2.str = 'string2';
+            data.num = 1;
+
+            data.refs[0].save().then(function() {
+                validateId(data.refs[0]);
+                return data.save();
+            }).then(function() {
+                validateId(data);
+                return ref2.save();
+            }).then(function() {
+                validateId(ref2);
+                data.refs.push(ref2.id);
+                return data.save();
+            }).then(function() {
+                return ReferencerModel.loadOne({num: 1});
+            }).then(function(d) {
+                validateId(d.refs[0]);
+                validateId(d.refs[1]);
+                expect(d.refs[1].str).to.be.equal('string2');
+            }).then(done, done);
+        });
+
         it('should allow circular references', function(done) {
 
             class Employee extends Document {

@@ -1,3 +1,8 @@
+## 0.5.1 (2015-06-30)
+
+Bugfixes:
+ - Fixed validation and referencing so `Document`s can be referenced by their object or ID.
+
 ## 0.5.0 (2015-06-26)
 
 Features:
