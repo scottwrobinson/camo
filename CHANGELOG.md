@@ -1,3 +1,7 @@
+## 0.5.2 (2015-06-30)
+
+ - Version bump, thanks to NPM.
+
 ## 0.5.1 (2015-06-30)
 
 Bugfixes:
