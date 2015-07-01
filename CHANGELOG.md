@@ -1,3 +1,11 @@
+## 0.5.3 (2015-07-01)
+
+Bugfixes:
+ - Fixed issue in `.loadMany()` where references in arrays were getting loaded too many times. ([#4](https://github.com/scottwrobinson/camo/issues/4)).
+   - Added test in issues.test.js
+ - Fixed issue in `.loadMany()` where muliple references to the same object were only getting loaded once. ([#5](https://github.com/scottwrobinson/camo/issues/5)).
+   - Added test in issues.test.js
+
 ## 0.5.2 (2015-06-30)
 
  - Version bump, thanks to NPM.
