@@ -23,7 +23,7 @@ exports.validateData1 = function(d) {
     expect(d.source).to.be.equal('arstechnica');
     expect(d.item).to.be.equal(99);
     expect(d).to.have.property('values').with.length(3);
-    expect(d.date).to.be.equal(1434304033241);
+    expect(d.date.valueOf()).to.be.equal(1434304033241);
 };
 
 exports.data2 = function() {
@@ -41,5 +41,5 @@ exports.validateData2 = function(d) {
     expect(d.source).to.be.equal('reddit');
     expect(d.item).to.be.equal(26);
     expect(d).to.have.property('values').with.length(4);
-    expect(d.date).to.be.equal(1434304039234);
+    expect(d.date.valueOf()).to.be.equal(1434304039234);
 };

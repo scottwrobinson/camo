@@ -1,3 +1,8 @@
+## 0.5.4 (2015-07-09)
+
+Bugfixes:
+ - Fixed issue where `Date`s were saved in different formats (integers, `Date` objects, etc). Added way to canonicalize them so all dates look the same in the DB and are also loaded as Date objects.
+
 ## 0.5.3 (2015-07-01)
 
 Bugfixes:
