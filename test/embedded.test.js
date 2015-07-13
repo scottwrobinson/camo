@@ -118,6 +118,42 @@ describe('Embedded', function() {
                 expect(p.limbs[3].type).to.be.equal('right leg');
             }).then(done, done);
         });
+
+        it('should allow nested initialization of embedded types', function(done) {
+
+            class Discount extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.authorized = Boolean;
+                    this.amount = Number;
+                }
+            }
+
+            class Product extends Document {
+                constructor() {
+                    super('products');
+                    this.name = String;
+                    this.discount = Discount;
+                }
+            }
+
+            var product = Product.create({
+                name: 'bike',
+                discount: {
+                    authorized: true,
+                    amount: 9.99
+                }
+            });
+
+            product.save().then(function() {
+                validateId(product);
+                expect(product.name).to.be.equal('bike');
+                expect(product.discount).to.be.a('object');
+                expect(product.discount instanceof Discount).to.be.true;
+                expect(product.discount.authorized).to.be.equal(true);
+                expect(product.discount.amount).to.be.equal(9.99);
+            }).then(done, done);
+        });
     });
 
     describe('defaults', function() {
