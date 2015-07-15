@@ -84,17 +84,17 @@ describe('Issues', function() {
                 expect(users).to.have.length(2);
 
                 // Get user1
-                var u1 = users[0].id === user1.id ? users[0] : users[1];
+                var u1 = String(users[0].id) === String(user1.id) ? users[0] : users[1];
 
                 // Ensure we have correct number of eyes...
                 expect(u1.eyes).to.have.length(2);
 
-                var e1 = u1.eyes[0].id === eye1.id ? u1.eyes[0] : u1.eyes[1];
-                var e2 = u1.eyes[1].id === eye2.id ? u1.eyes[1] : u1.eyes[0];
+                var e1 = String(u1.eyes[0].id) === String(eye1.id) ? u1.eyes[0] : u1.eyes[1];
+                var e2 = String(u1.eyes[1].id) === String(eye2.id) ? u1.eyes[1] : u1.eyes[0];
 
                 // ...and that we have the correct eyes
-                expect(e1.id).to.be.equal(eye1.id);
-                expect(e2.id).to.be.equal(eye2.id);
+                expect(String(e1.id)).to.be.equal(String(eye1.id));
+                expect(String(e2.id)).to.be.equal(String(eye2.id));
             }).then(done, done);
         });
     });
