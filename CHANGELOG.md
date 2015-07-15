@@ -1,3 +1,10 @@
+## 0.5.5 (2015-07-15)
+
+Bugfixes:
+ - Fixed issue where _id was being reassigned in Mongo, and fixed issue with populating references in Mongo.
+ - Fixed issue with Mongo driver where reference validation checks failed.
+ - Fixed test Issues.#4 for when running in Mongo.
+
 ## 0.5.4 (2015-07-09)
 
 Bugfixes:
