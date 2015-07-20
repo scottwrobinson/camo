@@ -1,3 +1,9 @@
+## 0.5.6 (2015-07-20)
+
+Features:
+ - README additions
+ - New test for overriding schemas
+
 ## 0.5.5 (2015-07-15)
 
 Bugfixes:
