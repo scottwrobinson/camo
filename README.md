@@ -13,6 +13,7 @@
   * <a href="#deleting">Deleting</a>
   * <a href="#counting">Counting</a>
   * <a href="#hooks">Hooks</a>
+* <a href="#in-the-wild">In the Wild</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 ## Why do we need another ODM?
@@ -299,6 +300,11 @@ class Company extends Document {
 The code above shows a pre-delete hook that deletes all the employees of the company before it itself is deleted. As you can see, this is much more convenient than needing to always remember to delete referenced employees in the application code.
 
 **Note**: The `.preDelete()` and `.postDelete()` hooks are _only_ called when calling `.delete()` on a Document instance. Calling `.deleteOne()` or `.deleteMany()` will **not** trigger the hook methods.
+
+## In the Wild
+Camo was created during the development of [Polymetrics](https://polymetrics.io/), so this is the only known code in production as of now. It replaced the original models written with Mongoose, which saved us a lot of time and headaches during design and testing.
+
+Are you using Camo in a public-facing app/website? [Let us know](mailto:s.w.robinson@gmail.com) and we'll post it here!
 
 ## Copyright & License
 Copyright (c) 2015 Scott Robinson
