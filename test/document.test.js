@@ -220,6 +220,36 @@ describe('Document', function() {
                 expect(user.paymentMethod).to.be.equal('cash');
             }).then(done, done);
         });
+
+        it('should allow schemas to be overridden', function(done) {
+
+            class Vehicle extends Document {
+                constructor(collection) {
+                    super(collection);
+                    this.numWheels = {
+                        type: Number,
+                        default: 4
+                    };
+                }
+            }
+
+            class Motorcycle extends Vehicle {
+                constructor() {
+                    super('motorcycles');
+                    this.numWheels = {
+                        type: Number,
+                        default: 2
+                    };
+                }
+            }
+
+            var bike = Motorcycle.create();
+
+            bike.save().then(function() {
+                validateId(bike);
+                expect(bike.numWheels).to.be.equal(2);
+            }).then(done, done);
+        });
     });
 
     describe('types', function() {

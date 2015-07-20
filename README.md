@@ -84,7 +84,7 @@ var Document = require('camo').Document;
 
 class Company extends Document {
     constructor() {
-        super('boss');
+        super('companies');
 
         this.name = String;
         this.valuation = {
@@ -142,7 +142,7 @@ To reference another document, just use its class name as the type.
 ```javascript
 class Dog extends Document {
     constructor() {
-        super('dog');
+        super('dogs');
 
         this.name = String;
         this.breed = String;
@@ -151,7 +151,7 @@ class Dog extends Document {
 
 class Person extends Document {
     constructor() {
-        super('person');
+        super('persons');
 
         this.pet = Dog;
         this.name = String;
@@ -276,7 +276,7 @@ Here is an example of using a hook (pre-delete, in this case):
 ```javascript
 class Company extends Document {
     constructor() {
-        super('company');
+        super('companies');
 
         this.employees = [Person]
     }
