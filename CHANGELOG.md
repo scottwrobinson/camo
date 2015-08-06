@@ -1,3 +1,9 @@
+## 0.5.7 (2015-08-06)
+
+Bugfixes:
+ - Fixed issue where `schema()` wasn't canonicalizing schema definitions.
+ - Updated README to show an example of using `schema()`.
+
 ## 0.5.6 (2015-07-20)
 
 Features:

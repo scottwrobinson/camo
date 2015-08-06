@@ -59,6 +59,28 @@ describe('Document', function() {
             }).then(done, done);
         });
 
+        it('should allow schema declaration via method', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+
+                    this.schema({
+                        firstName: String,
+                        lastName: String
+                    });
+                }
+            }
+
+            var user = User.create();
+            user.firstName = 'Billy';
+            user.lastName = 'Bob';
+
+            user.save().then(function() {
+                validateId(user);
+            }).then(done, done);
+        });
+
         it('should allow creation of instance with data', function(done) {
 
             class User extends Document {

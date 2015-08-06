@@ -102,7 +102,25 @@ class Company extends Document {
 }
 ```
 
-Notice how the schema is declared right in the constructor as member variables. All _public_ member variables (variables that don't start with an underscore [_]) are added to the schema. The `'boss'` string sent to the parent constructor tells us the collection name to use for that document type.
+Notice how the schema is declared right in the constructor as member variables. All _public_ member variables (variables that don't start with an underscore [_]) are added to the schema. The `'companies'` string sent to the parent constructor tells us the collection name to use for that document type.
+
+Schemas can also be defined using the `schema()` method. For example, in the `constructor()` method you could use:
+
+```javascript
+schema({
+    name: String,
+    valuation: {
+        type: Number,
+        default: 10000000000,
+        min: 0
+    },
+    employees: [String],
+    dateFounded: {
+        type: Date,
+        default: Date.now
+    }
+});
+```
 
 Currently supported variable types are:
 
