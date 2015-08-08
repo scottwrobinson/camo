@@ -26,7 +26,7 @@ So, why use Camo?
 
 - **ES6**: Although ES6 hasn't hit mainstream Node yet, it will soon (io.js is currently being merged with Node at the time of this writing). With all of these new features coming out soon, Camo is getting a head start in writing tested and proven ES6 code. This also means that native Promises are built-in to Camo, so no more `promisify`-ing your ODM or waiting for Promise support to be added.
 - **Easy to use**: While JavaScript is a great language overall, it isn't always the easiest for beginners to pick up. Camo aims to ease that transition by providing familiar-looking classes and a simple interface. Also, there is no need to install a full MongoDB instance to get started with the support of NeDB.
-- **Multiple backends**: Camo was designed and built with multiple Mongo-like backends in mind, like NeDB, LokiJS\*, and TaffyDB\*. With NeDB support, for example, you don't need to install a full MongoDB instance for development or for smaller projects. This also allows you to use Camo in the browser, since it supports in-memory storage.
+- **Multiple backends**: Camo was designed and built with multiple Mongo-like backends in mind, like NeDB, LokiJS\*, and TaffyDB\*. With NeDB support, for example, you don't need to install a full MongoDB instance for development or for smaller projects. This also allows you to use Camo in the browser, since databases like NeDB supports in-memory storage.
 - **Lightweight**: Camo is just a very thin wrapper around the backend databases, which mean you won't be sacrificing performance.
 
 \* Support coming soon.
@@ -56,14 +56,14 @@ We show this using the `node` command instead of `iojs` since io.js is typically
 Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (load, save, delete, etc) will return a Promise. No more callback hell :)
 
 ### Connect to the Database
-Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URL string used for connecting. The URL string usually describes the network location or file location of the database.
+Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URI string used for connecting. The URI string usually describes the network location or file location of the database. However, some databases support more than just network or file locations. NeDB, for example, supports storing data in-memory, which can be specified to Camo via `nedb://memory`. See below for details:
 
 - MongoDB: 
   - Format: mongodb://[username:password@]host[:port][/db-name]
-  - Example: `var url = 'mongodb://scott:abc123@localhost:27017/animals';`
+  - Example: `var uri = 'mongodb://scott:abc123@localhost:27017/animals';`
 - NeDB:
-  - Format: nedb://[directory-path]
-  - Example: `var url = 'nedb:///Users/scott/data/animals';`
+  - Format: nedb://[directory-path] OR nedb://memory
+  - Example: `var uri = 'nedb:///Users/scott/data/animals';`
 
 So to connect to an NeDB database, use the following:
 
@@ -71,8 +71,8 @@ So to connect to an NeDB database, use the following:
 var connect = require('camo').connect;
 
 var database;
-var url = 'nedb:///Users/scott/data/animals';
-connect(url).then(function(db) {
+var uri = 'nedb:///Users/scott/data/animals';
+connect(uri).then(function(db) {
     database = db;
 });
 ```
@@ -155,6 +155,7 @@ The `default` option supports both values and no-argument functions (like `Date.
 - min
 - max
 - choices
+- regex
 
 To reference another document, just use its class name as the type.
 

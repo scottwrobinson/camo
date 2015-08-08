@@ -1,6 +1,6 @@
 {
   "name": "camo",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "A class-based ES6 ODM for Mongo-like databases.",
   "author": {
     "name": "Scott Robinson",

@@ -1,3 +1,9 @@
+## 0.6.0 (2015-08-08)
+
+Features:
+ - Added in-memory support for NeDB
+ - Added regex validator to `Document`
+
 ## 0.5.7 (2015-08-06)
 
 Bugfixes:

@@ -9,7 +9,7 @@ var validateId = require('./util').validateId;
 
 describe('NeDbClient', function() {
 
-    var url = 'nedb://' + __dirname + '/nedbdata';
+    var url = 'nedb://memory';
     var database = null;
 
     // TODO: This is acting weird. Randomly passes/fails. Seems to

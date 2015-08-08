@@ -10,11 +10,13 @@ var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
 var validateId = require('./util').validateId;
+var fail = require('./util').fail;
+var expectError = require('./util').expectError;
 
 describe('Document', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://' + __dirname + '/nedbdata';
+    var url = 'nedb://memory';
     //var url = 'mongodb://localhost/camo_test';
     var database = null;
 
@@ -35,9 +37,9 @@ describe('Document', function() {
         database.dropDatabase().then(function() {}).then(done, done);
     });
 
-    after(function(done) {
+    /*after(function(done) {
         database.dropDatabase().then(function() {}).then(done, done);
-    });
+    });*/
 
     describe('instantiation', function() {
         it('should allow creation of instance', function(done) {
@@ -809,6 +811,56 @@ describe('Document', function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error instanceof Error).to.be.true;
+            }).then(done, done);
+        });
+    });
+
+    describe('regex', function() {
+        it('should accept value matching regex', function(done) {
+
+            class Product extends Document {
+                constructor() {
+                    super('products');
+                    this.name = String;
+                    this.cost = {
+                        type: String,
+                        regex: /^\$?[\d,]+(\.\d*)?$/
+                    };
+                }
+            }
+
+            var product = Product.create();
+            product.name = 'Dark Roast Coffee';
+            product.cost = '$1.39';
+
+            product.save().then(function() {
+                validateId(product);
+                expect(product.name).to.be.equal('Dark Roast Coffee');
+                expect(product.cost).to.be.equal('$1.39');
+            }).then(done, done);
+        });
+
+        it('should reject value not matching regex', function(done) {
+
+            class Product extends Document {
+                constructor() {
+                    super('products');
+                    this.name = String;
+                    this.cost = {
+                        type: String,
+                        regex: /^\$?[\d,]+(\.\d*)?$/
+                    };
+                }
+            }
+
+            var product = Product.create();
+            product.name = 'Light Roast Coffee';
+            product.cost = '$1..39';
+
+            product.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
             }).then(done, done);
         });
     });

@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var inherits = require('util').inherits;
 var Data = require('./data');
 
 exports.validateId = function(obj) {
@@ -42,4 +43,32 @@ exports.validateData2 = function(d) {
     expect(d.item).to.be.equal(26);
     expect(d).to.have.property('values').with.length(4);
     expect(d.date.valueOf()).to.be.equal(1434304039234);
+};
+
+// If we expect an error (and check for it in 'catch'), then 
+// we end up catching the error thrown when calling expect.fail.
+// This means we'll actually catch the wrong error and give
+// a false positive.
+//
+// This is my dumb way of getting around that.
+var FailError = function(expected, actual, message) {
+  Error.call(this);
+  Error.captureStackTrace(this, FailError);
+  this.name = 'FailError';
+  this.expected = expected;
+  this.actual = actual;
+  this.message = message
+}
+inherits(FailError, Error);
+
+exports.fail = function(expected, actual, message) {
+    throw new FailError(expected, actual, message);
+};
+
+exports.expectError = function(error) {
+    if (error instanceof FailError) {
+        expect.fail(error.expected, error.actual, error.message);
+        return;
+    }
+    expect(error instanceof Error).to.be.true;
 };

@@ -12,7 +12,7 @@ var validateId = require('./util').validateId;
 
 describe('Client', function() {
 
-    var url = 'nedb://' + __dirname + '/nedbdata';
+    var url = 'nedb://memory';
     //var url = 'mongodb://localhost/camo_test';
     var database = null;
 

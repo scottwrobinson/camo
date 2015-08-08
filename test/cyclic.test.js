@@ -11,7 +11,7 @@ var Bar = require('./cyclic/bar');
 describe('Cyclic', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://' + __dirname + '/nedbdata';
+    var url = 'nedb://memory';
     //var url = 'mongodb://localhost/camo_test';
     var database = null;
 
