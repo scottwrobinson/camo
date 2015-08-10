@@ -815,7 +815,7 @@ describe('Document', function() {
         });
     });
 
-    describe('regex', function() {
+    describe('match', function() {
         it('should accept value matching regex', function(done) {
 
             class Product extends Document {
@@ -824,7 +824,7 @@ describe('Document', function() {
                     this.name = String;
                     this.cost = {
                         type: String,
-                        regex: /^\$?[\d,]+(\.\d*)?$/
+                        match: /^\$?[\d,]+(\.\d*)?$/
                     };
                 }
             }
@@ -848,7 +848,7 @@ describe('Document', function() {
                     this.name = String;
                     this.cost = {
                         type: String,
-                        regex: /^\$?[\d,]+(\.\d*)?$/
+                        match: /^\$?[\d,]+(\.\d*)?$/
                     };
                 }
             }
