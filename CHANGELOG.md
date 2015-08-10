@@ -1,4 +1,4 @@
-## 0.6.0 (2015-08-08)
+## 0.6.0 (2015-08-10)
 
 Features:
  - Added in-memory support for NeDB
