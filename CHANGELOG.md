@@ -1,3 +1,9 @@
+## 0.7.0 (2015-08-18)
+
+Features:
+ - Added `loadOneAndUpdate` static method to `Document` class
+ - Added `loadOneAndDelete` static method to `Document` class
+
 ## 0.6.0 (2015-08-10)
 
 Features:

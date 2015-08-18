@@ -64,6 +64,56 @@ describe('Client', function() {
         });
     });
 
+    describe('#loadOneAndUpdate()', function() {
+        it('should load and update a single object from the collection', function(done) {
+
+            var data = getData1();
+
+            data.save().then(function() {
+                validateId(data);
+                return Data.loadOneAndUpdate({number: 1}, {source: 'wired'});
+            }).then(function(d) {
+                validateId(d);
+                expect(d.number).to.equal(1);
+                expect(d.source).to.equal('wired');
+            }).then(done, done);
+        });
+
+        it('should insert a single object to the collection', function(done) {
+            Data.loadOne({number: 1}).then(function(d) {
+                expect(d).to.be.null;
+                return Data.loadOneAndUpdate({number: 1}, {number: 1}, {upsert: true});
+            }).then(function(data) {
+                validateId(data);
+                expect(data.number).to.equal(1);
+                return Data.loadOne({number: 1});
+            }).then(function(d) {
+                validateId(d);
+                expect(d.number).to.equal(1);
+            }).then(done, done);
+        });
+    });
+
+    describe('#loadOneAndDelete()', function() {
+        it('should load and delete a single object from the collection', function(done) {
+
+            var data = getData1();
+
+            data.save().then(function() {
+                validateId(data);
+                return Data.count({ number: 1 });
+            }).then(function(count) {
+                expect(count).to.be.equal(1);
+                return Data.loadOneAndDelete({number: 1});
+            }).then(function(numDeleted) {
+                expect(numDeleted).to.equal(1);
+                return Data.count({ number: 1 });
+            }).then(function(count) {
+                expect(count).to.equal(0);
+            }).then(done, done);
+        });
+    });
+
     describe('#loadMany()', function() {
         it('should load multiple objects from the collection', function(done) {
 

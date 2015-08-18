@@ -239,6 +239,8 @@ Once a document is saved, it will automatically be assigned a unique identifier 
 
 If you specified a default value (or function) for a schema variable, that value will be assigned on creation of the object.
 
+An alternative to `.save()` is `.loadOneAndUpdate(query, update, options)`. This static method will find and update (or insert) a document in one atomic operation (atomicity is guaranteed in MongoDB only). Using the `{upsert: true}` option will return a new document if one is not found with the given query.
+
 ### Loading
 Both the load and delete methods following closely (but not always exactly) to the MongoDB API, so it should feel fairly familiar. To retrieve an object, you have a few methods available to you.
 
@@ -260,6 +262,7 @@ To remove documents fromt the database, use one of the following:
 - `.delete()`
 - `.deleteOne(query, options)` (static method)
 - `.deleteMany(query, options)` (static method)
+- `.loadOneAndDelete(query, options)` (static method)
 
 The `.delete()` method should only be used on an instantiated document with a valid `id`. The other two methods should be used on the class of the document(s) you want to delete.
 
