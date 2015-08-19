@@ -264,7 +264,7 @@ To remove documents fromt the database, use one of the following:
 - `.deleteMany(query, options)` (static method)
 - `.loadOneAndDelete(query, options)` (static method)
 
-The `.delete()` method should only be used on an instantiated document with a valid `id`. The other two methods should be used on the class of the document(s) you want to delete.
+The `.delete()` method should only be used on an instantiated document with a valid `id`. The other three methods should be used on the class of the document(s) you want to delete.
 
 ```javascript
 Dog.deleteMany({ breed: 'Collie' }).then(function(numDeleted) {
