@@ -1,3 +1,10 @@
+## 0.7.1 (2015-08-21)
+
+Bugfixes:
+ - Fixed issue #8 where virtual setters were not used on initialization
+ - `loadMany()` now loads all documents if query is not provided
+ - `deleteMany()` now deletes all documents if query is not provided
+
 ## 0.7.0 (2015-08-18)
 
 Features:
