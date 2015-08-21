@@ -138,6 +138,22 @@ describe('Client', function() {
                 }
             }).then(done, done);
         });
+
+        it('should load all objects when query is not provided', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.loadMany();
+            }).then(function(datas) {
+                expect(datas).to.have.length(2);
+                validateId(datas[0]);
+                validateId(datas[1]);
+            }).then(done, done);
+        });
     });
 
     describe('#count()', function() {
@@ -214,6 +230,23 @@ describe('Client', function() {
                 validateId(data1);
                 validateId(data2);
                 return Data.deleteMany({});
+            }).then(function(numDeleted) {
+                expect(numDeleted).to.be.equal(2);
+                return Data.loadMany({});
+            }).then(function(datas) {
+                expect(datas).to.have.length(0);
+            }).then(done, done);
+        });
+
+        it('should remove all objects when query is not provided', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.deleteMany();
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(2);
                 return Data.loadMany({});
