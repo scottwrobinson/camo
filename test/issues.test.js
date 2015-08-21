@@ -145,4 +145,42 @@ describe('Issues', function() {
             }).then(done, done);
         });
     });
+
+    describe('#8', function() {
+        it('should use virtuals when initializing instance with data', function(done) {
+            /* 
+             * This issue happens when a model has virtual setters
+             * and the caller tries to use those setters during
+             * initialization via `create()`. The setters are
+             * never called, but they should be.
+             */
+
+            class User extends Document {
+                constructor() {
+                    super('user');
+                    this.firstName = String;
+                    this.lastName = String;
+                }
+
+                set fullName(name) {
+                    var split = name.split(' ');
+                    this.firstName = split[0];
+                    this.lastName = split[1];
+                }
+
+                get fullName() {
+                    return this.firstName + ' ' + this.lastName;
+                }
+            }
+
+            var user = User.create({
+                fullName: 'Billy Bob'
+            });
+
+            expect(user.firstName).to.be.equal('Billy');
+            expect(user.lastName).to.be.equal('Bob');
+            
+            done();
+        });
+    });
 });
