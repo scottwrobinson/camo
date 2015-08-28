@@ -865,6 +865,59 @@ describe('Document', function() {
         });
     });
 
+    describe('validate', function() {
+        it('should accept value that passes custom validator', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = {
+                        type: String,
+                        validate: function(value) {
+                            return value.length > 4;
+                        }
+                    };
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott'
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+            }).then(done, done);
+        });
+
+        it('should reject value that fails custom validator', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = {
+                        type: String,
+                        validate: function(value) {
+                            return value.length > 4;
+                        }
+                    };
+                }
+            }
+
+            var person = Person.create({
+                name: 'Matt'
+            });
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+    });
+
     describe('hooks', function() {
         it('should call all pre and post functions', function(done) {
 

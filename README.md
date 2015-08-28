@@ -148,14 +148,15 @@ this.primeNumber = {
 }
 ```
 
-The `default` option supports both values and no-argument functions (like `Date.now`). Currently the supported options are:
+The `default` option supports both values and no-argument functions (like `Date.now`). Currently the supported options/validators are:
 
-- type
-- default
-- min
-- max
-- choices
-- regex
+- `type`: The value's type *(required)*
+- `default`: The value to be assigned if none is provided *(optional)*
+- `min`: The minimum value a Number can be *(optional)*
+- `max`: The maximum value a Number can be *(optional)*
+- `choices`: A list of possible values *(optional)*
+- `match`: A regex string that should match the value *(optional)*
+- `validate`: A 1-argument function that returns `false` if the value is invalid *(optional)*
 
 To reference another document, just use its class name as the type.
 
