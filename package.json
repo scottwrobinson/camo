@@ -4,7 +4,8 @@
   "description": "A class-based ES6 ODM for Mongo-like databases.",
   "author": {
     "name": "Scott Robinson",
-    "email": "s.w.robinson@gmail.com"
+    "email": "s.w.robinson@gmail.com",
+    "url" : "http://stackabuse.com"
   },
   "keywords": [
     "es6",
