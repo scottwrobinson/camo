@@ -1,7 +1,9 @@
-## 0.8.0 (2015-08-28)
+## 0.8.0 (2015-10-12)
 
 Features:
  - Added support for custom validation on schemas via `validate` property
+Bugfixes:
+ - Fixed issue #9 where no member values could be set as `undefined`
 
 ## 0.7.1 (2015-08-21)
 
