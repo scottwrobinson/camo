@@ -55,6 +55,8 @@ We show this using the `node` command instead of `iojs` since io.js is typically
 ## Quick Start
 Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (load, save, delete, etc) will return a Promise. No more callback hell :)
 
+For a short tutorial on using Camo, check out [this](http://stackabuse.com/getting-started-with-camo/) article.
+
 ### Connect to the Database
 Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URI string used for connecting. The URI string usually describes the network location or file location of the database. However, some databases support more than just network or file locations. NeDB, for example, supports storing data in-memory, which can be specified to Camo via `nedb://memory`. See below for details:
 
