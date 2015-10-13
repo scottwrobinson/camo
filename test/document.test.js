@@ -716,6 +716,30 @@ describe('Document', function() {
                 expect(data.date).to.be.lessThan(Date.now());
             }).then(done, done);
         });
+
+        it('should be undefined if unassigned and no default is given', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+                    this.name = String;
+                    this.age = Number;
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott'
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                return Person.loadOne({name: 'Scott'});
+            }).then(function(p) {
+                validateId(p);
+                expect(p.name).to.be.equal('Scott');
+                expect(p.age).to.be.undefined;
+            }).then(done, done);
+        });
     });
 
     describe('choices', function() {
