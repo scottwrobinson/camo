@@ -175,7 +175,7 @@ describe('Embedded', function() {
 
             var product = Product.create({
                 name: 'bike',
-                discount: [{
+                discounts: [{
                     authorized: true,
                     amount: 9.99
                 },
