@@ -32,7 +32,8 @@
     "test": "mocha --harmony-proxies"
   },
   "engines": {
-    "iojs": "~2.2.1"
+    "iojs": "~2.2.1",
+    "node" : ">=2.0.0"
   },
   "dependencies": {
     "lodash": "3.9.3"
