@@ -70,7 +70,7 @@ describe('Embedded', function() {
                 validateId(d);
                 expect(d.num).to.be.equal(1);
                 expect(d.mod).to.be.a('object');
-                expect(d.mod instanceof EmbeddedModel).to.be.true;
+                expect(d.mod).to.be.an.instanceof(EmbeddedModel);
                 expect(d.mod.str).to.be.equal('some data');
             }).then(done, done);
         });
@@ -471,7 +471,7 @@ describe('Embedded', function() {
             person.save().then(function() {
                 validateId(person);
                 expect(person.name).to.be.equal('Scott');
-                expect(person.address instanceof Address).to.be.true;
+                expect(person.address).to.be.an.instanceof(Address);
                 expect(person.address.street).to.be.equal('123 Fake St.');
                 expect(person.address.city).to.be.equal('Cityville');
                 expect(person.address.zipCode).to.be.equal(12345);
@@ -480,7 +480,7 @@ describe('Embedded', function() {
                 var json = person.toJSON();
 
                 expect(json.name).to.be.equal('Scott');
-                expect(json.address instanceof Address).to.be.false;
+                expect(json.address).to.not.be.an.instanceof(Address);
                 expect(json.address.street).to.be.equal('123 Fake St.');
                 expect(json.address.city).to.be.equal('Cityville');
                 expect(json.address.zipCode).to.be.equal(12345);

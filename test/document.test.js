@@ -308,7 +308,7 @@ describe('Document', function() {
             }).then(function(d) {
                 validateId(d);
                 validateId(d.ref);
-                expect(d.ref instanceof ReferenceeModel).to.be.true;
+                expect(d.ref).to.be.an.instanceof(ReferenceeModel);
                 expect(d.ref.str).to.be.equal('some data');
             }).then(done, done);
         });
@@ -350,8 +350,8 @@ describe('Document', function() {
                 validateId(d);
                 validateId(d.refs[0]);
                 validateId(d.refs[1]);
-                expect(d.refs[0] instanceof ReferenceeModel).to.be.true;
-                expect(d.refs[1] instanceof ReferenceeModel).to.be.true;
+                expect(d.refs[0]).to.be.an.instanceof(ReferenceeModel);
+                expect(d.refs[1]).to.be.an.instanceof(ReferenceeModel);
                 expect(d.refs[0].str).to.be.equal('string1');
                 expect(d.refs[1].str).to.be.equal('string2');
             }).then(done, done);
@@ -1103,9 +1103,9 @@ describe('Document', function() {
                 expect(person.spouse.name).to.be.equal('Jane');
                 expect(person.children[0].name).to.be.equal('Billy');
                 expect(person.children[1].name).to.be.equal('Timmy');
-                expect(person.spouse instanceof Person).to.be.true;
-                expect(person.children[0] instanceof Person).to.be.true;
-                expect(person.children[1] instanceof Person).to.be.true;
+                expect(person.spouse).to.be.an.instanceof(Person);
+                expect(person.children[0]).to.be.an.instanceof(Person);
+                expect(person.children[1]).to.be.an.instanceof(Person);
 
                 var json = person.toJSON();
 
@@ -1114,9 +1114,9 @@ describe('Document', function() {
                 expect(json.spouse.name).to.be.equal('Jane');
                 expect(json.children[0].name).to.be.equal('Billy');
                 expect(json.children[1].name).to.be.equal('Timmy');
-                expect(json.spouse instanceof Person).to.be.false;
-                expect(json.children[0] instanceof Person).to.be.false;
-                expect(json.children[1] instanceof Person).to.be.false;
+                expect(json.spouse).to.not.be.an.instanceof(Person);
+                expect(json.children[0]).to.not.be.an.instanceof(Person);
+                expect(json.children[1]).to.not.be.an.instanceof(Person);
             }).then(done, done);
         });
     });
