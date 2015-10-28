@@ -432,4 +432,60 @@ describe('Embedded', function() {
             }).then(done, done);
         });
     });
+
+    describe('serialize', function() {
+        it('should serialize data to JSON', function(done) {
+            class Address extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.street = String;
+                    this.city = String;
+                    this.zipCode = Number;
+                    this.isPoBox = Boolean;
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = String;
+                    this.age = Number;
+                    this.isAlive = Boolean;
+                    this.children = [String];
+                    this.address = Address;
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott',
+                address: {
+                    street: '123 Fake St.',
+                    city: 'Cityville',
+                    zipCode: 12345,
+                    isPoBox: false
+                }
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+                expect(person.address instanceof Address).to.be.true;
+                expect(person.address.street).to.be.equal('123 Fake St.');
+                expect(person.address.city).to.be.equal('Cityville');
+                expect(person.address.zipCode).to.be.equal(12345);
+                expect(person.address.isPoBox).to.be.equal(false);
+
+                var json = person.toJSON();
+
+                expect(json.name).to.be.equal('Scott');
+                expect(json.address instanceof Address).to.be.false;
+                expect(json.address.street).to.be.equal('123 Fake St.');
+                expect(json.address.city).to.be.equal('Cityville');
+                expect(json.address.zipCode).to.be.equal(12345);
+                expect(json.address.isPoBox).to.be.equal(false);
+            }).then(done, done);
+        });
+    });
 });
