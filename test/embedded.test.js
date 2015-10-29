@@ -154,6 +154,49 @@ describe('Embedded', function() {
                 expect(product.discount.amount).to.be.equal(9.99);
             }).then(done, done);
         });
+
+        it('should allow initialization of array of embedded documents', function(done) {
+
+            class Discount extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.authorized = Boolean;
+                    this.amount = Number;
+                }
+            }
+
+            class Product extends Document {
+                constructor() {
+                    super('products');
+                    this.name = String;
+                    this.discounts = [Discount];
+                }
+            }
+
+            var product = Product.create({
+                name: 'bike',
+                discounts: [{
+                    authorized: true,
+                    amount: 9.99
+                },
+                {
+                    authorized: false,
+                    amount: 187.44
+                }]
+            });
+
+            product.save().then(function() {
+                validateId(product);
+                expect(product.name).to.be.equal('bike');
+                expect(product.discounts).to.have.length(2);
+                expect(product.discounts[0] instanceof Discount).to.be.true;
+                expect(product.discounts[1] instanceof Discount).to.be.true;
+                expect(product.discounts[0].authorized).to.be.equal(true);
+                expect(product.discounts[0].amount).to.be.equal(9.99);
+                expect(product.discounts[1].authorized).to.be.equal(false);
+                expect(product.discounts[1].amount).to.be.equal(187.44);
+            }).then(done, done);
+        });
     });
 
     describe('defaults', function() {
