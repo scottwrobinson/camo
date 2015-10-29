@@ -154,6 +154,73 @@ describe('Client', function() {
                 validateId(datas[1]);
             }).then(done, done);
         });
+
+        it('should sort results in ascending order', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.loadMany({}, {sort: 'number'});
+            }).then(function(datas) {
+                expect(datas).to.have.length(2);
+                validateId(datas[0]);
+                validateId(datas[1]);
+                expect(datas[0].number).to.be.equal(1);
+                expect(datas[1].number).to.be.equal(2);
+            }).then(done, done);
+        });
+
+        it('should sort results in descending order', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.loadMany({}, {sort: '-number'});
+            }).then(function(datas) {
+                expect(datas).to.have.length(2);
+                validateId(datas[0]);
+                validateId(datas[1]);
+                expect(datas[0].number).to.be.equal(2);
+                expect(datas[1].number).to.be.equal(1);
+            }).then(done, done);
+        });
+
+        it('should limit number of results returned', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.loadMany({}, {limit: 1});
+            }).then(function(datas) {
+                expect(datas).to.have.length(1);
+                validateId(datas[0]);
+            }).then(done, done);
+        });
+
+        it('should skip given number of results', function(done) {
+
+            var data1 = getData1();
+            var data2 = getData2();
+
+            Promise.all([data1.save(), data2.save()]).then(function() {
+                validateId(data1);
+                validateId(data2);
+                return Data.loadMany({}, {sort: 'number', skip: 1});
+            }).then(function(datas) {
+                expect(datas).to.have.length(1);
+                validateId(datas[0]);
+                expect(datas[0].number).to.be.equal(2);
+            }).then(done, done);
+        });
     });
 
     describe('#count()', function() {

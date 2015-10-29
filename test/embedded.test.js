@@ -70,7 +70,7 @@ describe('Embedded', function() {
                 validateId(d);
                 expect(d.num).to.be.equal(1);
                 expect(d.mod).to.be.a('object');
-                expect(d.mod instanceof EmbeddedModel).to.be.true;
+                expect(d.mod).to.be.an.instanceof(EmbeddedModel);
                 expect(d.mod.str).to.be.equal('some data');
             }).then(done, done);
         });
@@ -472,6 +472,62 @@ describe('Embedded', function() {
 
                 expect(preDeleteCalled).to.be.equal(true);
                 expect(postDeleteCalled).to.be.equal(true);
+            }).then(done, done);
+        });
+    });
+
+    describe('serialize', function() {
+        it('should serialize data to JSON', function(done) {
+            class Address extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.street = String;
+                    this.city = String;
+                    this.zipCode = Number;
+                    this.isPoBox = Boolean;
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = String;
+                    this.age = Number;
+                    this.isAlive = Boolean;
+                    this.children = [String];
+                    this.address = Address;
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott',
+                address: {
+                    street: '123 Fake St.',
+                    city: 'Cityville',
+                    zipCode: 12345,
+                    isPoBox: false
+                }
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+                expect(person.address).to.be.an.instanceof(Address);
+                expect(person.address.street).to.be.equal('123 Fake St.');
+                expect(person.address.city).to.be.equal('Cityville');
+                expect(person.address.zipCode).to.be.equal(12345);
+                expect(person.address.isPoBox).to.be.equal(false);
+
+                var json = person.toJSON();
+
+                expect(json.name).to.be.equal('Scott');
+                expect(json.address).to.not.be.an.instanceof(Address);
+                expect(json.address.street).to.be.equal('123 Fake St.');
+                expect(json.address.city).to.be.equal('Cityville');
+                expect(json.address.zipCode).to.be.equal(12345);
+                expect(json.address.isPoBox).to.be.equal(false);
             }).then(done, done);
         });
     });

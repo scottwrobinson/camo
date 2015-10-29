@@ -308,7 +308,7 @@ describe('Document', function() {
             }).then(function(d) {
                 validateId(d);
                 validateId(d.ref);
-                expect(d.ref instanceof ReferenceeModel).to.be.true;
+                expect(d.ref).to.be.an.instanceof(ReferenceeModel);
                 expect(d.ref.str).to.be.equal('some data');
             }).then(done, done);
         });
@@ -350,8 +350,8 @@ describe('Document', function() {
                 validateId(d);
                 validateId(d.refs[0]);
                 validateId(d.refs[1]);
-                expect(d.refs[0] instanceof ReferenceeModel).to.be.true;
-                expect(d.refs[1] instanceof ReferenceeModel).to.be.true;
+                expect(d.refs[0]).to.be.an.instanceof(ReferenceeModel);
+                expect(d.refs[1]).to.be.an.instanceof(ReferenceeModel);
                 expect(d.refs[0].str).to.be.equal('string1');
                 expect(d.refs[1].str).to.be.equal('string2');
             }).then(done, done);
@@ -1004,6 +1004,119 @@ describe('Document', function() {
 
                 expect(preDeleteCalled).to.be.equal(true);
                 expect(postDeleteCalled).to.be.equal(true);
+            }).then(done, done);
+        });
+    });
+
+    describe('serialize', function() {
+        it('should serialize data to JSON', function(done) {
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = String;
+                    this.age = Number;
+                    this.isAlive = Boolean;
+                    this.children = [String];
+                    this.spouse = {
+                        type: String,
+                        default: null
+                    };
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott',
+                age: 28,
+                isAlive: true,
+                children: ['Billy', 'Timmy'],
+                spouse: null
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+                expect(person.age).to.be.equal(28);
+                expect(person.isAlive).to.be.equal(true);
+                expect(person.children).to.have.length(2);
+                expect(person.spouse).to.be.null;
+
+                var json = person.toJSON();
+
+                expect(json.name).to.be.equal('Scott');
+                expect(json.age).to.be.equal(28);
+                expect(json.isAlive).to.be.equal(true);
+                expect(json.children).to.have.length(2);
+                expect(json.spouse).to.be.null;
+                expect(json.id).to.be.equal(person.id);
+            }).then(done, done);
+        });
+
+        it('should serialize data to JSON', function(done) {
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.name = String;
+                    this.children = [Person];
+                    this.spouse = {
+                        type: Person,
+                        default: null
+                    };
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott'
+            });
+
+            var spouse = Person.create({
+                name: 'Jane'
+            });
+
+            var kid1 = Person.create({
+                name: 'Billy'
+            });
+
+            var kid2 = Person.create({
+                name: 'Timmy'
+            });
+
+            spouse.save().then(function() {
+                return kid1.save();
+            }).then(function() {
+                return kid2.save();
+            }).then(function() {
+                person.spouse = spouse;
+                person.children.push(kid1);
+                person.children.push(kid2);
+
+                return person.save();
+            }).then(function() {
+                validateId(person);
+                validateId(spouse);
+                validateId(kid1);
+                validateId(kid2);
+
+                expect(person.name).to.be.equal('Scott');
+                expect(person.children).to.have.length(2);
+                expect(person.spouse.name).to.be.equal('Jane');
+                expect(person.children[0].name).to.be.equal('Billy');
+                expect(person.children[1].name).to.be.equal('Timmy');
+                expect(person.spouse).to.be.an.instanceof(Person);
+                expect(person.children[0]).to.be.an.instanceof(Person);
+                expect(person.children[1]).to.be.an.instanceof(Person);
+
+                var json = person.toJSON();
+
+                expect(json.name).to.be.equal('Scott');
+                expect(json.children).to.have.length(2);
+                expect(json.spouse.name).to.be.equal('Jane');
+                expect(json.children[0].name).to.be.equal('Billy');
+                expect(json.children[1].name).to.be.equal('Timmy');
+                expect(json.spouse).to.not.be.an.instanceof(Person);
+                expect(json.children[0]).to.not.be.an.instanceof(Person);
+                expect(json.children[1]).to.not.be.an.instanceof(Person);
             }).then(done, done);
         });
     });
