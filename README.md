@@ -13,6 +13,7 @@
   * <a href="#deleting">Deleting</a>
   * <a href="#counting">Counting</a>
   * <a href="#hooks">Hooks</a>
+  * <a href="#misc">Misc.</a>
 * <a href="#in-the-wild">In the Wild</a>
 * <a href="#copyright-license">Copyright & License</a>
 
@@ -259,6 +260,15 @@ Dog.loadOne({ name: 'Lassie' }).then(function(l) {
 });
 ```
 
+With the `.loadOne()` method you can now pass it options to modify the returned results:
+
+- `sort`: Sort the documents by the given field
+  - `Person.loadMany({}, {sort: '-age'})` sorts by age in descending order
+- `limit`: Limits the number of documents returned
+  - `Person.loadMany({}, {limit: 5})` returns a maximum of 5 `Person` objects
+- `skip`: Skips the given number of documents and returns the rest
+  - `Person.loadMany({}, {skip: 5})` skips the first 5 `Person` objects and returns all others
+
 ### Deleting
 To remove documents fromt the database, use one of the following:
 
@@ -326,8 +336,13 @@ The code above shows a pre-delete hook that deletes all the employees of the com
 
 **Note**: The `.preDelete()` and `.postDelete()` hooks are _only_ called when calling `.delete()` on a Document instance. Calling `.deleteOne()` or `.deleteMany()` will **not** trigger the hook methods.
 
+### Misc.
+- `camo.getClient()`: Retrieves the Camo database client
+- `camo.getClient().driver()`: Retrieves the underlying database driver (`MongoClient` or a map of NeDB collections)
+- `Document.toJSON()`: Serializes the given document to just the data, which includes nested and referenced data
+
 ## In the Wild
-Camo was created during the development of [Polymetrics](https://polymetrics.io/), so this is the only known code in production as of now. It replaced the original models written with Mongoose, which saved us a lot of time and headaches during design and testing.
+Camo was created during the development of [Polymetrics](https://polymetrics.io/). It replaced the original models created with Mongoose, which ended up saving us a lot of time and headaches during design and testing.
 
 Are you using Camo in a public-facing app/website? [Let us know](mailto:s.w.robinson@gmail.com) and we'll post it here!
 

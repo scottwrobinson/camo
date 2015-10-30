@@ -1,3 +1,14 @@
+## 0.9.0 (2015-10-30)
+
+Features:
+ - Added support for `sort` option on `.loadMany()`
+ - Added support for `limit` option on `.loadMany()`
+ - Added support for `skip` option on `.loadMany()`
+ - Added `.toJSON()` to `Document` and `EmbeddedDocument` for serialization
+ - Updated 'engines' property to '>=2.0.0' in package.json
+Bugfixes:
+ - Fixed issue #14 where `Document`s couldn't be initialized with an array of `EmbeddedDocument` objects via `.create()`
+
 ## 0.8.0 (2015-10-12)
 
 Features:
