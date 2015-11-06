@@ -1,3 +1,10 @@
+## 0.9.1 (2015-11-06)
+
+Features:
+ - Added support for testing in travis-ci.org
+Bugfixes:
+ - Fixed issue #10 where IDs in queries had to be ObjectId. Now string IDs are automatically cast to ObjectId.
+
 ## 0.9.0 (2015-10-30)
 
 Features:
