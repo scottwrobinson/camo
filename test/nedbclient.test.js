@@ -4,9 +4,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var expect = require('chai').expect;
 var connect = require('../index').connect;
-var Data = require('./data');
-var getData1 = require('./util').data1;
-var getData2 = require('./util').data2;
+var Document = require('../index').Document;
 var validateId = require('./util').validateId;
 
 describe('NeDbClient', function() {
@@ -18,7 +16,7 @@ describe('NeDbClient', function() {
     // be caused by document.test.js. When that one doesn't run,
     // this one always passes. Maybe some leftover files are still
     // floating around due to document.test.js?
-    /*before(function(done) {
+    before(function(done) {
         connect(url).then(function(db) {
             database = db;
             return database.dropDatabase();
@@ -39,7 +37,7 @@ describe('NeDbClient', function() {
         done();
     }); 
 
-    describe('#dropDatabase()', function() {
+    /*describe('#dropDatabase()', function() {
         it('should drop the database and delete all its data', function(done) {
 
             console.log('here-2');
@@ -92,4 +90,67 @@ describe('NeDbClient', function() {
             }).then(done, done);
         });
     });*/
+
+    describe('indexes', function() {
+        it('should reject documents with duplicate values in unique-indexed fields', function(done) {
+            class User extends Document {
+                constructor() {
+                    super('user');
+
+                    this.schema({
+                        name: String,
+                        email: {
+                            type: String,
+                            unique: true
+                        }
+                    });
+                }
+            }
+
+            var user1 = User.create();
+            user1.name = 'Bill';
+            user1.email = 'billy@example.com';
+
+            var user2 = User.create();
+            user1.name = 'Billy';
+            user2.email = 'billy@example.com';
+
+            Promise.all([user1.save(), user2.save()]).then(function() {
+                expect.fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expect(error.errorType).to.be.equal('uniqueViolated');
+            }).then(done, done);
+        });
+
+        it('should accept documents with duplicate values in non-unique-indexed fields', function(done) {
+            class User extends Document {
+                constructor() {
+                    super('user');
+
+                    this.schema({
+                        name: String,
+                        email: {
+                            type: String,
+                            unique: false
+                        }
+                    });
+                }
+            }
+
+            var user1 = User.create();
+            user1.name = 'Bill';
+            user1.email = 'billy@example.com';
+
+            var user2 = User.create();
+            user1.name = 'Billy';
+            user2.email = 'billy@example.com';
+
+            Promise.all([user1.save(), user2.save()]).then(function() {
+                validateId(user1);
+                validateId(user2);
+                expect(user1.email).to.be.equal('billy@example.com');
+                expect(user2.email).to.be.equal('billy@example.com');
+            }).then(done, done);
+        });
+    });
 });

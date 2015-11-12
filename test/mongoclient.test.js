@@ -145,4 +145,67 @@ describe('MongoClient', function() {
             }).then(done, done);
         });
     });
+
+    describe('indexes', function() {
+        it('should reject documents with duplicate values in unique-indexed fields', function(done) {
+            class User extends Document {
+                constructor() {
+                    super('user');
+
+                    this.schema({
+                        name: String,
+                        email: {
+                            type: String,
+                            unique: true
+                        }
+                    });
+                }
+            }
+
+            var user1 = User.create();
+            user1.name = 'Bill';
+            user1.email = 'billy@example.com';
+
+            var user2 = User.create();
+            user1.name = 'Billy';
+            user2.email = 'billy@example.com';
+
+            Promise.all([user1.save(), user2.save()]).then(function() {
+                expect.fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expect(error instanceof Error).to.be.true;
+            }).then(done, done);
+        });
+
+        it('should accept documents with duplicate values in non-unique-indexed fields', function(done) {
+            class User extends Document {
+                constructor() {
+                    super('user');
+
+                    this.schema({
+                        name: String,
+                        email: {
+                            type: String,
+                            unique: false
+                        }
+                    });
+                }
+            }
+
+            var user1 = User.create();
+            user1.name = 'Bill';
+            user1.email = 'billy@example.com';
+
+            var user2 = User.create();
+            user1.name = 'Billy';
+            user2.email = 'billy@example.com';
+
+            Promise.all([user1.save(), user2.save()]).then(function() {
+                validateId(user1);
+                validateId(user2);
+                expect(user1.email).to.be.equal('billy@example.com');
+                expect(user2.email).to.be.equal('billy@example.com');
+            }).then(done, done);
+        });
+    });
 });
