@@ -10,6 +10,7 @@ var getData2 = require('./util').data2;
 var validateData1 = require('./util').validateData1;
 var validateData2 = require('./util').validateData2;
 var validateId = require('./util').validateId;
+var isNativeId = require('../lib/validate').isNativeId;
 
 describe('Client', function() {
 
@@ -157,8 +158,8 @@ describe('Client', function() {
                 validateId(user);
                 return User.loadOne({_id: user.id}, {populate: false});
             }).then(function(u) {
-                expect(u.pet).to.be.a('string');
-                expect(u.address).to.be.a('string');
+                expect(isNativeId(u.pet)).to.be.true;
+                expect(isNativeId(u.address)).to.be.true;
             }).then(done, done);
         });
 
@@ -190,7 +191,7 @@ describe('Client', function() {
                 return User.loadOne({_id: user.id}, {populate: ['pet']});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
-                expect(u.address).to.be.a('string');
+                expect(isNativeId(u.address)).to.be.true;
             }).then(done, done);
         });
     });
@@ -430,10 +431,10 @@ describe('Client', function() {
                 validateId(user2);
                 return User.loadMany({}, {populate: false});
             }).then(function(users) {
-                expect(users[0].pet).to.be.a('string');
-                expect(users[0].address).to.be.a('string');
-                expect(users[1].pet).to.be.a('string');
-                expect(users[1].address).to.be.a('string');
+                expect(isNativeId(users[0].pet)).to.be.true;
+                expect(isNativeId(users[0].address)).to.be.true;
+                expect(isNativeId(users[1].pet)).to.be.true;
+                expect(isNativeId(users[1].address)).to.be.true;
             }).then(done, done);
         });
 
@@ -473,9 +474,9 @@ describe('Client', function() {
                 return User.loadMany({}, {populate: ['pet']});
             }).then(function(users) {
                 expect(users[0].pet).to.be.an.instanceof(Pet);
-                expect(users[0].address).to.be.a('string');
+                expect(isNativeId(users[0].address)).to.be.true;
                 expect(users[1].pet).to.be.an.instanceof(Pet);
-                expect(users[1].address).to.be.a('string');
+                expect(isNativeId(users[1].address)).to.be.true;
             }).then(done, done);
         });
     });
