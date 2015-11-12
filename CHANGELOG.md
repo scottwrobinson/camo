@@ -1,3 +1,11 @@
+## 0.10.0 (2015-11-12)
+
+Features:
+ - Added support for setting the 'unique' index on a field
+ - Added support for specifying which reference fields should be populated in `loadOne()` and `loadMany()`
+Bugfixes:
+ - Fixed issue in `isNativeId` where we weren't returning a proper Boolean.
+
 ## 0.9.1 (2015-11-06)
 
 Features:

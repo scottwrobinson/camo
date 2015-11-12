@@ -147,7 +147,8 @@ this.primeNumber = {
 	default: 2,
 	min: 0,
 	max: 25,
-	choices: [2, 3, 5, 7, 11, 13, 17, 19, 23]
+	choices: [2, 3, 5, 7, 11, 13, 17, 19, 23],
+	unique: true
 }
 ```
 
@@ -160,6 +161,7 @@ The `default` option supports both values and no-argument functions (like `Date.
 - `choices`: A list of possible values *(optional)*
 - `match`: A regex string that should match the value *(optional)*
 - `validate`: A 1-argument function that returns `false` if the value is invalid *(optional)*
+- `unique`: A boolean value indicating if a 'unique' index should be set *(optional)*
 
 To reference another document, just use its class name as the type.
 
@@ -260,8 +262,17 @@ Dog.loadOne({ name: 'Lassie' }).then(function(l) {
 });
 ```
 
-With the `.loadOne()` method you can now pass it options to modify the returned results:
+`.loadOne()` currently accepts the following option:
 
+- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
+  - `Person.loadOne({name: 'Billy'}, {populate: true})` populates all references in `Person` object
+  - `Person.loadOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+
+`.loadMany()` currently accepts the following options:
+
+- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
+  - `Person.loadMany({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
+  - `Person.loadMany({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
 - `sort`: Sort the documents by the given field
   - `Person.loadMany({}, {sort: '-age'})` sorts by age in descending order
 - `limit`: Limits the number of documents returned
