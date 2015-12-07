@@ -5,7 +5,7 @@
   "author": {
     "name": "Scott Robinson",
     "email": "s.w.robinson@gmail.com",
-    "url" : "http://stackabuse.com"
+    "url": "http://stackabuse.com"
   },
   "keywords": [
     "es6",
@@ -33,9 +33,10 @@
   },
   "engines": {
     "iojs": "~2.2.1",
-    "node" : ">=2.0.0"
+    "node": ">=2.0.0"
   },
   "dependencies": {
+    "harmony-reflect": "1.4.2",
     "lodash": "3.9.3"
   },
   "optionalDependencies": {

@@ -1,6 +1,6 @@
 "use strict";
 
-require('./lib/proxyShim');
+require('harmony-reflect');
 
 exports.connect = require('./lib/db').connect;
 exports.getClient = require('./lib/clients').getClient;
