@@ -942,6 +942,32 @@ describe('Document', function() {
         });
     });
 
+    describe('canonicalize', function() {
+        it('should ensure timestamp dates are converted to Date objects', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.birthday = Date;
+                }
+            }
+
+            var person = Person.create({
+                birthday: 1449545138000     // Dec. 7th 2015 21:25:38
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.birthday.getFullYear()).to.be.equal(2015);
+                expect(person.birthday.getHours()).to.be.equal(21);
+                expect(person.birthday.getMinutes()).to.be.equal(25);
+                expect(person.birthday.getMonth()).to.be.equal(11);
+                expect(person.birthday.getSeconds()).to.be.equal(38);
+            }).then(done, done);
+        });
+    });
+
     describe('hooks', function() {
         it('should call all pre and post functions', function(done) {
 

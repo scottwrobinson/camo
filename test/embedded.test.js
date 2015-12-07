@@ -326,6 +326,46 @@ describe('Embedded', function() {
 
     });
 
+    describe('canonicalize', function() {
+        it('should ensure timestamp dates are converted to Date objects', function(done) {
+            class Education extends EmbeddedDocument {
+                constructor() {
+                    super('people');
+
+                    this.school = String;
+                    this.major = String;
+                    this.dateGraduated = Date;
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super('people');
+
+                    this.gradSchool = Education;
+                }
+            }
+
+            var person = Person.create({
+                gradSchool: {
+                    school: 'CMU',
+                    major: 'ECE',
+                    dateGraduated: 1449545138000     // Dec. 7th 2015 21:25:38
+                }
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.gradSchool.school).to.be.equal('CMU');
+                expect(person.gradSchool.dateGraduated.getFullYear()).to.be.equal(2015);
+                expect(person.gradSchool.dateGraduated.getHours()).to.be.equal(21);
+                expect(person.gradSchool.dateGraduated.getMinutes()).to.be.equal(25);
+                expect(person.gradSchool.dateGraduated.getMonth()).to.be.equal(11);
+                expect(person.gradSchool.dateGraduated.getSeconds()).to.be.equal(38);
+            }).then(done, done);
+        });
+    });
+
     describe('hooks', function() {
 
         it('should call all pre and post functions on embedded models', function(done) {
