@@ -24,7 +24,8 @@ declare module 'camo' {
 
         create(data: any): this;
         populate(): Promise<{}>;
-        static populate(docs: this | this[]): Promise<this | this[]>;
+        static populate<T>(docs: T): Promise<T>;
+        static potulate<T>(docs: T[]): Promise<T[]>;
         getDefault(schemaProp: string): any;
     }
 
@@ -35,17 +36,17 @@ declare module 'camo' {
         delete(): Promise<{}>;
         static deleteOne(query: CamoQuery): Promise<{}>;
         static deleteMany(query: CamoQuery): Promise<{}>;
-        static loadOne(query: CamoQuery, options?: {
+        static loadOne<T>(query: CamoQuery, options?: {
             populate?: boolean,
-        }): Promise<this;
-        static loadOneAndUpdate(query: CamoQuery, values: any, options?: {
+        }): Promise<T>;
+        static loadOneAndUpdate<T>(query: CamoQuery, values: any, options?: {
             populate?: boolean,
             upsert?: boolean,
-        }): Promise<this>;
-        static loadOneAndDelete(query: CamoQuery, options?: {}): Promise<this>;
-        static loadMany(query: CamoQuery, options?: {
+        }): Promise<T>;
+        static loadOneAndDelete<T>(query: CamoQuery, options?: {}): Promise<T>;
+        static loadMany<T>(query: CamoQuery, options?: {
             populate?: boolean,
-        }): Promise<this[]>;
+        }): Promise<T[]>;
         static count(query: CamoQuery): Promise<number>;
         static clearCollection(): Promise<{}>;
     }
