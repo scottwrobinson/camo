@@ -22,9 +22,9 @@ declare module 'camo' {
 
         validate();
 
-        create(data: any): BaseDocument;
+        create(data: any): this;
         populate(): Promise<{}>;
-        static populate(docs: BaseDocument | BaseDocument[]): Promise<BaseDocument | BaseDocument[]>;
+        static populate(docs: this | this[]): Promise<this | this[]>;
         getDefault(schemaProp: string): any;
     }
 
@@ -37,15 +37,15 @@ declare module 'camo' {
         static deleteMany(query: CamoQuery): Promise<{}>;
         static loadOne(query: CamoQuery, options?: {
             populate?: boolean,
-        }): Promise<Document>;
+        }): Promise<this;
         static loadOneAndUpdate(query: CamoQuery, values: any, options?: {
             populate?: boolean,
             upsert?: boolean,
-        }): Promise<Document>;
-        static loadOneAndDelete(query: CamoQuery, options?: {}): Promise<Document>;
+        }): Promise<this>;
+        static loadOneAndDelete(query: CamoQuery, options?: {}): Promise<this>;
         static loadMany(query: CamoQuery, options?: {
             populate?: boolean,
-        }): Promise<Document[]>;
+        }): Promise<this[]>;
         static count(query: CamoQuery): Promise<number>;
         static clearCollection(): Promise<{}>;
     }
