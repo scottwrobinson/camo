@@ -36,7 +36,6 @@
     "node": ">=2.0.0"
   },
   "dependencies": {
-    "harmony-reflect": "1.4.2",
     "lodash": "3.9.3"
   },
   "optionalDependencies": {
