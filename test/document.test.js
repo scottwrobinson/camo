@@ -1091,12 +1091,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1114,13 +1118,17 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
                         required: true,
                         default: 'Scott'
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1136,7 +1144,7 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.isSingle = {
                         type: Boolean,
@@ -1146,6 +1154,10 @@ describe('Document', function() {
                         type: Boolean,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1165,12 +1177,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.birthDate = {
                         type: Date,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1190,7 +1206,7 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.age = {
                         type: Number,
@@ -1200,6 +1216,10 @@ describe('Document', function() {
                         type: Number,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1219,12 +1239,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1241,13 +1265,17 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
                         required: true,
                         default: ''
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1264,12 +1292,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: Object,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1288,12 +1320,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.names = {
                         type: Array,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1312,12 +1348,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1336,12 +1376,16 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.names = {
                         type: Object,
                         required: true
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
