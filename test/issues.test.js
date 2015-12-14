@@ -183,4 +183,43 @@ describe('Issues', function() {
             done();
         });
     });
+
+    describe('#20', function() {
+        it('should not alias _id to id in queries and returned documents', function(done) {
+            /* 
+             * Camo inconsistently aliases the '_id' field to 'id'. When
+             * querying, we must use '_id', but documents are returned
+             * with '_id' AND 'id'
+             */
+
+            class User extends Document {
+                constructor() {
+                    super();
+                    this.name = String;
+                }
+            }
+
+            var user = User.create({
+                name: 'Billy Bob'
+            });
+
+            user.save().then(function() {
+                validateId(user);
+
+                //expect(user.id).to.not.exist;
+                expect(user._id).to.exist;
+
+                // Should NOT be able to use 'id' to query
+                return User.loadOne({ id: user.id });
+            }).then(function(u) {
+                expect(u).to.not.exist;
+
+                // SHOULD be able to use '_id' to query
+                return User.loadOne({ _id: user.id });
+            }).then(function(u) {
+                expect(u).to.exist;
+                validateId(user);
+            }).then(done, done);
+        });
+    });
 });

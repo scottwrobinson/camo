@@ -1545,7 +1545,7 @@ describe('Document', function() {
                 expect(json.isAlive).to.be.equal(true);
                 expect(json.children).to.have.length(2);
                 expect(json.spouse).to.be.null;
-                expect(json.id).to.be.equal(person.id);
+                expect(json._id).to.be.equal(person._id);
             }).then(done, done);
         });
 
