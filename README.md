@@ -162,6 +162,7 @@ The `default` option supports both values and no-argument functions (like `Date.
 - `match`: A regex string that should match the value *(optional)*
 - `validate`: A 1-argument function that returns `false` if the value is invalid *(optional)*
 - `unique`: A boolean value indicating if a 'unique' index should be set *(optional)*
+- `required`: A boolean value indicating if a key value is required *(optional)*
 
 To reference another document, just use its class name as the type.
 

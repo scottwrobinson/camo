@@ -1086,6 +1086,348 @@ describe('Document', function() {
         });
     });
 
+    describe('required', function() {
+        it('should accept empty value that is not reqired', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: false
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                name: ''
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('');
+            }).then(done, done);
+        });
+
+        it('should accept value that is not undefined', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott'
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+            }).then(done, done);
+        });
+
+        it('should accept an empty value if default is specified', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: true,
+                        default: 'Scott'
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create();
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('Scott');
+            }).then(done, done);
+        });
+
+        it('should accept boolean value', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.isSingle = {
+                        type: Boolean,
+                        required: true
+                    };
+                    this.isMerried = {
+                        type: Boolean,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                isMerried: true,
+                isSingle: false
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.isMerried).to.be.true;
+                expect(person.isSingle).to.be.false;
+            }).then(done, done);
+        });
+
+        it('should accept date value', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.birthDate = {
+                        type: Date,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var myBirthDate = new Date();
+
+            var person = Person.create({
+                birthDate: myBirthDate
+            });
+
+            person.save().then(function(savedPerson) {
+                validateId(person);
+                expect(savedPerson.birthDate).to.equal(myBirthDate);
+            }).then(done, done);
+        });
+
+        it('should accept any number value', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.age = {
+                        type: Number,
+                        required: true
+                    };
+                    this.level = {
+                        type: Number,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                age: 21,
+                level: 0
+            });
+
+            person.save().then(function(savedPerson) {
+                validateId(person);
+                expect(savedPerson.age).to.equal(21);
+                expect(savedPerson.level).to.equal(0);
+            }).then(done, done);
+        });
+
+        it('should reject value that is undefined', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create();
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+
+        it('should reject value if specified default empty value', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: true,
+                        default: ''
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create();
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+
+        it('should reject value that is null', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: Object,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                name: null
+            });
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+
+        it('should reject value that is an empty array', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.names = {
+                        type: Array,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                names: []
+            });
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+
+        it('should reject value that is an empty string', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                name: ''
+            });
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+
+        it('should reject value that is an empty object', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.names = {
+                        type: Object,
+                        required: true
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                names: {}
+            });
+
+            person.save().then(function() {
+                fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expectError(error);
+            }).then(done, done);
+        });
+    });
+
     describe('hooks', function() {
         it('should call all pre and post functions', function(done) {
 
