@@ -1087,6 +1087,33 @@ describe('Document', function() {
     });
 
     describe('required', function() {
+        it('should accept empty value that is not reqired', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = {
+                        type: String,
+                        required: false
+                    };
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var person = Person.create({
+                name: ''
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.name).to.be.equal('');
+            }).then(done, done);
+        });
+
         it('should accept value that is not undefined', function(done) {
 
             class Person extends Document {
