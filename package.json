@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "mocha --harmony-proxies"
+    "test": "mocha"
   },
   "engines": {
     "iojs": "~2.2.1",
