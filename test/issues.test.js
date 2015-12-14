@@ -47,14 +47,14 @@ describe('Issues', function() {
 
             class Eye extends Document {
                 constructor() {
-                    super('eyes');
+                    super();
                     this.color = String;
                 }
             }
 
             class User extends Document {
                 constructor() {
-                    super('users');
+                    super();
                     this.eyes = [Eye];
                 }
             }
@@ -113,14 +113,14 @@ describe('Issues', function() {
 
             class Eye extends Document {
                 constructor() {
-                    super('eyes');
+                    super();
                     this.color = String;
                 }
             }
 
             class User extends Document {
                 constructor() {
-                    super('users');
+                    super();
                     this.eyes = [Eye];
                 }
             }
@@ -157,7 +157,7 @@ describe('Issues', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                 }

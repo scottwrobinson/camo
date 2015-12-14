@@ -35,7 +35,7 @@ describe('MongoClient', function() {
     describe('query', function() {
         class User extends Document {
             constructor() {
-                super('user');
+                super();
                 this.firstName = String;
                 this.lastName = String;
             }
@@ -150,7 +150,7 @@ describe('MongoClient', function() {
         it('should reject documents with duplicate values in unique-indexed fields', function(done) {
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
 
                     this.schema({
                         name: String,
@@ -180,7 +180,7 @@ describe('MongoClient', function() {
         it('should accept documents with duplicate values in non-unique-indexed fields', function(done) {
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
 
                     this.schema({
                         name: String,

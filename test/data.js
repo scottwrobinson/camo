@@ -4,7 +4,7 @@ var Document = require('../index').Document;
 
 class Data extends Document {
 	constructor() {
-        super('data');
+        super();
 
         this.schema({
             number: {

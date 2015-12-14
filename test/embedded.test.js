@@ -52,7 +52,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.mod = EmbeddedModel;
                     this.num = { type: Number };
                 }
@@ -86,9 +86,13 @@ describe('Embedded', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('person');
+                    super();
                     this.limbs = [Limb];
                     this.name = String;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -131,7 +135,7 @@ describe('Embedded', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.discount = Discount;
                 }
@@ -167,7 +171,7 @@ describe('Embedded', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.discounts = [Discount];
                 }
@@ -211,7 +215,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.emb = EmbeddedModel;
                     this.num = { type: Number };
                 }
@@ -241,7 +245,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
                     this.contents = [Money];
                     this.owner = String;
                 }
@@ -279,7 +283,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.emb = EmbeddedModel;
                 }
             }
@@ -306,7 +310,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
                     this.contents = [Money];
                 }
             }
@@ -330,19 +334,27 @@ describe('Embedded', function() {
         it('should ensure timestamp dates are converted to Date objects', function(done) {
             class Education extends EmbeddedDocument {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.school = String;
                     this.major = String;
                     this.dateGraduated = Date;
                 }
+
+                static collectionName() {
+                    return 'people';
+                }
             }
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.gradSchool = Education;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -410,7 +422,7 @@ describe('Embedded', function() {
 
             class Cup extends Document {
                 constructor() {
-                    super('cup');
+                    super();
 
                     this.contents = Coffee;
                 }
@@ -483,7 +495,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
 
                     this.contents = [Money];
                 }
@@ -531,13 +543,17 @@ describe('Embedded', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = String;
                     this.age = Number;
                     this.isAlive = Boolean;
                     this.children = [String];
                     this.address = Address;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 

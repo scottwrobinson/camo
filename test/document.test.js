@@ -46,7 +46,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                 }
@@ -65,7 +65,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
 
                     this.schema({
                         firstName: String,
@@ -87,7 +87,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                     this.nicknames = [String];
@@ -114,14 +114,14 @@ describe('Document', function() {
 
             class Coffee extends Document {
                 constructor() {
-                    super('coffee');
+                    super();
                     this.temp = Number;
                 }
             }
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.drinks = [Coffee];
                 }
             }
@@ -141,7 +141,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                 }
@@ -165,7 +165,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                 }
@@ -195,7 +195,7 @@ describe('Document', function() {
 
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
                     this.firstName = String;
                     this.lastName = String;
                 }
@@ -227,7 +227,7 @@ describe('Document', function() {
 
             class ProUser extends User {
                 constructor() {
-                    super('prouser');
+                    super();
                     this.paymentMethod = String;
                 }
             }
@@ -259,7 +259,7 @@ describe('Document', function() {
 
             class Motorcycle extends Vehicle {
                 constructor() {
-                    super('motorcycles');
+                    super();
                     this.numWheels = {
                         type: Number,
                         default: 2
@@ -274,6 +274,64 @@ describe('Document', function() {
                 expect(bike.numWheels).to.be.equal(2);
             }).then(done, done);
         });
+
+        it('should provide default collection name based on class name', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super();
+                }
+            }
+
+            var user = User.create();
+
+            expect(user.collectionName()).to.be.equal('users');
+            expect(User.collectionName()).to.be.equal('users');
+
+            done();
+        });
+
+        it('should provide default collection name based on subclass name', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super();
+                }
+            }
+
+            class ProUser extends User {
+                constructor() {
+                    super();
+                }
+            }
+
+            var pro = ProUser.create();
+
+            expect(pro.collectionName()).to.be.equal('prousers');
+            expect(ProUser.collectionName()).to.be.equal('prousers');
+
+            done();
+        });
+
+        it('should allow custom collection name', function(done) {
+
+            class User extends Document {
+                constructor() {
+                    super();
+                }
+
+                static collectionName() {
+                    return 'sheeple';
+                }
+            }
+
+            var user = User.create();
+
+            expect(user.collectionName()).to.be.equal('sheeple');
+            expect(User.collectionName()).to.be.equal('sheeple');
+
+            done();
+        });
     });
 
     describe('types', function() {
@@ -281,16 +339,24 @@ describe('Document', function() {
 
             class ReferenceeModel extends Document {
                 constructor() {
-                    super('referencee1');
+                    super();
                     this.str = String;
+                }
+
+                static collectionName() {
+                    return 'referencee1';
                 }
             }
 
             class ReferencerModel extends Document {
                 constructor() {
-                    super('referencer1');
+                    super();
                     this.ref = ReferenceeModel;
                     this.num = { type: Number };
+                }
+
+                static collectionName() {
+                    return 'referencer1';
                 }
             }
 
@@ -317,16 +383,24 @@ describe('Document', function() {
 
             class ReferenceeModel extends Document {
                 constructor() {
-                    super('referencee2');
+                    super();
                     this.schema({ str: { type: String } });
+                }
+
+                static collectionName() {
+                    return 'referencee2';
                 }
             }
 
             class ReferencerModel extends Document {
                 constructor() {
-                    super('referencer2');
+                    super();
                     this.refs = [ReferenceeModel];
                     this.num = Number;
+                }
+
+                static collectionName() {
+                    return 'referencer2';
                 }
             }
 
@@ -360,17 +434,25 @@ describe('Document', function() {
         it('should allow references to be saved using the object or its id', function(done) {
             class ReferenceeModel extends Document {
                 constructor() {
-                    super('referencee3');
+                    super();
                     this.str = String;
+                }
+
+                static collectionName() {
+                    return 'referencee3';
                 }
             }
 
             class ReferencerModel extends Document {
                 constructor() {
-                    super('referencer3');
+                    super();
                     this.ref1 = ReferenceeModel;
                     this.ref2 = ReferenceeModel;
                     this.num = { type: Number };
+                }
+
+                static collectionName() {
+                    return 'referencer3';
                 }
             }
 
@@ -404,16 +486,24 @@ describe('Document', function() {
         it('should allow array of references to be saved using the object or its id', function(done) {
             class ReferenceeModel extends Document {
                 constructor() {
-                    super('referencee4');
+                    super();
                     this.schema({ str: { type: String } });
+                }
+
+                static collectionName() {
+                    return 'referencee4';
                 }
             }
 
             class ReferencerModel extends Document {
                 constructor() {
-                    super('referencer4');
+                    super();
                     this.refs = [ReferenceeModel];
                     this.num = Number;
+                }
+
+                static collectionName() {
+                    return 'referencer4';
                 }
             }
 
@@ -447,7 +537,7 @@ describe('Document', function() {
 
             class Employee extends Document {
                 constructor() {
-                    super('employee');
+                    super();
                     this.name = String;
                     this.boss = Boss;
                 }
@@ -455,9 +545,13 @@ describe('Document', function() {
 
             class Boss extends Document {
                 constructor() {
-                    super('boss');
+                    super();
                     this.salary = Number;
                     this.employees = [Employee];
+                }
+
+                static collectionName() {
+                    return 'bosses';
                 }
             }
 
@@ -509,7 +603,7 @@ describe('Document', function() {
 
             class StringModel extends Document {
                 constructor() {
-                    super('strings');
+                    super();
                     this.schema({ str: { type: String } });
                 }
             }
@@ -527,8 +621,12 @@ describe('Document', function() {
 
             class NumberModel extends Document {
                 constructor() {
-                    super('numbers1');
+                    super();
                     this.schema({ num: { type: Number } });
+                }
+
+                static collectionName() {
+                    return 'numbers1';
                 }
             }
 
@@ -545,7 +643,7 @@ describe('Document', function() {
 
             class BooleanModel extends Document {
                 constructor() {
-                    super('booleans');
+                    super();
                     this.schema({ bool: { type: Boolean } });
                 }
             }
@@ -563,7 +661,7 @@ describe('Document', function() {
 
             class DateModel extends Document {
                 constructor() {
-                    super('dates');
+                    super();
                     this.schema({ date: { type: Date } });
                 }
             }
@@ -582,7 +680,7 @@ describe('Document', function() {
 
             class ObjectModel extends Document {
                 constructor() {
-                    super('objects');
+                    super();
                     this.schema({ obj: { type: Object } });
                 }
             }
@@ -601,7 +699,7 @@ describe('Document', function() {
 
             class BufferModel extends Document {
                 constructor() {
-                    super('buffers');
+                    super();
                     this.schema({ buf: { type: Buffer } });
                 }
             }
@@ -619,7 +717,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('arrays');
+                    super();
                     this.schema({ arr: { type: Array } });
                 }
             }
@@ -640,7 +738,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('arrays');
+                    super();
                     this.schema({ arr: { type: [String] } });
                 }
             }
@@ -661,8 +759,12 @@ describe('Document', function() {
 
             class NumberModel extends Document {
                 constructor() {
-                    super('numbers2');
+                    super();
                     this.schema({ num: { type: Number } });
+                }
+
+                static collectionName() {
+                    return 'numbers2';
                 }
             }
 
@@ -680,7 +782,7 @@ describe('Document', function() {
 
             class ArrayModel extends Document {
                 constructor() {
-                    super('arrays');
+                    super();
                     this.schema({ arr: { type: [String] } });
                 }
             }
@@ -721,9 +823,13 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
                     this.name = String;
                     this.age = Number;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -844,7 +950,7 @@ describe('Document', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.cost = {
                         type: String,
@@ -868,7 +974,7 @@ describe('Document', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.cost = {
                         type: String,
@@ -894,7 +1000,7 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
@@ -902,6 +1008,10 @@ describe('Document', function() {
                             return value.length > 4;
                         }
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -919,7 +1029,7 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = {
                         type: String,
@@ -927,6 +1037,10 @@ describe('Document', function() {
                             return value.length > 4;
                         }
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -947,9 +1061,13 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.birthday = Date;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -981,7 +1099,11 @@ describe('Document', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('person');
+                    super();
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
 
                 preValidate() {
@@ -1038,7 +1160,7 @@ describe('Document', function() {
         it('should serialize data to JSON', function(done) {
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = String;
                     this.age = Number;
@@ -1048,6 +1170,10 @@ describe('Document', function() {
                         type: String,
                         default: null
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -1081,7 +1207,7 @@ describe('Document', function() {
         it('should serialize data to JSON', function(done) {
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = String;
                     this.children = [Person];
@@ -1089,6 +1215,10 @@ describe('Document', function() {
                         type: Person,
                         default: null
                     };
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 

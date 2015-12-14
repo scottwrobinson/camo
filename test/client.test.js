@@ -53,17 +53,21 @@ describe('Client', function() {
 
     class Address extends Document {
         constructor() {
-            super('address');
+            super();
 
             this.street = String;
             this.city = String;
             this.zipCode = Number;
         }
+
+        static collectionName() {
+            return 'addresses';
+        }
     }
 
     class Pet extends Document {
         constructor() {
-            super('pet');
+            super();
 
             this.schema({
                 type: String,
@@ -74,7 +78,7 @@ describe('Client', function() {
 
     class User extends Document {
         constructor() {
-            super('user');
+            super();
 
             this.schema({
                 firstName: String,

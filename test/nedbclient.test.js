@@ -95,7 +95,7 @@ describe('NeDbClient', function() {
         it('should reject documents with duplicate values in unique-indexed fields', function(done) {
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
 
                     this.schema({
                         name: String,
@@ -125,7 +125,7 @@ describe('NeDbClient', function() {
         it('should accept documents with duplicate values in non-unique-indexed fields', function(done) {
             class User extends Document {
                 constructor() {
-                    super('user');
+                    super();
 
                     this.schema({
                         name: String,
