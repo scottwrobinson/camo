@@ -1,3 +1,12 @@
+## 0.11.0 (2015-12-15)
+
+Features:
+ - `--harmony-proxies` flag is no longer required
+ - Class names declared in `static collectionName()`. Declaration through constructor is depracated ([#16](https://github.com/scottwrobinson/camo/issues/16))
+ - Added new 'required' schema property ([#18](https://github.com/scottwrobinson/camo/issues/18) and [#19](https://github.com/scottwrobinson/camo/pull/19))
+Bugfixes:
+ - Fixed some inconsistencies with `id` aliasing (partial fix to [#20](https://github.com/scottwrobinson/camo/issues/20))
+
 ## 0.10.0 (2015-11-12)
 
 Features:

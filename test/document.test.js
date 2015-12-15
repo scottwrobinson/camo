@@ -37,9 +37,9 @@ describe('Document', function() {
         database.dropDatabase().then(function() {}).then(done, done);
     });
 
-    /*after(function(done) {
+    after(function(done) {
         database.dropDatabase().then(function() {}).then(done, done);
-    });*/
+    });
 
     describe('instantiation', function() {
         it('should allow creation of instance', function(done) {
