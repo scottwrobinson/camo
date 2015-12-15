@@ -1,3 +1,7 @@
+## 0.11.2 (2015-12-15)
+Bugfixes:
+ - Fixed issue with running 'canonicalize' tests on travis-ci
+
 ## 0.11.1 (2015-12-15)
 Bugfixes:
  - Removed unused `harmony-reflect` dependency

@@ -358,22 +358,24 @@ describe('Embedded', function() {
                 }
             }
 
+            var now = new Date();
+
             var person = Person.create({
                 gradSchool: {
                     school: 'CMU',
                     major: 'ECE',
-                    dateGraduated: 1449545138000     // Dec. 7th 2015 21:25:38
+                    dateGraduated: now
                 }
             });
 
             person.save().then(function() {
                 validateId(person);
                 expect(person.gradSchool.school).to.be.equal('CMU');
-                expect(person.gradSchool.dateGraduated.getFullYear()).to.be.equal(2015);
-                expect(person.gradSchool.dateGraduated.getHours()).to.be.equal(21);
-                expect(person.gradSchool.dateGraduated.getMinutes()).to.be.equal(25);
-                expect(person.gradSchool.dateGraduated.getMonth()).to.be.equal(11);
-                expect(person.gradSchool.dateGraduated.getSeconds()).to.be.equal(38);
+                expect(person.gradSchool.dateGraduated.getFullYear()).to.be.equal(now.getFullYear());
+                expect(person.gradSchool.dateGraduated.getHours()).to.be.equal(now.getHours());
+                expect(person.gradSchool.dateGraduated.getMinutes()).to.be.equal(now.getMinutes());
+                expect(person.gradSchool.dateGraduated.getMonth()).to.be.equal(now.getMonth());
+                expect(person.gradSchool.dateGraduated.getSeconds()).to.be.equal(now.getSeconds());
             }).then(done, done);
         });
     });
