@@ -57,8 +57,8 @@ var FailError = function(expected, actual, message) {
   this.name = 'FailError';
   this.expected = expected;
   this.actual = actual;
-  this.message = message
-}
+  this.message = message;
+};
 inherits(FailError, Error);
 
 exports.fail = function(expected, actual, message) {

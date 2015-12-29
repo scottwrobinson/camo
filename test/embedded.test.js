@@ -7,6 +7,7 @@ var connect = require('../index').connect;
 var Document = require('../index').Document;
 var EmbeddedDocument = require('../index').EmbeddedDocument;
 var isDocument = require('../lib/validate').isDocument;
+var ValidationError = require('../lib/errors').ValidationError;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
@@ -270,7 +271,7 @@ describe('Embedded', function() {
         });
     });
 
-    describe('validation', function() {
+    describe('validate', function() {
 
         it('should validate embedded values', function(done) {
 
@@ -295,7 +296,8 @@ describe('Embedded', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.message).to.contain('max');
             }).then(done, done);
         });
 
@@ -324,7 +326,8 @@ describe('Embedded', function() {
             wallet.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.message).to.contain('choices');
             }).then(done, done);
         });
 

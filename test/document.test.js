@@ -6,6 +6,7 @@ var expect = require('chai').expect;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
 var isDocument = require('../lib/validate').isDocument;
+var ValidationError = require('../lib/errors').ValidationError;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
@@ -774,7 +775,7 @@ describe('Document', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
 
@@ -793,7 +794,7 @@ describe('Document', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
     });
@@ -868,7 +869,7 @@ describe('Document', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
     });
@@ -904,7 +905,7 @@ describe('Document', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
     });
@@ -940,7 +941,7 @@ describe('Document', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
     });
