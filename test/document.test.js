@@ -472,7 +472,7 @@ describe('Document', function() {
                 return ref2.save();
             }).then(function() {
                 validateId(ref2);
-                data.ref2 = ref2.id;
+                data.ref2 = ref2._id;
                 return data.save();
             }).then(function() {
                 return ReferencerModel.loadOne({num: 1});
@@ -523,7 +523,7 @@ describe('Document', function() {
                 return ref2.save();
             }).then(function() {
                 validateId(ref2);
-                data.refs.push(ref2.id);
+                data.refs.push(ref2._id);
                 return data.save();
             }).then(function() {
                 return ReferencerModel.loadOne({num: 1});

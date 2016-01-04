@@ -54,7 +54,7 @@ describe('MongoClient', function() {
             user.save().then(function() {
                 validateId(user);
 
-                var id = String(user.id);
+                var id = String(user._id);
                 return User.loadOne({_id: id});
             }).then(function(u) {
                 validateId(u);
@@ -73,7 +73,7 @@ describe('MongoClient', function() {
             user.save().then(function() {
                 validateId(user);
 
-                return User.loadOne({_id: user.id});
+                return User.loadOne({_id: user._id});
             }).then(function(u) {
                 validateId(u);
             }).then(done, done);
@@ -100,17 +100,17 @@ describe('MongoClient', function() {
                 validateId(user1);
                 validateId(user2);
 
-                var id1 = String(user1.id);
-                var id3 = String(user3.id);
+                var id1 = String(user1._id);
+                var id3 = String(user3._id);
                 return User.loadMany({ _id: { '$in': [ id1, id3 ] } });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
-                var u1 = String(users[0].id) === String(user1.id) ? users[0] : users[1];
-                var u3 = String(users[1].id) === String(user3.id) ? users[1] : users[0];
+                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+                var u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
 
-                expect(String(u1.id)).to.be.equal(String(user1.id));
-                expect(String(u3.id)).to.be.equal(String(user3.id));
+                expect(String(u1._id)).to.be.equal(String(user1._id));
+                expect(String(u3._id)).to.be.equal(String(user3._id));
             }).then(done, done);
         });
 
@@ -131,17 +131,17 @@ describe('MongoClient', function() {
                 validateId(user1);
                 validateId(user2);
 
-                var id1 = String(user1.id);
-                var id3 = String(user3.id);
+                var id1 = String(user1._id);
+                var id3 = String(user3._id);
                 return User.loadMany({ $or: [ {_id: id1 }, {_id: id3 } ] });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
-                var u1 = String(users[0].id) === String(user1.id) ? users[0] : users[1];
-                var u3 = String(users[1].id) === String(user3.id) ? users[1] : users[0];
+                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+                var u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
 
-                expect(String(u1.id)).to.be.equal(String(user1.id));
-                expect(String(u3.id)).to.be.equal(String(user3.id));
+                expect(String(u1._id)).to.be.equal(String(user1._id));
+                expect(String(u3._id)).to.be.equal(String(user3._id));
             }).then(done, done);
         });
     });

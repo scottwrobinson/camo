@@ -128,7 +128,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user.id}, {populate: true});
+                return User.loadOne({_id: user._id}, {populate: true});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
                 expect(u.address).to.be.an.instanceof(Address);
@@ -160,7 +160,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user.id}, {populate: false});
+                return User.loadOne({_id: user._id}, {populate: false});
             }).then(function(u) {
                 expect(isNativeId(u.pet)).to.be.true;
                 expect(isNativeId(u.address)).to.be.true;
@@ -192,7 +192,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user.id}, {populate: ['pet']});
+                return User.loadOne({_id: user._id}, {populate: ['pet']});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
                 expect(isNativeId(u.address)).to.be.true;

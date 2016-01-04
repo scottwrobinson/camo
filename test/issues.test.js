@@ -84,17 +84,17 @@ describe('Issues', function() {
                 expect(users).to.have.length(2);
 
                 // Get user1
-                var u1 = String(users[0].id) === String(user1.id) ? users[0] : users[1];
+                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
 
                 // Ensure we have correct number of eyes...
                 expect(u1.eyes).to.have.length(2);
 
-                var e1 = String(u1.eyes[0].id) === String(eye1.id) ? u1.eyes[0] : u1.eyes[1];
-                var e2 = String(u1.eyes[1].id) === String(eye2.id) ? u1.eyes[1] : u1.eyes[0];
+                var e1 = String(u1.eyes[0]._id) === String(eye1._id) ? u1.eyes[0] : u1.eyes[1];
+                var e2 = String(u1.eyes[1]._id) === String(eye2._id) ? u1.eyes[1] : u1.eyes[0];
 
                 // ...and that we have the correct eyes
-                expect(String(e1.id)).to.be.equal(String(eye1.id));
-                expect(String(e2.id)).to.be.equal(String(eye2.id));
+                expect(String(e1._id)).to.be.equal(String(eye1._id));
+                expect(String(e2._id)).to.be.equal(String(eye2._id));
             }).then(done, done);
         });
     });
@@ -139,9 +139,9 @@ describe('Issues', function() {
                 expect(users).to.have.length(1);
                 expect(users[0].eyes).to.have.length(2);
 
-                var eyeRefs = users[0].eyes.map(function(e) {return e.id;});
+                var eyeRefs = users[0].eyes.map(function(e) {return e._id;});
 
-                expect(eyeRefs).to.include(eye.id);
+                expect(eyeRefs).to.include(eye._id);
             }).then(done, done);
         });
     });
@@ -189,7 +189,10 @@ describe('Issues', function() {
             /* 
              * Camo inconsistently aliases the '_id' field to 'id'. When
              * querying, we must use '_id', but documents are returned
-             * with '_id' AND 'id'
+             * with '_id' AND 'id'. 'id' alias should be removed.
+             *
+             * TODO: Uncomment lines below once '_id' is fully 
+             * deprecated and removed.
              */
 
             class User extends Document {
@@ -210,13 +213,14 @@ describe('Issues', function() {
                 expect(user._id).to.exist;
 
                 // Should NOT be able to use 'id' to query
-                return User.loadOne({ id: user.id });
+                return User.loadOne({ id: user._id });
             }).then(function(u) {
                 expect(u).to.not.exist;
 
                 // SHOULD be able to use '_id' to query
-                return User.loadOne({ _id: user.id });
+                return User.loadOne({ _id: user._id });
             }).then(function(u) {
+                //expect(u.id).to.not.exist;
                 expect(u).to.exist;
                 validateId(user);
             }).then(done, done);

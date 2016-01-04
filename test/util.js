@@ -5,8 +5,8 @@ var Data = require('./data');
 exports.validateId = function(obj) {
     expect(obj).to.not.be.null;
     expect(obj).to.be.a('object');
-    expect(obj.id.toString()).to.be.a('string');
-    expect(obj.id.toString()).to.have.length.of.at.least(1);
+    expect(obj._id.toString()).to.be.a('string');
+    expect(obj._id.toString()).to.have.length.of.at.least(1);
 };
 
 exports.data1 = function() {
