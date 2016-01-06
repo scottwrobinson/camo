@@ -1,3 +1,14 @@
+## 0.11.3 (2015-12-29)
+Features:
+ - Added new `ValidationError` object
+Bugfixes:
+ - Improved some validation tests
+ - Fixed min validation
+ - Fixed validation for array of embedded documents
+ - Moved `collectionName` method to `BaseDocument` so `EmbeddedDocument` can use it ([#26](https://github.com/scottwrobinson/camo/issues/26)) 
+ - Deprecated `id` alias from document object ([#20](https://github.com/scottwrobinson/camo/issues/20))
+ - Fixed serialization test for MongoDB IDs
+
 ## 0.11.2 (2015-12-15)
 Bugfixes:
  - Fixed issue with running 'canonicalize' tests on travis-ci
