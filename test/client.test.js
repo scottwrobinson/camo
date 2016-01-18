@@ -3,12 +3,14 @@
 var _ = require('lodash');
 var expect = require('chai').expect;
 var connect = require('../index').connect;
+var Document = require('../index').Document;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
 var validateData1 = require('./util').validateData1;
 var validateData2 = require('./util').validateData2;
 var validateId = require('./util').validateId;
+var isNativeId = require('../lib/validate').isNativeId;
 
 describe('Client', function() {
 
@@ -49,6 +51,44 @@ describe('Client', function() {
         });
     });
 
+    class Address extends Document {
+        constructor() {
+            super();
+
+            this.street = String;
+            this.city = String;
+            this.zipCode = Number;
+        }
+
+        static collectionName() {
+            return 'addresses';
+        }
+    }
+
+    class Pet extends Document {
+        constructor() {
+            super();
+
+            this.schema({
+                type: String,
+                name: String,
+            });
+        }
+    }
+
+    class User extends Document {
+        constructor() {
+            super();
+
+            this.schema({
+                firstName: String,
+                lastName: String,
+                pet: Pet,
+                address: Address
+            });
+        }
+    }
+
     describe('#loadOne()', function() {
         it('should load a single object from the collection', function(done) {
 
@@ -60,6 +100,102 @@ describe('Client', function() {
             }).then(function(d) {
                 validateId(d);
                 validateData1(d);
+            }).then(done, done);
+        });
+
+        it('should populate all fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return user.save();
+            }).then(function() {
+                validateId(user);
+                return User.loadOne({_id: user._id}, {populate: true});
+            }).then(function(u) {
+                expect(u.pet).to.be.an.instanceof(Pet);
+                expect(u.address).to.be.an.instanceof(Address);
+            }).then(done, done);
+        });
+
+        it('should not populate any fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return user.save();
+            }).then(function() {
+                validateId(user);
+                return User.loadOne({_id: user._id}, {populate: false});
+            }).then(function(u) {
+                expect(isNativeId(u.pet)).to.be.true;
+                expect(isNativeId(u.address)).to.be.true;
+            }).then(done, done);
+        });
+
+        it('should populate specified fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return user.save();
+            }).then(function() {
+                validateId(user);
+                return User.loadOne({_id: user._id}, {populate: ['pet']});
+            }).then(function(u) {
+                expect(u.pet).to.be.an.instanceof(Pet);
+                expect(isNativeId(u.address)).to.be.true;
             }).then(done, done);
         });
     });
@@ -219,6 +355,132 @@ describe('Client', function() {
                 expect(datas).to.have.length(1);
                 validateId(datas[0]);
                 expect(datas[0].number).to.be.equal(2);
+            }).then(done, done);
+        });
+
+        it('should populate all fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user1 = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            var user2 = User.create({
+                firstName: 'Sally',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return Promise.all([user1.save(), user2.save()]);
+            }).then(function() {
+                validateId(user1);
+                validateId(user2);
+                return User.loadMany({}, {populate: true});
+            }).then(function(users) {
+                expect(users[0].pet).to.be.an.instanceof(Pet);
+                expect(users[0].address).to.be.an.instanceof(Address);
+                expect(users[1].pet).to.be.an.instanceof(Pet);
+                expect(users[1].address).to.be.an.instanceof(Address);
+            }).then(done, done);
+        });
+
+        it('should not populate any fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user1 = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            var user2 = User.create({
+                firstName: 'Sally',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return Promise.all([user1.save(), user2.save()]);
+            }).then(function() {
+                validateId(user1);
+                validateId(user2);
+                return User.loadMany({}, {populate: false});
+            }).then(function(users) {
+                expect(isNativeId(users[0].pet)).to.be.true;
+                expect(isNativeId(users[0].address)).to.be.true;
+                expect(isNativeId(users[1].pet)).to.be.true;
+                expect(isNativeId(users[1].address)).to.be.true;
+            }).then(done, done);
+        });
+
+        it('should populate specified fields', function(done) {
+            var address = Address.create({
+                street: '123 Fake St.',
+                city: 'Cityville',
+                zipCode: 12345
+            });
+
+            var dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+            });
+
+            var user1 = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            var user2 = User.create({
+                firstName: 'Sally',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([address.save(), dog.save()]).then(function() {
+                validateId(address);
+                validateId(dog);
+                return Promise.all([user1.save(), user2.save()]);
+            }).then(function() {
+                validateId(user1);
+                validateId(user2);
+                return User.loadMany({}, {populate: ['pet']});
+            }).then(function(users) {
+                expect(users[0].pet).to.be.an.instanceof(Pet);
+                expect(isNativeId(users[0].address)).to.be.true;
+                expect(users[1].pet).to.be.an.instanceof(Pet);
+                expect(isNativeId(users[1].address)).to.be.true;
             }).then(done, done);
         });
     });

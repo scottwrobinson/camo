@@ -1,3 +1,57 @@
+## 0.11.3 (2015-12-29)
+Features:
+ - Added new `ValidationError` object
+Bugfixes:
+ - Improved some validation tests
+ - Fixed min validation
+ - Fixed validation for array of embedded documents
+ - Moved `collectionName` method to `BaseDocument` so `EmbeddedDocument` can use it ([#26](https://github.com/scottwrobinson/camo/issues/26)) 
+ - Deprecated `id` alias from document object ([#20](https://github.com/scottwrobinson/camo/issues/20))
+ - Fixed serialization test for MongoDB IDs
+
+## 0.11.2 (2015-12-15)
+Bugfixes:
+ - Fixed issue with running 'canonicalize' tests on travis-ci
+
+## 0.11.1 (2015-12-15)
+Bugfixes:
+ - Removed unused `harmony-reflect` dependency
+
+## 0.11.0 (2015-12-15)
+
+Features:
+ - `--harmony-proxies` flag is no longer required
+ - Class names now declared in `static collectionName()`. Declaration through constructor is depracated ([#16](https://github.com/scottwrobinson/camo/issues/16))
+ - Added new `required` schema property ([#18](https://github.com/scottwrobinson/camo/issues/18) and [#19](https://github.com/scottwrobinson/camo/pull/19))
+Bugfixes:
+ - Fixed some inconsistencies with `id` aliasing (partial fix to [#20](https://github.com/scottwrobinson/camo/issues/20))
+
+## 0.10.0 (2015-11-12)
+
+Features:
+ - Added support for setting the 'unique' index on a field
+ - Added support for specifying which reference fields should be populated in `loadOne()` and `loadMany()`
+Bugfixes:
+ - Fixed issue in `isNativeId` where we weren't returning a proper Boolean.
+
+## 0.9.1 (2015-11-06)
+
+Features:
+ - Added support for testing in travis-ci.org
+Bugfixes:
+ - Fixed issue #10 where IDs in queries had to be ObjectId. Now string IDs are automatically cast to ObjectId.
+
+## 0.9.0 (2015-10-30)
+
+Features:
+ - Added support for `sort` option on `.loadMany()`
+ - Added support for `limit` option on `.loadMany()`
+ - Added support for `skip` option on `.loadMany()`
+ - Added `.toJSON()` to `Document` and `EmbeddedDocument` for serialization
+ - Updated 'engines' property to '>=2.0.0' in package.json
+Bugfixes:
+ - Fixed issue #14 where `Document`s couldn't be initialized with an array of `EmbeddedDocument` objects via `.create()`
+
 ## 0.8.0 (2015-10-12)
 
 Features:

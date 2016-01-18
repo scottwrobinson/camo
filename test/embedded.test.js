@@ -7,6 +7,7 @@ var connect = require('../index').connect;
 var Document = require('../index').Document;
 var EmbeddedDocument = require('../index').EmbeddedDocument;
 var isDocument = require('../lib/validate').isDocument;
+var ValidationError = require('../lib/errors').ValidationError;
 var Data = require('./data');
 var getData1 = require('./util').data1;
 var getData2 = require('./util').data2;
@@ -52,7 +53,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.mod = EmbeddedModel;
                     this.num = { type: Number };
                 }
@@ -86,9 +87,13 @@ describe('Embedded', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('person');
+                    super();
                     this.limbs = [Limb];
                     this.name = String;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 
@@ -131,7 +136,7 @@ describe('Embedded', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.discount = Discount;
                 }
@@ -167,7 +172,7 @@ describe('Embedded', function() {
 
             class Product extends Document {
                 constructor() {
-                    super('products');
+                    super();
                     this.name = String;
                     this.discounts = [Discount];
                 }
@@ -211,7 +216,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.emb = EmbeddedModel;
                     this.num = { type: Number };
                 }
@@ -241,7 +246,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
                     this.contents = [Money];
                     this.owner = String;
                 }
@@ -266,7 +271,7 @@ describe('Embedded', function() {
         });
     });
 
-    describe('validation', function() {
+    describe('validate', function() {
 
         it('should validate embedded values', function(done) {
 
@@ -279,7 +284,7 @@ describe('Embedded', function() {
 
             class DocumentModel extends Document {
                 constructor() {
-                    super('documentmodel');
+                    super();
                     this.emb = EmbeddedModel;
                 }
             }
@@ -291,7 +296,8 @@ describe('Embedded', function() {
             data.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.message).to.contain('max');
             }).then(done, done);
         });
 
@@ -306,7 +312,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
                     this.contents = [Money];
                 }
             }
@@ -320,10 +326,61 @@ describe('Embedded', function() {
             wallet.save().then(function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
-                expect(error instanceof Error).to.be.true;
+                expect(error).to.be.instanceof(ValidationError);
+                expect(error.message).to.contain('choices');
             }).then(done, done);
         });
 
+    });
+
+    describe('canonicalize', function() {
+        it('should ensure timestamp dates are converted to Date objects', function(done) {
+            class Education extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.school = String;
+                    this.major = String;
+                    this.dateGraduated = Date;
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.gradSchool = Education;
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var now = new Date();
+
+            var person = Person.create({
+                gradSchool: {
+                    school: 'CMU',
+                    major: 'ECE',
+                    dateGraduated: now
+                }
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.gradSchool.school).to.be.equal('CMU');
+                expect(person.gradSchool.dateGraduated.getFullYear()).to.be.equal(now.getFullYear());
+                expect(person.gradSchool.dateGraduated.getHours()).to.be.equal(now.getHours());
+                expect(person.gradSchool.dateGraduated.getMinutes()).to.be.equal(now.getMinutes());
+                expect(person.gradSchool.dateGraduated.getMonth()).to.be.equal(now.getMonth());
+                expect(person.gradSchool.dateGraduated.getSeconds()).to.be.equal(now.getSeconds());
+            }).then(done, done);
+        });
     });
 
     describe('hooks', function() {
@@ -370,7 +427,7 @@ describe('Embedded', function() {
 
             class Cup extends Document {
                 constructor() {
-                    super('cup');
+                    super();
 
                     this.contents = Coffee;
                 }
@@ -443,7 +500,7 @@ describe('Embedded', function() {
 
             class Wallet extends Document {
                 constructor() {
-                    super('wallet');
+                    super();
 
                     this.contents = [Money];
                 }
@@ -491,13 +548,17 @@ describe('Embedded', function() {
 
             class Person extends Document {
                 constructor() {
-                    super('people');
+                    super();
 
                     this.name = String;
                     this.age = Number;
                     this.isAlive = Boolean;
                     this.children = [String];
                     this.address = Address;
+                }
+
+                static collectionName() {
+                    return 'people';
                 }
             }
 

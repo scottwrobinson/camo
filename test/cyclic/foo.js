@@ -5,7 +5,7 @@ var Bar = require('./bar');
 
 class Foo extends Document {
 	constructor() {
-		super('foo');
+		super();
 
 		this.bar = Bar;
 		this.num = Number;

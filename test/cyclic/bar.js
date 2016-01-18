@@ -5,7 +5,7 @@ var Document = require('../../index').Document;
 
 class Bar extends Document {
 	constructor() {
-		super('bar');
+		super();
 
 		this.foo = require('./foo');
 		this.num = Number;
