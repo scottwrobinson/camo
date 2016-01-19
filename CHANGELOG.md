@@ -1,3 +1,9 @@
+## 0.11.4 (2016-01-19)
+Bugfixes:
+ - Fixed issue with saving/loading deeply nested embedded documents ([#35](https://github.com/scottwrobinson/camo/issues/35))
+ - Removed `_id` and `_schema._id` from `EmbeddedDocument` class ([#31](https://github.com/scottwrobinson/camo/issues/31))
+ - Allow user to specify a custom _id ([#29](https://github.com/scottwrobinson/camo/issues/29))
+
 ## 0.11.3 (2015-12-29)
 Features:
  - Added new `ValidationError` object

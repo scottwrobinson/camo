@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var expect = require('chai').expect;
+var ObjectId = require('mongodb').ObjectId;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
 var validateId = require('./util').validateId;
@@ -30,7 +31,32 @@ describe('MongoClient', function() {
 
     after(function(done) {
         done();
-    }); 
+    });
+
+    describe('id', function() {
+        it('should allow custom _id values', function(done) {
+            class School extends Document {
+                constructor() {
+                    super();
+
+                    this.name = String;
+                }
+            }
+
+            var school = School.create();
+            school._id = new ObjectId('1234567890abcdef12345678');
+            school.name = 'Springfield Elementary';
+
+            school.save().then(function() {
+                validateId(school);
+                expect(school._id.toString()).to.be.equal('1234567890abcdef12345678');
+                return School.loadOne();
+            }).then(function(s) {
+                validateId(s);
+                expect(s._id.toString()).to.be.equal('1234567890abcdef12345678');
+            }).then(done, done);
+        });
+    });
 
     describe('query', function() {
         class User extends Document {

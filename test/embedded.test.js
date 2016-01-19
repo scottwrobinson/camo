@@ -41,6 +41,38 @@ describe('Embedded', function() {
         database.dropDatabase().then(function() {}).then(done, done);
     });
 
+    describe('general', function() {
+        it('should not have an _id', function(done) {
+
+            class EmbeddedModel extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.str = String;
+                }
+            }
+
+            class DocumentModel extends Document {
+                constructor() {
+                    super();
+                    this.mod = EmbeddedModel;
+                    this.num = { type: Number };
+                }
+            }
+
+            var data = DocumentModel.create();
+            data.mod = EmbeddedModel.create();
+            data.mod.str = 'some data';
+            data.num = 1;
+
+            data.save().then(function() {
+                expect(data.mod._id).to.be.undefined;
+                return DocumentModel.loadOne({ num: 1 });
+            }).then(function(d) {
+                expect(d.mod._id).to.be.undefined;
+            }).then(done, done);
+        });
+    });
+
     describe('types', function() {
         it('should allow embedded types', function(done) {
 
@@ -121,6 +153,52 @@ describe('Embedded', function() {
                 expect(p.limbs[1].type).to.be.equal('right arm');
                 expect(p.limbs[2].type).to.be.equal('left leg');
                 expect(p.limbs[3].type).to.be.equal('right leg');
+            }).then(done, done);
+        });
+
+        it('should save nested array of embeddeds', function(done) {
+            class Point extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.x = Number;
+                    this.y = Number;
+                }
+            }
+
+            class Polygon extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.points = [Point];
+                }
+            }
+
+            class WorldMap extends Document {
+                constructor() {
+                    super();
+                    this.polygons = [Polygon];
+                }
+            }
+
+            var map = WorldMap.create();
+            var polygon1 = Polygon.create();
+            var polygon2 = Polygon.create();
+            var point1 = Point.create({ x: 123.45, y: 678.90 });
+            var point2 = Point.create({ x: 543.21, y: 987.60 });
+
+            map.polygons.push(polygon1);
+            map.polygons.push(polygon2);
+            polygon2.points.push(point1);
+            polygon2.points.push(point2);
+
+            map.save().then(function() {
+                return WorldMap.loadOne();
+            }).then(function(m) {
+                expect(m.polygons).to.have.length(2);
+                expect(m.polygons[0]).to.be.instanceof(Polygon);
+                expect(m.polygons[1]).to.be.instanceof(Polygon);
+                expect(m.polygons[1].points).to.have.length(2);
+                expect(m.polygons[1].points[0]).to.be.instanceof(Point);
+                expect(m.polygons[1].points[1]).to.be.instanceof(Point);
             }).then(done, done);
         });
 
@@ -515,8 +593,8 @@ describe('Embedded', function() {
 
                 // Pre/post save and validate should be called
                 expect(preValidateCalled).to.be.equal(true);
-                expect(preSaveCalled).to.be.equal(true);
                 expect(postValidateCalled).to.be.equal(true);
+                expect(preSaveCalled).to.be.equal(true);
                 expect(postSaveCalled).to.be.equal(true);
                 
                 // Pre/post delete should not have been called yet
