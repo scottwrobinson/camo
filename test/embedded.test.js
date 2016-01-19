@@ -41,6 +41,38 @@ describe('Embedded', function() {
         database.dropDatabase().then(function() {}).then(done, done);
     });
 
+    describe('general', function() {
+        it('should not have an _id', function(done) {
+
+            class EmbeddedModel extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.str = String;
+                }
+            }
+
+            class DocumentModel extends Document {
+                constructor() {
+                    super();
+                    this.mod = EmbeddedModel;
+                    this.num = { type: Number };
+                }
+            }
+
+            var data = DocumentModel.create();
+            data.mod = EmbeddedModel.create();
+            data.mod.str = 'some data';
+            data.num = 1;
+
+            data.save().then(function() {
+                expect(data.mod._id).to.be.undefined;
+                return DocumentModel.loadOne({ num: 1 });
+            }).then(function(d) {
+                expect(d.mod._id).to.be.undefined;
+            }).then(done, done);
+        });
+    });
+
     describe('types', function() {
         it('should allow embedded types', function(done) {
 
