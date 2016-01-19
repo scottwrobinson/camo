@@ -91,6 +91,31 @@ describe('NeDbClient', function() {
         });
     });*/
 
+    describe('id', function() {
+        it('should allow custom _id values', function(done) {
+            class School extends Document {
+                constructor() {
+                    super();
+
+                    this.name = String;
+                }
+            }
+
+            var school = School.create();
+            school._id = '1234567890abcdef';
+            school.name = 'South Park Elementary';
+
+            school.save().then(function() {
+                validateId(school);
+                expect(school._id).to.be.equal('1234567890abcdef');
+                return School.loadOne();
+            }).then(function(s) {
+                validateId(s);
+                expect(s._id).to.be.equal('1234567890abcdef');
+            }).then(done, done);
+        });
+    });
+
     describe('indexes', function() {
         it('should reject documents with duplicate values in unique-indexed fields', function(done) {
             class User extends Document {
