@@ -673,7 +673,7 @@ describe('Document', function() {
 
             data.save().then(function() {
                 validateId(data);
-                expect(data.date).to.be.equal(date);
+                expect(data.date.valueOf()).to.be.equal(date.valueOf());
             }).then(done, done);
         });
 
@@ -1080,11 +1080,40 @@ describe('Document', function() {
 
             person.save().then(function() {
                 validateId(person);
-                expect(person.birthday.getFullYear()).to.be.equal(now.getFullYear());
-                expect(person.birthday.getHours()).to.be.equal(now.getHours());
-                expect(person.birthday.getMinutes()).to.be.equal(now.getMinutes());
-                expect(person.birthday.getMonth()).to.be.equal(now.getMonth());
-                expect(person.birthday.getSeconds()).to.be.equal(now.getSeconds());
+                expect(person.birthday.valueOf()).to.be.equal(now.valueOf());
+            }).then(done, done);
+        });
+
+        it('should ensure date strings are converted to Date objects', function(done) {
+
+            class Person extends Document {
+                constructor() {
+                    super();
+                    this.birthday = Date;
+                    this.graduationDate = Date;
+                    this.weddingDate = Date;
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+            }
+
+            var birthday = new Date(Date.UTC(2016, 1, 17, 5, 6, 8, 0));
+            var graduationDate = new Date(2016, 1, 17, 0, 0, 0, 0);
+            var weddingDate = new Date(2016, 1, 17, 0, 0, 0, 0);
+
+            var person = Person.create({
+                birthday: '2016-02-17T05:06:08+00:00',
+                graduationDate: 'February 17, 2016',
+                weddingDate: '2016/02/17'
+            });
+
+            person.save().then(function() {
+                validateId(person);
+                expect(person.birthday.valueOf()).to.be.equal(birthday.valueOf());
+                expect(person.graduationDate.valueOf()).to.be.equal(graduationDate.valueOf());
+                expect(person.weddingDate.valueOf()).to.be.equal(weddingDate.valueOf());
             }).then(done, done);
         });
     });
@@ -1228,7 +1257,7 @@ describe('Document', function() {
 
             person.save().then(function(savedPerson) {
                 validateId(person);
-                expect(savedPerson.birthDate).to.equal(myBirthDate);
+                expect(savedPerson.birthDate.valueOf()).to.equal(myBirthDate.valueOf());
             }).then(done, done);
         });
 
