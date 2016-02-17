@@ -14,6 +14,7 @@
   * <a href="#counting">Counting</a>
   * <a href="#hooks">Hooks</a>
   * <a href="#misc">Misc.</a>
+* <a href="#transpiler-support">Transpiler Support</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 **Note**: Please see the [CHANGELOG](https://github.com/scottwrobinson/camo/blob/master/CHANGELOG.md) for the latest API changes and bug fixes.
@@ -363,6 +364,15 @@ The code above shows a pre-delete hook that deletes all the employees of the com
 - `camo.getClient()`: Retrieves the Camo database client
 - `camo.getClient().driver()`: Retrieves the underlying database driver (`MongoClient` or a map of NeDB collections)
 - `Document.toJSON()`: Serializes the given document to just the data, which includes nested and referenced data
+
+## Transpiler Support
+While many transpilers won't have any problem with Camo, some need extra resources/plugins to work correctly:
+
+- Babel
+  - [babel-preset-camo](https://github.com/scottwrobinson/babel-preset-camo): Babel preset for all es2015 plugins supported by Camo
+- TypeScript
+  - [DefinitelyTyped/camo](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/camo): Camo declaration file (h/t [lucasmciruzzi](https://github.com/lucasmciruzzi))
+  - [IndefinitivelyTyped/camo](https://github.com/IndefinitivelyTyped/camo): Typings support for Camo (h/t [WorldMaker](https://github.com/WorldMaker))
 
 ## Copyright & License
 Copyright (c) 2015 Scott Robinson
