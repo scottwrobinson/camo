@@ -375,7 +375,7 @@ While many transpilers won't have any problem with Camo, some need extra resourc
   - [IndefinitivelyTyped/camo](https://github.com/IndefinitivelyTyped/camo): Typings support for Camo (h/t [WorldMaker](https://github.com/WorldMaker))
 
 ## Copyright & License
-Copyright (c) 2015 Scott Robinson
+Copyright (c) 2016 Scott Robinson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
