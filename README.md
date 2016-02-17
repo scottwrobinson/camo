@@ -14,7 +14,6 @@
   * <a href="#counting">Counting</a>
   * <a href="#hooks">Hooks</a>
   * <a href="#misc">Misc.</a>
-* <a href="#in-the-wild">In the Wild</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 **Note**: Please see the [CHANGELOG](https://github.com/scottwrobinson/camo/blob/master/CHANGELOG.md) for the latest API changes and bug fixes.
@@ -364,11 +363,6 @@ The code above shows a pre-delete hook that deletes all the employees of the com
 - `camo.getClient()`: Retrieves the Camo database client
 - `camo.getClient().driver()`: Retrieves the underlying database driver (`MongoClient` or a map of NeDB collections)
 - `Document.toJSON()`: Serializes the given document to just the data, which includes nested and referenced data
-
-## In the Wild
-Camo was created during the development of [Polymetrics](https://polymetrics.io/). It replaced the original models created with Mongoose, which ended up saving us a lot of time and headaches during design and testing.
-
-Are you using Camo in a public-facing app/website? [Let us know](mailto:s.w.robinson@gmail.com) and we'll post it here!
 
 ## Copyright & License
 Copyright (c) 2015 Scott Robinson
