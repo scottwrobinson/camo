@@ -251,110 +251,103 @@ describe('Client', function() {
     });
 
     describe('#loadMany()', function() {
+        class City extends Document {
+            constructor() {
+                super();
+
+                this.name = String;
+                this.population = Number;
+            }
+
+            static collectionName() {
+                return 'cities';
+            }
+        }
+
+        var Springfield, SouthPark, Quahog;
+
+        beforeEach(function(done) {
+            Springfield = City.create({
+                name: 'Springfield',
+                population: 30720
+            });
+
+            SouthPark = City.create({
+                name: 'South Park',
+                population: 4388
+            });
+
+            Quahog = City.create({
+                name: 'Quahog',
+                population: 800
+            });
+
+            Promise.all([Springfield.save(), SouthPark.save(), Quahog.save()])
+            .then(function() {
+                validateId(Springfield);
+                validateId(SouthPark);
+                validateId(Quahog);
+                done();
+            }); 
+        });
+
         it('should load multiple objects from the collection', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-
-                if (datas[0].number === 1) {
-                    validateData1(datas[0]);
-                    validateData2(datas[1]);
-                } else {
-                    validateData1(datas[1]);
-                    validateData2(datas[0]);
-                }
+            City.loadMany({}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
             }).then(done, done);
         });
 
         it('should load all objects when query is not provided', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany();
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
+            City.loadMany().then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
             }).then(done, done);
         });
 
         it('should sort results in ascending order', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: 'number'});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-                expect(datas[0].number).to.be.equal(1);
-                expect(datas[1].number).to.be.equal(2);
+            City.loadMany({}, {sort: 'population'}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                expect(cities[0].population).to.be.equal(800);
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[2].population).to.be.equal(30720);
             }).then(done, done);
         });
 
         it('should sort results in descending order', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: '-number'});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-                expect(datas[0].number).to.be.equal(2);
-                expect(datas[1].number).to.be.equal(1);
+            City.loadMany({}, {sort: '-population'}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                expect(cities[0].population).to.be.equal(30720);
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[2].population).to.be.equal(800);
             }).then(done, done);
         });
 
         it('should limit number of results returned', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {limit: 1});
-            }).then(function(datas) {
-                expect(datas).to.have.length(1);
-                validateId(datas[0]);
+            City.loadMany({}, {limit: 2}).then(function(cities) {
+                expect(cities).to.have.length(2);
+                validateId(cities[0]);
+                validateId(cities[1]);
             }).then(done, done);
         });
 
         it('should skip given number of results', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: 'number', skip: 1});
-            }).then(function(datas) {
-                expect(datas).to.have.length(1);
-                validateId(datas[0]);
-                expect(datas[0].number).to.be.equal(2);
+            City.loadMany({}, {sort: 'population', skip: 1}).then(function(cities) {
+                expect(cities).to.have.length(2);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                expect(cities[0].population).to.be.equal(4388);
+                expect(cities[1].population).to.be.equal(30720);
             }).then(done, done);
         });
 
