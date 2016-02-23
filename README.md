@@ -107,10 +107,10 @@ Notice how the schema is declared right in the constructor as member variables. 
 
 The name of the collection can be set by overriding the `static collectionName()` method, which should return the desired collection name as a string. If one isn't given, then Camo uses the name of the class and naively appends an 's' to the end to make it plural.
 
-Schemas can also be defined using the `schema()` method. For example, in the `constructor()` method you could use:
+Schemas can also be defined using the `this.schema()` method. For example, in the `constructor()` method you could use:
 
 ```javascript
-schema({
+this.schema({
     name: String,
     valuation: {
         type: Number,
