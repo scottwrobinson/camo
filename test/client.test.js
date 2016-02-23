@@ -333,6 +333,39 @@ describe('Client', function() {
             }).then(done, done);
         });
 
+        it('should sort results using multiple keys', function(done) {
+            var AlphaVille = City.create({
+                name: 'Alphaville',
+                population: 4388
+            });
+
+            var BetaTown = City.create({
+                name: 'Beta Town',
+                population: 4388
+            });
+
+            Promise.all([AlphaVille.save(), BetaTown.save()]).then(function() {
+                return City.loadMany({}, {sort: ['population', '-name']});
+            }).then(function(cities) {
+                expect(cities).to.have.length(5);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                validateId(cities[3]);
+                validateId(cities[4]);
+                expect(cities[0].population).to.be.equal(800);
+                expect(cities[0].name).to.be.equal('Quahog');
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[1].name).to.be.equal('South Park');
+                expect(cities[2].population).to.be.equal(4388);
+                expect(cities[2].name).to.be.equal('Beta Town');
+                expect(cities[3].population).to.be.equal(4388);
+                expect(cities[3].name).to.be.equal('Alphaville');
+                expect(cities[4].population).to.be.equal(30720);
+                expect(cities[4].name).to.be.equal('Springfield');
+            }).then(done, done);
+        });
+
         it('should limit number of results returned', function(done) {
             City.loadMany({}, {limit: 2}).then(function(cities) {
                 expect(cities).to.have.length(2);
