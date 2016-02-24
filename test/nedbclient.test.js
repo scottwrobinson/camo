@@ -108,7 +108,7 @@ describe('NeDbClient', function() {
             school.save().then(function() {
                 validateId(school);
                 expect(school._id).to.be.equal('1234567890abcdef');
-                return School.loadOne();
+                return School.findOne();
             }).then(function(s) {
                 validateId(s);
                 expect(s._id).to.be.equal('1234567890abcdef');

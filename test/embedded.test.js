@@ -66,7 +66,7 @@ describe('Embedded', function() {
 
             data.save().then(function() {
                 expect(data.mod._id).to.be.undefined;
-                return DocumentModel.loadOne({ num: 1 });
+                return DocumentModel.findOne({ num: 1 });
             }).then(function(d) {
                 expect(d.mod._id).to.be.undefined;
             }).then(done, done);
@@ -98,7 +98,7 @@ describe('Embedded', function() {
 
             data.save().then(function() {
                 validateId(data);
-                return DocumentModel.loadOne({ num: 1 });
+                return DocumentModel.findOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
                 expect(d.num).to.be.equal(1);
@@ -143,7 +143,7 @@ describe('Embedded', function() {
             person.save().then(function() {
                 validateId(person);
                 expect(person.limbs).to.have.length(4);
-                return Person.loadOne({ name: 'Scott' });
+                return Person.findOne({ name: 'Scott' });
             }).then(function(p) {
                 validateId(p);
                 expect(p.name).to.be.equal('Scott');
@@ -191,7 +191,7 @@ describe('Embedded', function() {
             polygon2.points.push(point2);
 
             map.save().then(function() {
-                return WorldMap.loadOne();
+                return WorldMap.findOne();
             }).then(function(m) {
                 expect(m.polygons).to.have.length(2);
                 expect(m.polygons[0]).to.be.instanceof(Polygon);
@@ -306,7 +306,7 @@ describe('Embedded', function() {
 
             data.save().then(function() {
                 validateId(data);
-                return DocumentModel.loadOne({ num: 1 });
+                return DocumentModel.findOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
                 expect(d.emb.str).to.be.equal('hello');
@@ -338,7 +338,7 @@ describe('Embedded', function() {
 
             wallet.save().then(function() {
                 validateId(wallet);
-                return Wallet.loadOne({ owner: 'Scott' });
+                return Wallet.findOne({ owner: 'Scott' });
             }).then(function(w) {
                 validateId(w);
                 expect(w.owner).to.be.equal('Scott');

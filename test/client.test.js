@@ -89,14 +89,14 @@ describe('Client', function() {
         }
     }
 
-    describe('#loadOne()', function() {
+    describe('#findOne()', function() {
         it('should load a single object from the collection', function(done) {
 
             var data = getData1();
 
             data.save().then(function() {
                 validateId(data);
-                return Data.loadOne({item:99});
+                return Data.findOne({item:99});
             }).then(function(d) {
                 validateId(d);
                 validateData1(d);
@@ -128,7 +128,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user._id}, {populate: true});
+                return User.findOne({_id: user._id}, {populate: true});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
                 expect(u.address).to.be.an.instanceof(Address);
@@ -160,7 +160,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user._id}, {populate: false});
+                return User.findOne({_id: user._id}, {populate: false});
             }).then(function(u) {
                 expect(isNativeId(u.pet)).to.be.true;
                 expect(isNativeId(u.address)).to.be.true;
@@ -192,7 +192,7 @@ describe('Client', function() {
                 return user.save();
             }).then(function() {
                 validateId(user);
-                return User.loadOne({_id: user._id}, {populate: ['pet']});
+                return User.findOne({_id: user._id}, {populate: ['pet']});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
                 expect(isNativeId(u.address)).to.be.true;
@@ -200,14 +200,14 @@ describe('Client', function() {
         });
     });
 
-    describe('#loadOneAndUpdate()', function() {
+    describe('#findOneAndUpdate()', function() {
         it('should load and update a single object from the collection', function(done) {
 
             var data = getData1();
 
             data.save().then(function() {
                 validateId(data);
-                return Data.loadOneAndUpdate({number: 1}, {source: 'wired'});
+                return Data.findOneAndUpdate({number: 1}, {source: 'wired'});
             }).then(function(d) {
                 validateId(d);
                 expect(d.number).to.equal(1);
@@ -216,13 +216,13 @@ describe('Client', function() {
         });
 
         it('should insert a single object to the collection', function(done) {
-            Data.loadOne({number: 1}).then(function(d) {
+            Data.findOne({number: 1}).then(function(d) {
                 expect(d).to.be.null;
-                return Data.loadOneAndUpdate({number: 1}, {number: 1}, {upsert: true});
+                return Data.findOneAndUpdate({number: 1}, {number: 1}, {upsert: true});
             }).then(function(data) {
                 validateId(data);
                 expect(data.number).to.equal(1);
-                return Data.loadOne({number: 1});
+                return Data.findOne({number: 1});
             }).then(function(d) {
                 validateId(d);
                 expect(d.number).to.equal(1);
@@ -230,7 +230,7 @@ describe('Client', function() {
         });
     });
 
-    describe('#loadOneAndDelete()', function() {
+    describe('#findOneAndDelete()', function() {
         it('should load and delete a single object from the collection', function(done) {
 
             var data = getData1();
@@ -240,7 +240,7 @@ describe('Client', function() {
                 return Data.count({ number: 1 });
             }).then(function(count) {
                 expect(count).to.be.equal(1);
-                return Data.loadOneAndDelete({number: 1});
+                return Data.findOneAndDelete({number: 1});
             }).then(function(numDeleted) {
                 expect(numDeleted).to.equal(1);
                 return Data.count({ number: 1 });
@@ -250,111 +250,137 @@ describe('Client', function() {
         });
     });
 
-    describe('#loadMany()', function() {
+    describe('#find()', function() {
+        class City extends Document {
+            constructor() {
+                super();
+
+                this.name = String;
+                this.population = Number;
+            }
+
+            static collectionName() {
+                return 'cities';
+            }
+        }
+
+        var Springfield, SouthPark, Quahog;
+
+        beforeEach(function(done) {
+            Springfield = City.create({
+                name: 'Springfield',
+                population: 30720
+            });
+
+            SouthPark = City.create({
+                name: 'South Park',
+                population: 4388
+            });
+
+            Quahog = City.create({
+                name: 'Quahog',
+                population: 800
+            });
+
+            Promise.all([Springfield.save(), SouthPark.save(), Quahog.save()])
+            .then(function() {
+                validateId(Springfield);
+                validateId(SouthPark);
+                validateId(Quahog);
+                done();
+            }); 
+        });
+
         it('should load multiple objects from the collection', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-
-                if (datas[0].number === 1) {
-                    validateData1(datas[0]);
-                    validateData2(datas[1]);
-                } else {
-                    validateData1(datas[1]);
-                    validateData2(datas[0]);
-                }
+            City.find({}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
             }).then(done, done);
         });
 
         it('should load all objects when query is not provided', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany();
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
+            City.find().then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
             }).then(done, done);
         });
 
         it('should sort results in ascending order', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: 'number'});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-                expect(datas[0].number).to.be.equal(1);
-                expect(datas[1].number).to.be.equal(2);
+            City.find({}, {sort: 'population'}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                expect(cities[0].population).to.be.equal(800);
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[2].population).to.be.equal(30720);
             }).then(done, done);
         });
 
         it('should sort results in descending order', function(done) {
+            City.find({}, {sort: '-population'}).then(function(cities) {
+                expect(cities).to.have.length(3);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                expect(cities[0].population).to.be.equal(30720);
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[2].population).to.be.equal(800);
+            }).then(done, done);
+        });
 
-            var data1 = getData1();
-            var data2 = getData2();
+        it('should sort results using multiple keys', function(done) {
+            var AlphaVille = City.create({
+                name: 'Alphaville',
+                population: 4388
+            });
 
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: '-number'});
-            }).then(function(datas) {
-                expect(datas).to.have.length(2);
-                validateId(datas[0]);
-                validateId(datas[1]);
-                expect(datas[0].number).to.be.equal(2);
-                expect(datas[1].number).to.be.equal(1);
+            var BetaTown = City.create({
+                name: 'Beta Town',
+                population: 4388
+            });
+
+            Promise.all([AlphaVille.save(), BetaTown.save()]).then(function() {
+                return City.find({}, {sort: ['population', '-name']});
+            }).then(function(cities) {
+                expect(cities).to.have.length(5);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                validateId(cities[2]);
+                validateId(cities[3]);
+                validateId(cities[4]);
+                expect(cities[0].population).to.be.equal(800);
+                expect(cities[0].name).to.be.equal('Quahog');
+                expect(cities[1].population).to.be.equal(4388);
+                expect(cities[1].name).to.be.equal('South Park');
+                expect(cities[2].population).to.be.equal(4388);
+                expect(cities[2].name).to.be.equal('Beta Town');
+                expect(cities[3].population).to.be.equal(4388);
+                expect(cities[3].name).to.be.equal('Alphaville');
+                expect(cities[4].population).to.be.equal(30720);
+                expect(cities[4].name).to.be.equal('Springfield');
             }).then(done, done);
         });
 
         it('should limit number of results returned', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {limit: 1});
-            }).then(function(datas) {
-                expect(datas).to.have.length(1);
-                validateId(datas[0]);
+            City.find({}, {limit: 2}).then(function(cities) {
+                expect(cities).to.have.length(2);
+                validateId(cities[0]);
+                validateId(cities[1]);
             }).then(done, done);
         });
 
         it('should skip given number of results', function(done) {
-
-            var data1 = getData1();
-            var data2 = getData2();
-
-            Promise.all([data1.save(), data2.save()]).then(function() {
-                validateId(data1);
-                validateId(data2);
-                return Data.loadMany({}, {sort: 'number', skip: 1});
-            }).then(function(datas) {
-                expect(datas).to.have.length(1);
-                validateId(datas[0]);
-                expect(datas[0].number).to.be.equal(2);
+            City.find({}, {sort: 'population', skip: 1}).then(function(cities) {
+                expect(cities).to.have.length(2);
+                validateId(cities[0]);
+                validateId(cities[1]);
+                expect(cities[0].population).to.be.equal(4388);
+                expect(cities[1].population).to.be.equal(30720);
             }).then(done, done);
         });
 
@@ -391,7 +417,7 @@ describe('Client', function() {
             }).then(function() {
                 validateId(user1);
                 validateId(user2);
-                return User.loadMany({}, {populate: true});
+                return User.find({}, {populate: true});
             }).then(function(users) {
                 expect(users[0].pet).to.be.an.instanceof(Pet);
                 expect(users[0].address).to.be.an.instanceof(Address);
@@ -433,7 +459,7 @@ describe('Client', function() {
             }).then(function() {
                 validateId(user1);
                 validateId(user2);
-                return User.loadMany({}, {populate: false});
+                return User.find({}, {populate: false});
             }).then(function(users) {
                 expect(isNativeId(users[0].pet)).to.be.true;
                 expect(isNativeId(users[0].address)).to.be.true;
@@ -475,7 +501,7 @@ describe('Client', function() {
             }).then(function() {
                 validateId(user1);
                 validateId(user2);
-                return User.loadMany({}, {populate: ['pet']});
+                return User.find({}, {populate: ['pet']});
             }).then(function(users) {
                 expect(users[0].pet).to.be.an.instanceof(Pet);
                 expect(isNativeId(users[0].address)).to.be.true;
@@ -525,7 +551,7 @@ describe('Client', function() {
                 return data.delete();
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(1);
-                return Data.loadOne({item:99});
+                return Data.findOne({item:99});
             }).then(function(d) {
                 expect(d).to.be.null;
             }).then(done, done);
@@ -542,7 +568,7 @@ describe('Client', function() {
                 return Data.deleteOne({number: 1});
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(1);
-                return Data.loadOne({number: 1});
+                return Data.findOne({number: 1});
             }).then(function(d) {
                 expect(d).to.be.null;
             }).then(done, done);
@@ -561,7 +587,7 @@ describe('Client', function() {
                 return Data.deleteMany({});
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(2);
-                return Data.loadMany({});
+                return Data.find({});
             }).then(function(datas) {
                 expect(datas).to.have.length(0);
             }).then(done, done);
@@ -578,7 +604,7 @@ describe('Client', function() {
                 return Data.deleteMany();
             }).then(function(numDeleted) {
                 expect(numDeleted).to.be.equal(2);
-                return Data.loadMany({});
+                return Data.find({});
             }).then(function(datas) {
                 expect(datas).to.have.length(0);
             }).then(done, done);
@@ -596,7 +622,7 @@ describe('Client', function() {
                 validateId(data2);
                 return Data.clearCollection();
             }).then(function() {
-                return Data.loadMany();
+                return Data.find();
             }).then(function(datas) {
                 expect(datas).to.have.length(0);
             }).then(done, done);

@@ -14,7 +14,7 @@
   * <a href="#counting">Counting</a>
   * <a href="#hooks">Hooks</a>
   * <a href="#misc">Misc.</a>
-* <a href="#in-the-wild">In the Wild</a>
+* <a href="#transpiler-support">Transpiler Support</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 **Note**: Please see the [CHANGELOG](https://github.com/scottwrobinson/camo/blob/master/CHANGELOG.md) for the latest API changes and bug fixes.
@@ -48,7 +48,7 @@ And at least ONE of the following:
 	npm install mongodb --save
 
 ## Quick Start
-Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries and ODMs. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (load, save, delete, etc) will return a Promise. No more callback hell :)
+Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries and ODMs. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (find, save, delete, etc) will return a Promise. No more callback hell :)
 
 For a short tutorial on using Camo, check out [this](http://stackabuse.com/getting-started-with-camo/) article.
 
@@ -107,10 +107,10 @@ Notice how the schema is declared right in the constructor as member variables. 
 
 The name of the collection can be set by overriding the `static collectionName()` method, which should return the desired collection name as a string. If one isn't given, then Camo uses the name of the class and naively appends an 's' to the end to make it plural.
 
-Schemas can also be defined using the `schema()` method. For example, in the `constructor()` method you could use:
+Schemas can also be defined using the `this.schema()` method. For example, in the `constructor()` method you could use:
 
 ```javascript
-schema({
+this.schema({
     name: String,
     valuation: {
         type: Number,
@@ -250,44 +250,45 @@ Once a document is saved, it will automatically be assigned a unique identifier 
 
 If you specified a default value (or function) for a schema variable, that value will be assigned on creation of the object.
 
-An alternative to `.save()` is `.loadOneAndUpdate(query, update, options)`. This static method will find and update (or insert) a document in one atomic operation (atomicity is guaranteed in MongoDB only). Using the `{upsert: true}` option will return a new document if one is not found with the given query.
+An alternative to `.save()` is `.findOneAndUpdate(query, update, options)`. This static method will find and update (or insert) a document in one atomic operation (atomicity is guaranteed in MongoDB only). Using the `{upsert: true}` option will return a new document if one is not found with the given query.
 
 ### Loading
-Both the load and delete methods following closely (but not always exactly) to the MongoDB API, so it should feel fairly familiar.
+Both the find and delete methods following closely (but not always exactly) to the MongoDB API, so it should feel fairly familiar.
 
 If querying an object by `id`, you _must_ use `_id` and **not** `id`.
 
 To retrieve an object, you have a few methods available to you.
 
-- `.loadOne(query, options)` (static method)
-- `.loadMany(query, options)` (static method)
+- `.findOne(query, options)` (static method)
+- `.find(query, options)` (static method)
 
-The `.loadOne()` method will return the first document found, even if multiple documents match the query. `.loadMany()` will return all documents matching the query. Each should be called as static methods on the document type you want to load.
+The `.findOne()` method will return the first document found, even if multiple documents match the query. `.findMany()` will return all documents matching the query. Each should be called as static methods on the document type you want to load.
 
 ```javascript
-Dog.loadOne({ name: 'Lassie' }).then(function(l) {
+Dog.findOne({ name: 'Lassie' }).then(function(l) {
 	console.log('Got Lassie!');
 	console.log('Her unique ID is', l.id);
 });
 ```
 
-`.loadOne()` currently accepts the following option:
+`.findOne()` currently accepts the following option:
 
 - `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
-  - `Person.loadOne({name: 'Billy'}, {populate: true})` populates all references in `Person` object
-  - `Person.loadOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+  - `Person.findOne({name: 'Billy'}, {populate: true})` populates all references in `Person` object
+  - `Person.findOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
 
-`.loadMany()` currently accepts the following options:
+`.find()` currently accepts the following options:
 
 - `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
-  - `Person.loadMany({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
-  - `Person.loadMany({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
-- `sort`: Sort the documents by the given field
-  - `Person.loadMany({}, {sort: '-age'})` sorts by age in descending order
+  - `Person.find({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
+  - `Person.find({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+- `sort`: Sort the documents by the given field(s)
+  - `Person.find({}, {sort: '-age'})` sorts by age in descending order
+  - `Person.find({}, {sort: ['age', 'name']})` sorts by ascending age and then name, alphabetically
 - `limit`: Limits the number of documents returned
-  - `Person.loadMany({}, {limit: 5})` returns a maximum of 5 `Person` objects
+  - `Person.find({}, {limit: 5})` returns a maximum of 5 `Person` objects
 - `skip`: Skips the given number of documents and returns the rest
-  - `Person.loadMany({}, {skip: 5})` skips the first 5 `Person` objects and returns all others
+  - `Person.find({}, {skip: 5})` skips the first 5 `Person` objects and returns all others
 
 ### Deleting
 To remove documents fromt the database, use one of the following:
@@ -295,7 +296,7 @@ To remove documents fromt the database, use one of the following:
 - `.delete()`
 - `.deleteOne(query, options)` (static method)
 - `.deleteMany(query, options)` (static method)
-- `.loadOneAndDelete(query, options)` (static method)
+- `.findOneAndDelete(query, options)` (static method)
 
 The `.delete()` method should only be used on an instantiated document with a valid `id`. The other three methods should be used on the class of the document(s) you want to delete.
 
@@ -365,13 +366,17 @@ The code above shows a pre-delete hook that deletes all the employees of the com
 - `camo.getClient().driver()`: Retrieves the underlying database driver (`MongoClient` or a map of NeDB collections)
 - `Document.toJSON()`: Serializes the given document to just the data, which includes nested and referenced data
 
-## In the Wild
-Camo was created during the development of [Polymetrics](https://polymetrics.io/). It replaced the original models created with Mongoose, which ended up saving us a lot of time and headaches during design and testing.
+## Transpiler Support
+While many transpilers won't have any problem with Camo, some need extra resources/plugins to work correctly:
 
-Are you using Camo in a public-facing app/website? [Let us know](mailto:s.w.robinson@gmail.com) and we'll post it here!
+- Babel
+  - [babel-preset-camo](https://github.com/scottwrobinson/babel-preset-camo): Babel preset for all es2015 plugins supported by Camo
+- TypeScript
+  - [DefinitelyTyped/camo](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/camo): Camo declaration file (h/t [lucasmciruzzi](https://github.com/lucasmciruzzi))
+  - [IndefinitivelyTyped/camo](https://github.com/IndefinitivelyTyped/camo): Typings support for Camo (h/t [WorldMaker](https://github.com/WorldMaker))
 
 ## Copyright & License
-Copyright (c) 2015 Scott Robinson
+Copyright (c) 2016 Scott Robinson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
