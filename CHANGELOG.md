@@ -1,3 +1,12 @@
+## 0.12.0 (2016-02-24)
+Features:
+ - Added support for sorting with multiple keys ([#22](https://github.com/scottwrobinson/camo/issues/22))
+ - Added support for accepting strings as Dates ([#46](https://github.com/scottwrobinson/camo/issues/46))
+ - Deprecated `loadMany`, `loadOne`, `loadOneAndUpdate`, and `loadOneAndDelete` in favor of `find`, `findOne`, `findOneAndUpdate`, and `findOneAndDelete`, respectively ([#37](https://github.com/scottwrobinson/camo/issues/37))
+ - Added documentation on transpiler support for Camo
+Bugfixes:
+ - Changed 'schema({})' to 'this.schema({})' in README since original throws ReferenceError ([#52](https://github.com/scottwrobinson/camo/issues/52))
+
 ## 0.11.4 (2016-01-19)
 Bugfixes:
  - Fixed issue with saving/loading deeply nested embedded documents ([#35](https://github.com/scottwrobinson/camo/issues/35))
