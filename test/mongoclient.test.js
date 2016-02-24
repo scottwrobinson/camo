@@ -50,7 +50,7 @@ describe('MongoClient', function() {
             school.save().then(function() {
                 validateId(school);
                 expect(school._id.toString()).to.be.equal('1234567890abcdef12345678');
-                return School.loadOne();
+                return School.findOne();
             }).then(function(s) {
                 validateId(s);
                 expect(s._id.toString()).to.be.equal('1234567890abcdef12345678');
@@ -81,7 +81,7 @@ describe('MongoClient', function() {
                 validateId(user);
 
                 var id = String(user._id);
-                return User.loadOne({_id: id});
+                return User.findOne({_id: id});
             }).then(function(u) {
                 validateId(u);
             }).then(done, done);
@@ -99,7 +99,7 @@ describe('MongoClient', function() {
             user.save().then(function() {
                 validateId(user);
 
-                return User.loadOne({_id: user._id});
+                return User.findOne({_id: user._id});
             }).then(function(u) {
                 validateId(u);
             }).then(done, done);
@@ -128,7 +128,7 @@ describe('MongoClient', function() {
 
                 var id1 = String(user1._id);
                 var id3 = String(user3._id);
-                return User.loadMany({ _id: { '$in': [ id1, id3 ] } });
+                return User.find({ _id: { '$in': [ id1, id3 ] } });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
@@ -159,7 +159,7 @@ describe('MongoClient', function() {
 
                 var id1 = String(user1._id);
                 var id3 = String(user3._id);
-                return User.loadMany({ $or: [ {_id: id1 }, {_id: id3 } ] });
+                return User.find({ $or: [ {_id: id1 }, {_id: id3 } ] });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 

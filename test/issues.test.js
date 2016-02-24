@@ -41,7 +41,7 @@ describe('Issues', function() {
              * object's arrays contain the same reference.
 
              * In this case, both user1 and user2 have a reference to eye1. So
-             * when we call `.loadMany()`, both user1 and user2 will have a
+             * when we call `.find()`, both user1 and user2 will have a
              * duplicate reference to eye1, which is not correct.
              */
 
@@ -79,7 +79,7 @@ describe('Issues', function() {
                 return user2.save();
             }).then(function(u) {
                 validateId(u);
-                return User.loadMany({});
+                return User.find({});
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
@@ -134,7 +134,7 @@ describe('Issues', function() {
                 return user.save();
             }).then(function(u) {
                 validateId(u);
-                return User.loadMany({});
+                return User.find({});
             }).then(function(users) {
                 expect(users).to.have.length(1);
                 expect(users[0].eyes).to.have.length(2);
@@ -213,12 +213,12 @@ describe('Issues', function() {
                 expect(user._id).to.exist;
 
                 // Should NOT be able to use 'id' to query
-                return User.loadOne({ id: user._id });
+                return User.findOne({ id: user._id });
             }).then(function(u) {
                 expect(u).to.not.exist;
 
                 // SHOULD be able to use '_id' to query
-                return User.loadOne({ _id: user._id });
+                return User.findOne({ _id: user._id });
             }).then(function(u) {
                 //expect(u.id).to.not.exist;
                 expect(u).to.exist;

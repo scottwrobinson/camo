@@ -371,7 +371,7 @@ describe('Document', function() {
                 return data.save();
             }).then(function() {
                 validateId(data);
-                return ReferencerModel.loadOne({ num: 1 });
+                return ReferencerModel.findOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
                 validateId(d.ref);
@@ -420,7 +420,7 @@ describe('Document', function() {
                 return data.save();
             }).then(function() {
                 validateId(data);
-                return ReferencerModel.loadOne({ num: 1 });
+                return ReferencerModel.findOne({ num: 1 });
             }).then(function(d) {
                 validateId(d);
                 validateId(d.refs[0]);
@@ -475,7 +475,7 @@ describe('Document', function() {
                 data.ref2 = ref2._id;
                 return data.save();
             }).then(function() {
-                return ReferencerModel.loadOne({num: 1});
+                return ReferencerModel.findOne({num: 1});
             }).then(function(d) {
                 validateId(d.ref1);
                 validateId(d.ref2);
@@ -526,7 +526,7 @@ describe('Document', function() {
                 data.refs.push(ref2._id);
                 return data.save();
             }).then(function() {
-                return ReferencerModel.loadOne({num: 1});
+                return ReferencerModel.findOne({num: 1});
             }).then(function(d) {
                 validateId(d.refs[0]);
                 validateId(d.refs[1]);
@@ -580,7 +580,7 @@ describe('Document', function() {
                 validateId(boss.employees[0]);
                 validateId(boss.employees[0].boss);
 
-                return Boss.loadOne({ salary: 10000000 });
+                return Boss.findOne({ salary: 10000000 });
             }).then(function(b) {
                 // If we had an issue with an infinite loop
                 // of loading circular dependencies then the
@@ -592,7 +592,7 @@ describe('Document', function() {
                 // Validate that boss employee ref was loaded
                 validateId(b.employees[0]);
 
-                // .loadOne should have only loaded 1 level
+                // .findOne should have only loaded 1 level
                 // of references, so the boss's reference
                 // to the employee is still the ID.
                 expect(b.employees[0].boss).to.not.be.null;
@@ -840,7 +840,7 @@ describe('Document', function() {
 
             person.save().then(function() {
                 validateId(person);
-                return Person.loadOne({name: 'Scott'});
+                return Person.findOne({name: 'Scott'});
             }).then(function(p) {
                 validateId(p);
                 expect(p.name).to.be.equal('Scott');

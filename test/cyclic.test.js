@@ -50,13 +50,13 @@ describe('Cyclic', function() {
                 f.bar = b;
                 return f.save();
             }).then(function(foo) {
-                return Foo.loadOne({ num: 26 });
+                return Foo.findOne({ num: 26 });
             }).then(function(foo) {
                 validateId(foo);
                 validateId(foo.bar);
                 expect(foo.num).to.be.equal(26);
                 expect(foo.bar.num).to.be.equal(99);
-                return Bar.loadOne({ num: 99 });
+                return Bar.findOne({ num: 99 });
             }).then(function(bar) {
                 validateId(bar);
                 validateId(bar.foo);
