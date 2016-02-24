@@ -282,8 +282,9 @@ Dog.findOne({ name: 'Lassie' }).then(function(l) {
 - `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
   - `Person.find({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
   - `Person.find({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
-- `sort`: Sort the documents by the given field
+- `sort`: Sort the documents by the given field(s)
   - `Person.find({}, {sort: '-age'})` sorts by age in descending order
+  - `Person.find({}, {sort: ['age', 'name']})` sorts by ascending age and then name, alphabetically
 - `limit`: Limits the number of documents returned
   - `Person.find({}, {limit: 5})` returns a maximum of 5 `Person` objects
 - `skip`: Skips the given number of documents and returns the rest
