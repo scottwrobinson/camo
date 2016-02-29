@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
+var ValidationError = require('../lib/errors').ValidationError;
 var validateId = require('./util').validateId;
 
 describe('Issues', function() {
@@ -223,6 +224,69 @@ describe('Issues', function() {
                 //expect(u.id).to.not.exist;
                 expect(u).to.exist;
                 validateId(user);
+            }).then(done, done);
+        });
+    });
+
+    describe('#53', function() {
+        /* 
+         * Camo should validate that all properties conform to
+         * the type they were given in the schema. However,
+         * array types are not properly validated due to not
+         * properly checking for 'type === Array' and 
+         * 'type === []' in validator code.
+         */
+
+        it('should validate Array types properly', function(done) {
+            class Foo extends Document {
+                constructor() {
+                    super();
+
+                    this.bar = Array;
+                }
+            }
+
+            var foo = Foo.create({bar: [1, 2, 3]});
+
+            foo.save().then(function(f) {
+                expect(f.bar).to.have.length(3);
+                expect(f.bar).to.include(1);
+                expect(f.bar).to.include(2);
+                expect(f.bar).to.include(3);
+
+                foo.bar = 1;
+                return foo.save();
+            }).then(function(f){
+                expect.fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expect(error).to.be.instanceof(ValidationError);
+            }).then(done, done);
+        });
+
+        it('should validate [] types properly', function(done) {
+
+            class Foo extends Document {
+                constructor() {
+                    super();
+
+                    this.bar = [];
+                }
+            }
+
+            var foo = Foo.create({bar: [1, 2, 3]});
+
+            foo.save().then(function(f) {
+                expect(f.bar).to.have.length(3);
+                expect(f.bar).to.include(1);
+                expect(f.bar).to.include(2);
+                expect(f.bar).to.include(3);
+
+                foo.bar = 2;
+                return foo.save();
+            }).then(function(f){
+                expect.fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expect(error).to.be.instanceof(ValidationError);
             }).then(done, done);
         });
     });
