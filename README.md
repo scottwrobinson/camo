@@ -262,7 +262,7 @@ To retrieve an object, you have a few methods available to you.
 - `.findOne(query, options)` (static method)
 - `.find(query, options)` (static method)
 
-The `.findOne()` method will return the first document found, even if multiple documents match the query. `.findMany()` will return all documents matching the query. Each should be called as static methods on the document type you want to load.
+The `.findOne()` method will return the first document found, even if multiple documents match the query. `.find()` will return all documents matching the query. Each should be called as static methods on the document type you want to load.
 
 ```javascript
 Dog.findOne({ name: 'Lassie' }).then(function(l) {
