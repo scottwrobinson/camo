@@ -242,11 +242,11 @@ var lassie = Dog.create({
 });
 
 lassie.save().then(function(l) {
-	console.log(l.id);
+	console.log(l._id);
 });
 ```
 
-Once a document is saved, it will automatically be assigned a unique identifier by the backend database. This ID can be accessed by either `.id` or `._id`.
+Once a document is saved, it will automatically be assigned a unique identifier by the backend database. This ID can be accessed by the `._id` property.
 
 If you specified a default value (or function) for a schema variable, that value will be assigned on creation of the object.
 
@@ -267,7 +267,7 @@ The `.findOne()` method will return the first document found, even if multiple d
 ```javascript
 Dog.findOne({ name: 'Lassie' }).then(function(l) {
 	console.log('Got Lassie!');
-	console.log('Her unique ID is', l.id);
+	console.log('Her unique ID is', l._id);
 });
 ```
 
