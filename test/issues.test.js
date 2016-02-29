@@ -226,4 +226,34 @@ describe('Issues', function() {
             }).then(done, done);
         });
     });
+
+    describe('#57', function() {
+        it('should not save due to Promise.reject in hook', function(done) {
+            /* 
+             * Rejecting a Promise inside of a pre-save hook should
+             * cause the save to be aborted, and the .caught() method
+             * should be invoked on the Promise chain. This wasn't
+             * happening due to how the hooks were being collected
+             * and executed.
+             */
+
+            class Foo extends Document {
+                constructor() {
+                    super();
+
+                    this.bar = String;
+                }
+
+                preValidate() {
+                    return Promise.reject('DO NOT SAVE');
+                }
+            }
+
+            Foo.create({bar: 'bar'}).save().then(function(foo) {
+                expect.fail(null, Error, 'Expected error, but got none.');
+            }).catch(function(error) {
+                expect(error).to.be.equal('DO NOT SAVE');
+            }).then(done, done);
+        });
+    });
 });
