@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 var connect = require('../index').connect;
 var Document = require('../index').Document;
+var EmbeddedDocument = require('../index').EmbeddedDocument;
 var ValidationError = require('../lib/errors').ValidationError;
 var validateId = require('./util').validateId;
 
@@ -287,6 +288,55 @@ describe('Issues', function() {
                 expect.fail(null, Error, 'Expected error, but got none.');
             }).catch(function(error) {
                 expect(error).to.be.instanceof(ValidationError);
+            }).then(done, done);
+        });
+    });
+
+    describe('#55', function() {
+        it('should return updated data on findOneAndUpdate when updating nested data', function(done) {
+            /* 
+             * When updating nested data with findOneAndUpdate,
+             * the document returned to you should contain
+             * all of the updated data. But due to lack of
+             * support in NeDB versions < 1.8, I had to use
+             * a hack (_.assign) to update the document. This
+             * doesn't properly update nested data.
+             *
+             * Temporary fix is to just reload the document
+             * with findOne.
+             */
+
+            class Contact extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.email = String;
+                    this.phone = String;
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super();
+                    this.name = String;
+                    this.contact = Contact;
+                }
+            }
+
+            var person = Person.create({
+                name: 'John Doe',
+                contact: {
+                    email: 'john@doe.info',
+                    phone: 'NA'
+                }
+            });
+
+            person.save().then(function(person) {
+                return Person.findOneAndUpdate({_id: person._id}, {name: 'John Derp', 'contact.phone': '0123456789'});
+            }).then(function(person) {
+                expect(person.name).to.be.equal('John Derp');
+                expect(person.contact.email).to.be.equal('john@doe.info');
+                expect(person.contact.phone).to.be.equal('0123456789');
             }).then(done, done);
         });
     });
