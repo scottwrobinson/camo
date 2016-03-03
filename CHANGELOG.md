@@ -1,3 +1,14 @@
+## 0.12.1 (2016-03-02)
+Features:
+ - Updated README to warn about frequently changing API
+ - Added Contributing and Contact sections to README
+Bugfixes:
+ - Fixed issue that prevented `save()` from being aborted when `Promise.reject` was returned in a hook ([#57](https://github.com/scottwrobinson/camo/issues/57))
+ - Replaced all `.id` references to `._id` in README
+ - Fixed issue where schema types `Array` and `[]` were not properly being validated ([#53](https://github.com/scottwrobinson/camo/issues/53))
+ - In README, changed an incorrect reference of `.findMany()` to `.find()` ([#54](https://github.com/scottwrobinson/camo/issues/54))
+ - Fixed issue where updated nested data wasn't returned when using `.findOneAndUpdate()` with NeDB ([#55](https://github.com/scottwrobinson/camo/issues/55))
+
 ## 0.12.0 (2016-02-24)
 Features:
  - Added support for sorting with multiple keys ([#22](https://github.com/scottwrobinson/camo/issues/22))
