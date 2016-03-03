@@ -15,6 +15,8 @@
   * <a href="#hooks">Hooks</a>
   * <a href="#misc">Misc.</a>
 * <a href="#transpiler-support">Transpiler Support</a>
+* <a href="#contributing">Contributing</a>
+* <a href="#contact">Contact</a>
 * <a href="#copyright-license">Copyright & License</a>
 
 **Note**: Since Camo is still pre-1.0, the API will likely change often. Please see the [CHANGELOG](https://github.com/scottwrobinson/camo/blob/master/CHANGELOG.md) for the latest API changes and bug fixes.
@@ -374,6 +376,32 @@ While many transpilers won't have any problem with Camo, some need extra resourc
 - TypeScript
   - [DefinitelyTyped/camo](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/camo): Camo declaration file (h/t [lucasmciruzzi](https://github.com/lucasmciruzzi))
   - [IndefinitivelyTyped/camo](https://github.com/IndefinitivelyTyped/camo): Typings support for Camo (h/t [WorldMaker](https://github.com/WorldMaker))
+
+## Contributing
+Feel free to open new issues or submit pull requests for Camo. If you'd like to contact me before doing so, feel free to get in touch (see Contact section below).
+
+Before opening an issue or submitting a PR, I ask that you follow these guidelines:
+
+**Issues**
+- Please state whether your issue is a question, feature request, or bug report.
+- Always try the latest version of Camo before opening an issue.
+- If the issue is a bug, be sure to clearly state your problem, what you expected to happen, and what all you have tried to resolve it.
+- Always try to post simplified code that shows the problem. Use Gists for longer examples.
+
+**Pull Requests**
+- If your PR is a new feature, please consult with me first.
+- Any PR should contain only one feature or bug fix. If you have more than one, please submit them as separate PRs.
+- Always try to include relevant tests with your PRs. If you aren't sure where a test should go or how to create one, feel free to ask.
+- Include updates to the README when needed.
+- Do not update the package version or CHANGELOG. I'll handle that for each release.
+
+## Contact
+You can contact me with questions, issues, or ideas at either of the following:
+
+- Email: [s.w.robinson+camo@gmail.com](mailto:s.w.robinson+camo@gmail.com)
+- Twitter: [@ScottWRobinson](https://twitter.com/ScottWRobinson)
+
+For short questions and faster responses, try Twitter.
 
 ## Copyright & License
 Copyright (c) 2016 Scott Robinson
