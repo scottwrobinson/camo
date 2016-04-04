@@ -293,7 +293,7 @@ Dog.findOne({ name: 'Lassie' }).then(function(l) {
   - `Person.find({}, {skip: 5})` skips the first 5 `Person` objects and returns all others
 
 ### Deleting
-To remove documents fromt the database, use one of the following:
+To remove documents from the database, use one of the following:
 
 - `.delete()`
 - `.deleteOne(query, options)` (static method)
