@@ -669,5 +669,49 @@ describe('Embedded', function() {
                 expect(json.address.isPoBox).to.be.equal(false);
             }).then(done, done);
         });
+
+        it('should serialize data to JSON and ignore methods recursively if configured', function(done) {
+            class Address extends EmbeddedDocument {
+                constructor() {
+                    super();
+                    this.street = String;
+                }
+
+                getBar() {
+                    return 'bar';
+                }
+            }
+
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = String;
+                    this.address = Address;
+                    this._extractDocPropertiesOnly = true;
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+
+                getFoo() {
+                    return 'foo';
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott',
+                address : {
+                    street : 'Bar street'
+                }
+            });
+
+            var json = person.toJSON();
+            expect(json).to.have.keys(['_id', 'name', 'address']);
+            expect(json.address).to.have.keys(['street']);
+
+            done();
+        });
     });
 });
