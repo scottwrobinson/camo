@@ -670,7 +670,7 @@ describe('Embedded', function() {
             }).then(done, done);
         });
 
-        it('should serialize data to JSON and ignore methods recursively if configured', function(done) {
+        it('should serialize data to JSON and ignore methods', function(done) {
             class Address extends EmbeddedDocument {
                 constructor() {
                     super();
@@ -688,7 +688,6 @@ describe('Embedded', function() {
 
                     this.name = String;
                     this.address = Address;
-                    this._extractDocPropertiesOnly = true;
                 }
 
                 static collectionName() {
