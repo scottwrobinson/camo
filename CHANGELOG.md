@@ -1,3 +1,7 @@
+## 0.12.2 (2016-06-27)
+Bugfixes:
+ - Merged PR that prevents methods from being serialized in `toJSON()` ([#79](https://github.com/scottwrobinson/camo/pull/79))
+
 ## 0.12.1 (2016-03-02)
 Features:
  - Updated README to warn about frequently changing API
