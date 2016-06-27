@@ -1649,5 +1649,31 @@ describe('Document', function() {
                 expect(json.children[1]).to.not.be.an.instanceof(Person);
             }).then(done, done);
         });
+
+        it('should serialize data to JSON and ignore methods', function(done) {
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.name = String;
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+
+                getFoo() {
+                    return 'foo';
+                }
+            }
+
+            var person = Person.create({
+                name: 'Scott'
+            });
+
+            var json = person.toJSON();
+            expect(json).to.have.keys(['_id', 'name']);
+            done();
+        });
     });
 });
