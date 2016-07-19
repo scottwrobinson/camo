@@ -3,3 +3,4 @@ notes.txt
 node_modules/
 npm-debug.log
 .jshintrc
+.idea/
