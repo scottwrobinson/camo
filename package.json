@@ -29,7 +29,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/.bin/mocha",
+    "lint": "./node_modules/.bin/eslint ./**/*.js"
   },
   "engines": {
     "iojs": "~2.2.1",
@@ -40,11 +41,12 @@
     "lodash": "3.9.3"
   },
   "optionalDependencies": {
-    "mongodb": "2.0.42",
+    "mongodb": "2.2.4",
     "nedb": "1.8.0"
   },
   "devDependencies": {
     "chai": "3.0.0",
-    "mocha": "2.2.5"
+    "mocha": "2.2.5",
+    "eslint": "3.1.1"
   }
 }
