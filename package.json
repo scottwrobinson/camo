@@ -30,7 +30,7 @@
   "license": "MIT",
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "lint": "./node_modules/.bin/eslint"
+    "lint": "./node_modules/.bin/eslint ./**/*.js"
   },
   "engines": {
     "iojs": "~2.2.1",

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var expect = require('chai').expect;
 var connect = require('../index').connect;
@@ -9,365 +9,369 @@ var validateId = require('./util').validateId;
 
 describe('Issues', function() {
 
-    // TODO: Should probably use mock database client...
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+  // TODO: Should probably use mock database client...
+  var url = 'nedb://memory';
+  //var url = 'mongodb://localhost/camo_test';
+  var database = null;
 
-    before(function(done) {
-        connect(url).then(function(db) {
-            database = db;
-            return database.dropDatabase();
-        }).then(function() {
-            return done();
-        });
+  before(function(done) {
+    connect(url).then(function(db) {
+      database = db;
+      return database.dropDatabase();
+    }).then(function() {
+      return done();
     });
+  });
 
-    beforeEach(function(done) {
-        done();
+  beforeEach(function(done) {
+    done();
+  });
+
+  afterEach(function(done) {
+    database.dropDatabase().then(function() {
+    }).then(done, done);
+  });
+
+  after(function(done) {
+    database.dropDatabase().then(function() {
+    }).then(done, done);
+  });
+
+  describe('#4', function() {
+    it('should not load duplicate references in array when only one reference is present', function(done) {
+      /*
+       * This issue happens when there are multiple objects in the database,
+       * each object has an array of references, and at least two of the
+       * object's arrays contain the same reference.
+
+       * In this case, both user1 and user2 have a reference to eye1. So
+       * when we call `.find()`, both user1 and user2 will have a
+       * duplicate reference to eye1, which is not correct.
+       */
+
+      class Eye extends Document {
+        constructor() {
+          super();
+          this.color = String;
+        }
+      }
+
+      class User extends Document {
+        constructor() {
+          super();
+          this.eyes = [Eye];
+        }
+      }
+
+      var user1 = User.create();
+      var user2 = User.create();
+      var eye1 = Eye.create({color: 'blue'});
+      var eye2 = Eye.create({color: 'brown'});
+
+      var id;
+
+      eye1.save().then(function(e) {
+        validateId(e);
+        return eye2.save();
+      }).then(function(e) {
+        validateId(e);
+        user1.eyes.push(eye1, eye2);
+        return user1.save();
+      }).then(function(u) {
+        validateId(u);
+        user2.eyes.push(eye1);
+        return user2.save();
+      }).then(function(u) {
+        validateId(u);
+        return User.find({});
+      }).then(function(users) {
+        expect(users).to.have.length(2);
+
+        // Get user1
+        var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+
+        // Ensure we have correct number of eyes...
+        expect(u1.eyes).to.have.length(2);
+
+        var e1 = String(u1.eyes[0]._id) === String(eye1._id) ? u1.eyes[0] : u1.eyes[1];
+        var e2 = String(u1.eyes[1]._id) === String(eye2._id) ? u1.eyes[1] : u1.eyes[0];
+
+        // ...and that we have the correct eyes
+        expect(String(e1._id)).to.be.equal(String(eye1._id));
+        expect(String(e2._id)).to.be.equal(String(eye2._id));
+      }).then(done, done);
     });
+  });
 
-    afterEach(function(done) {
-        database.dropDatabase().then(function() {}).then(done, done);
-    });
+  describe('#5', function() {
+    it('should allow multiple references to the same object in same array', function(done) {
+      /*
+       * This issue happens when an object has an array of
+       * references and there are multiple references to the
+       * same object in the array.
+       *
+       * In the code below, we give the user two references
+       * to the same Eye, but when we load the user there is
+       * only one reference there.
+       */
 
-    after(function(done) {
-        database.dropDatabase().then(function() {}).then(done, done);
-    });
+      class Eye extends Document {
+        constructor() {
+          super();
+          this.color = String;
+        }
+      }
 
-    describe('#4', function() {
-        it('should not load duplicate references in array when only one reference is present', function(done) {
-            /* 
-             * This issue happens when there are multiple objects in the database,
-             * each object has an array of references, and at least two of the
-             * object's arrays contain the same reference.
+      class User extends Document {
+        constructor() {
+          super();
+          this.eyes = [Eye];
+        }
+      }
 
-             * In this case, both user1 and user2 have a reference to eye1. So
-             * when we call `.find()`, both user1 and user2 will have a
-             * duplicate reference to eye1, which is not correct.
-             */
+      var user = User.create();
+      var eye = Eye.create({color: 'blue'});
 
-            class Eye extends Document {
-                constructor() {
-                    super();
-                    this.color = String;
-                }
-            }
+      eye.save().then(function(e) {
+        validateId(e);
+        user.eyes.push(eye, eye);
+        return user.save();
+      }).then(function(u) {
+        validateId(u);
+        return User.find({});
+      }).then(function(users) {
+        expect(users).to.have.length(1);
+        expect(users[0].eyes).to.have.length(2);
 
-            class User extends Document {
-                constructor() {
-                    super();
-                    this.eyes = [Eye];
-                }
-            }
-
-            var user1 = User.create();
-            var user2 = User.create();
-            var eye1 = Eye.create({color: 'blue'});
-            var eye2 = Eye.create({color: 'brown'});
-
-            var id;
-
-            eye1.save().then(function(e) {
-                validateId(e);
-                return eye2.save();
-            }).then(function(e) {
-                validateId(e);
-                user1.eyes.push(eye1, eye2);
-                return user1.save();
-            }).then(function(u) {
-                validateId(u);
-                user2.eyes.push(eye1);
-                return user2.save();
-            }).then(function(u) {
-                validateId(u);
-                return User.find({});
-            }).then(function(users) {
-                expect(users).to.have.length(2);
-
-                // Get user1
-                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
-
-                // Ensure we have correct number of eyes...
-                expect(u1.eyes).to.have.length(2);
-
-                var e1 = String(u1.eyes[0]._id) === String(eye1._id) ? u1.eyes[0] : u1.eyes[1];
-                var e2 = String(u1.eyes[1]._id) === String(eye2._id) ? u1.eyes[1] : u1.eyes[0];
-
-                // ...and that we have the correct eyes
-                expect(String(e1._id)).to.be.equal(String(eye1._id));
-                expect(String(e2._id)).to.be.equal(String(eye2._id));
-            }).then(done, done);
-        });
-    });
-
-    describe('#5', function() {
-        it('should allow multiple references to the same object in same array', function(done) {
-            /* 
-             * This issue happens when an object has an array of
-             * references and there are multiple references to the
-             * same object in the array.
-             *
-             * In the code below, we give the user two references
-             * to the same Eye, but when we load the user there is
-             * only one reference there.
-             */
-
-            class Eye extends Document {
-                constructor() {
-                    super();
-                    this.color = String;
-                }
-            }
-
-            class User extends Document {
-                constructor() {
-                    super();
-                    this.eyes = [Eye];
-                }
-            }
-
-            var user = User.create();
-            var eye = Eye.create({color: 'blue'});
-
-            eye.save().then(function(e) {
-                validateId(e);
-                user.eyes.push(eye, eye);
-                return user.save();
-            }).then(function(u) {
-                validateId(u);
-                return User.find({});
-            }).then(function(users) {
-                expect(users).to.have.length(1);
-                expect(users[0].eyes).to.have.length(2);
-
-                var eyeRefs = users[0].eyes.map(function(e) {return e._id;});
-
-                expect(eyeRefs).to.include(eye._id);
-            }).then(done, done);
-        });
-    });
-
-    describe('#8', function() {
-        it('should use virtuals when initializing instance with data', function(done) {
-            /* 
-             * This issue happens when a model has virtual setters
-             * and the caller tries to use those setters during
-             * initialization via `create()`. The setters are
-             * never called, but they should be.
-             */
-
-            class User extends Document {
-                constructor() {
-                    super();
-                    this.firstName = String;
-                    this.lastName = String;
-                }
-
-                set fullName(name) {
-                    var split = name.split(' ');
-                    this.firstName = split[0];
-                    this.lastName = split[1];
-                }
-
-                get fullName() {
-                    return this.firstName + ' ' + this.lastName;
-                }
-            }
-
-            var user = User.create({
-                fullName: 'Billy Bob'
-            });
-
-            expect(user.firstName).to.be.equal('Billy');
-            expect(user.lastName).to.be.equal('Bob');
-            
-            done();
-        });
-    });
-
-    describe('#20', function() {
-        it('should not alias _id to id in queries and returned documents', function(done) {
-            /* 
-             * Camo inconsistently aliases the '_id' field to 'id'. When
-             * querying, we must use '_id', but documents are returned
-             * with '_id' AND 'id'. 'id' alias should be removed.
-             *
-             * TODO: Uncomment lines below once '_id' is fully 
-             * deprecated and removed.
-             */
-
-            class User extends Document {
-                constructor() {
-                    super();
-                    this.name = String;
-                }
-            }
-
-            var user = User.create({
-                name: 'Billy Bob'
-            });
-
-            user.save().then(function() {
-                validateId(user);
-
-                //expect(user.id).to.not.exist;
-                expect(user._id).to.exist;
-
-                // Should NOT be able to use 'id' to query
-                return User.findOne({ id: user._id });
-            }).then(function(u) {
-                expect(u).to.not.exist;
-
-                // SHOULD be able to use '_id' to query
-                return User.findOne({ _id: user._id });
-            }).then(function(u) {
-                //expect(u.id).to.not.exist;
-                expect(u).to.exist;
-                validateId(user);
-            }).then(done, done);
-        });
-    });
-
-    describe('#53', function() {
-        /* 
-         * Camo should validate that all properties conform to
-         * the type they were given in the schema. However,
-         * array types are not properly validated due to not
-         * properly checking for 'type === Array' and 
-         * 'type === []' in validator code.
-         */
-
-        it('should validate Array types properly', function(done) {
-            class Foo extends Document {
-                constructor() {
-                    super();
-
-                    this.bar = Array;
-                }
-            }
-
-            var foo = Foo.create({bar: [1, 2, 3]});
-
-            foo.save().then(function(f) {
-                expect(f.bar).to.have.length(3);
-                expect(f.bar).to.include(1);
-                expect(f.bar).to.include(2);
-                expect(f.bar).to.include(3);
-
-                foo.bar = 1;
-                return foo.save();
-            }).then(function(f){
-                expect.fail(null, Error, 'Expected error, but got none.');
-            }).catch(function(error) {
-                expect(error).to.be.instanceof(ValidationError);
-            }).then(done, done);
+        var eyeRefs = users[0].eyes.map(function(e) {
+          return e._id;
         });
 
-        it('should validate [] types properly', function(done) {
+        expect(eyeRefs).to.include(eye._id);
+      }).then(done, done);
+    });
+  });
 
-            class Foo extends Document {
-                constructor() {
-                    super();
+  describe('#8', function() {
+    it('should use virtuals when initializing instance with data', function(done) {
+      /*
+       * This issue happens when a model has virtual setters
+       * and the caller tries to use those setters during
+       * initialization via `create()`. The setters are
+       * never called, but they should be.
+       */
 
-                    this.bar = [];
-                }
-            }
+      class User extends Document {
+        constructor() {
+          super();
+          this.firstName = String;
+          this.lastName = String;
+        }
 
-            var foo = Foo.create({bar: [1, 2, 3]});
+        set fullName(name) {
+          var split = name.split(' ');
+          this.firstName = split[0];
+          this.lastName = split[1];
+        }
 
-            foo.save().then(function(f) {
-                expect(f.bar).to.have.length(3);
-                expect(f.bar).to.include(1);
-                expect(f.bar).to.include(2);
-                expect(f.bar).to.include(3);
+        get fullName() {
+          return this.firstName + ' ' + this.lastName;
+        }
+      }
 
-                foo.bar = 2;
-                return foo.save();
-            }).then(function(f){
-                expect.fail(null, Error, 'Expected error, but got none.');
-            }).catch(function(error) {
-                expect(error).to.be.instanceof(ValidationError);
-            }).then(done, done);
-        });
+      var user = User.create({
+        fullName: 'Billy Bob'
+      });
+
+      expect(user.firstName).to.be.equal('Billy');
+      expect(user.lastName).to.be.equal('Bob');
+
+      done();
+    });
+  });
+
+  describe('#20', function() {
+    it('should not alias _id to id in queries and returned documents', function(done) {
+      /*
+       * Camo inconsistently aliases the '_id' field to 'id'. When
+       * querying, we must use '_id', but documents are returned
+       * with '_id' AND 'id'. 'id' alias should be removed.
+       *
+       * TODO: Uncomment lines below once '_id' is fully
+       * deprecated and removed.
+       */
+
+      class User extends Document {
+        constructor() {
+          super();
+          this.name = String;
+        }
+      }
+
+      var user = User.create({
+        name: 'Billy Bob'
+      });
+
+      user.save().then(function() {
+        validateId(user);
+
+        //expect(user.id).to.not.exist;
+        expect(user._id).to.exist;
+
+        // Should NOT be able to use 'id' to query
+        return User.findOne({id: user._id});
+      }).then(function(u) {
+        expect(u).to.not.exist;
+
+        // SHOULD be able to use '_id' to query
+        return User.findOne({_id: user._id});
+      }).then(function(u) {
+        //expect(u.id).to.not.exist;
+        expect(u).to.exist;
+        validateId(user);
+      }).then(done, done);
+    });
+  });
+
+  describe('#53', function() {
+    /*
+     * Camo should validate that all properties conform to
+     * the type they were given in the schema. However,
+     * array types are not properly validated due to not
+     * properly checking for 'type === Array' and
+     * 'type === []' in validator code.
+     */
+
+    it('should validate Array types properly', function(done) {
+      class Foo extends Document {
+        constructor() {
+          super();
+
+          this.bar = Array;
+        }
+      }
+
+      var foo = Foo.create({bar: [1, 2, 3]});
+
+      foo.save().then(function(f) {
+        expect(f.bar).to.have.length(3);
+        expect(f.bar).to.include(1);
+        expect(f.bar).to.include(2);
+        expect(f.bar).to.include(3);
+
+        foo.bar = 1;
+        return foo.save();
+      }).then(function(f) {
+        expect.fail(null, Error, 'Expected error, but got none.');
+      }).catch(function(error) {
+        expect(error).to.be.instanceof(ValidationError);
+      }).then(done, done);
     });
 
-    describe('#55', function() {
-        it('should return updated data on findOneAndUpdate when updating nested data', function(done) {
-            /* 
-             * When updating nested data with findOneAndUpdate,
-             * the document returned to you should contain
-             * all of the updated data. But due to lack of
-             * support in NeDB versions < 1.8, I had to use
-             * a hack (_.assign) to update the document. This
-             * doesn't properly update nested data.
-             *
-             * Temporary fix is to just reload the document
-             * with findOne.
-             */
+    it('should validate [] types properly', function(done) {
 
-            class Contact extends EmbeddedDocument {
-                constructor() {
-                    super();
+      class Foo extends Document {
+        constructor() {
+          super();
 
-                    this.email = String;
-                    this.phone = String;
-                }
-            }
+          this.bar = [];
+        }
+      }
 
-            class Person extends Document {
-                constructor() {
-                    super();
-                    this.name = String;
-                    this.contact = Contact;
-                }
-            }
+      var foo = Foo.create({bar: [1, 2, 3]});
 
-            var person = Person.create({
-                name: 'John Doe',
-                contact: {
-                    email: 'john@doe.info',
-                    phone: 'NA'
-                }
-            });
+      foo.save().then(function(f) {
+        expect(f.bar).to.have.length(3);
+        expect(f.bar).to.include(1);
+        expect(f.bar).to.include(2);
+        expect(f.bar).to.include(3);
 
-            person.save().then(function(person) {
-                return Person.findOneAndUpdate({_id: person._id}, {name: 'John Derp', 'contact.phone': '0123456789'});
-            }).then(function(person) {
-                expect(person.name).to.be.equal('John Derp');
-                expect(person.contact.email).to.be.equal('john@doe.info');
-                expect(person.contact.phone).to.be.equal('0123456789');
-            }).then(done, done);
-        });
+        foo.bar = 2;
+        return foo.save();
+      }).then(function(f) {
+        expect.fail(null, Error, 'Expected error, but got none.');
+      }).catch(function(error) {
+        expect(error).to.be.instanceof(ValidationError);
+      }).then(done, done);
     });
+  });
 
-    describe('#57', function() {
-        it('should not save due to Promise.reject in hook', function(done) {
-            /* 
-             * Rejecting a Promise inside of a pre-save hook should
-             * cause the save to be aborted, and the .caught() method
-             * should be invoked on the Promise chain. This wasn't
-             * happening due to how the hooks were being collected
-             * and executed.
-             */
+  describe('#55', function() {
+    it('should return updated data on findOneAndUpdate when updating nested data', function(done) {
+      /*
+       * When updating nested data with findOneAndUpdate,
+       * the document returned to you should contain
+       * all of the updated data. But due to lack of
+       * support in NeDB versions < 1.8, I had to use
+       * a hack (_.assign) to update the document. This
+       * doesn't properly update nested data.
+       *
+       * Temporary fix is to just reload the document
+       * with findOne.
+       */
 
-            class Foo extends Document {
-                constructor() {
-                    super();
+      class Contact extends EmbeddedDocument {
+        constructor() {
+          super();
 
-                    this.bar = String;
-                }
+          this.email = String;
+          this.phone = String;
+        }
+      }
 
-                preValidate() {
-                    return Promise.reject('DO NOT SAVE');
-                }
-            }
+      class Person extends Document {
+        constructor() {
+          super();
+          this.name = String;
+          this.contact = Contact;
+        }
+      }
 
-            Foo.create({bar: 'bar'}).save().then(function(foo) {
-                expect.fail(null, Error, 'Expected error, but got none.');
-            }).catch(function(error) {
-                expect(error).to.be.equal('DO NOT SAVE');
-            }).then(done, done);
-        });
+      var person = Person.create({
+        name: 'John Doe',
+        contact: {
+          email: 'john@doe.info',
+          phone: 'NA'
+        }
+      });
+
+      person.save().then(function(person) {
+        return Person.findOneAndUpdate({_id: person._id}, {name: 'John Derp', 'contact.phone': '0123456789'});
+      }).then(function(person) {
+        expect(person.name).to.be.equal('John Derp');
+        expect(person.contact.email).to.be.equal('john@doe.info');
+        expect(person.contact.phone).to.be.equal('0123456789');
+      }).then(done, done);
     });
+  });
+
+  describe('#57', function() {
+    it('should not save due to Promise.reject in hook', function(done) {
+      /*
+       * Rejecting a Promise inside of a pre-save hook should
+       * cause the save to be aborted, and the .caught() method
+       * should be invoked on the Promise chain. This wasn't
+       * happening due to how the hooks were being collected
+       * and executed.
+       */
+
+      class Foo extends Document {
+        constructor() {
+          super();
+
+          this.bar = String;
+        }
+
+        preValidate() {
+          return Promise.reject('DO NOT SAVE');
+        }
+      }
+
+      Foo.create({bar: 'bar'}).save().then(function(foo) {
+        expect.fail(null, Error, 'Expected error, but got none.');
+      }).catch(function(error) {
+        expect(error).to.be.equal('DO NOT SAVE');
+      }).then(done, done);
+    });
+  });
 });

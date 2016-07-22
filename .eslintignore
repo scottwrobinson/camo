@@ -2,3 +2,6 @@
 node_modules/**
 **/vendors/**
 coverage
+test/*.test.js
+test/util.js
+test/data.js
