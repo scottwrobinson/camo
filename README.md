@@ -39,15 +39,15 @@ So, why use Camo?
 ## Install and Run
 To use Camo, you must first have installed **Node >2.0.x** or **io.js >2.0.x**, then run the following commands:
 
-	npm install camo --save
+    npm install camo --save
 
 And at least ONE of the following:
 
-	npm install nedb --save
+    npm install nedb --save
 
-	OR
+    OR
 
-	npm install mongodb --save
+    npm install mongodb --save
 
 ## Quick Start
 Camo was built with ease-of-use and ES6 in mind, so you might notice it has more of an OOP feel to it than many existing libraries and ODMs. Don't worry, focusing on object-oriented design doesn't mean we forgot about functional techniques or asynchronous programming. Promises are built-in to the API. Just about every call you make interacting with the database (find, save, delete, etc) will return a Promise. No more callback hell :)
@@ -88,14 +88,14 @@ class Company extends Document {
 
         this.name = String;
         this.valuation = {
-        	type: Number,
-        	default: 10000000000,
-        	min: 0
+            type: Number,
+            default: 10000000000,
+            min: 0
         };
         this.employees = [String];
         this.dateFounded = {
-        	type: Date,
-        	default: Date.now
+            type: Date,
+            default: Date.now
         };
     }
 
@@ -145,12 +145,12 @@ To declare a member variable in the schema, either directly assign it one of the
 
 ```javascript
 this.primeNumber = {
-	type: Number,
-	default: 2,
-	min: 0,
-	max: 25,
-	choices: [2, 3, 5, 7, 11, 13, 17, 19, 23],
-	unique: true
+    type: Number,
+    default: 2,
+    min: 0,
+    max: 25,
+    choices: [2, 3, 5, 7, 11, 13, 17, 19, 23],
+    unique: true
 }
 ```
 
@@ -244,7 +244,7 @@ var lassie = Dog.create({
 });
 
 lassie.save().then(function(l) {
-	console.log(l._id);
+    console.log(l._id);
 });
 ```
 
@@ -268,8 +268,8 @@ The `.findOne()` method will return the first document found, even if multiple d
 
 ```javascript
 Dog.findOne({ name: 'Lassie' }).then(function(l) {
-	console.log('Got Lassie!');
-	console.log('Her unique ID is', l._id);
+    console.log('Got Lassie!');
+    console.log('Her unique ID is', l._id);
 });
 ```
 
@@ -304,7 +304,7 @@ The `.delete()` method should only be used on an instantiated document with a va
 
 ```javascript
 Dog.deleteMany({ breed: 'Collie' }).then(function(numDeleted) {
-	console.log('Deleted', numDeleted, 'Collies from the database.');
+    console.log('Deleted', numDeleted, 'Collies from the database.');
 });
 ```
 
@@ -313,7 +313,7 @@ To get the number of matching documents for a query without actually retrieving 
 
 ```javascript
 Dog.count({ breed: 'Collie' }).then(function(count) {
-	console.log('Found', count, 'Collies.');
+    console.log('Found', count, 'Collies.');
 });
 ```
 

@@ -4,12 +4,12 @@ var Document = require('../../index').Document;
 //var Foo = require('./foo');
 
 class Bar extends Document {
-	constructor() {
-		super();
+    constructor() {
+        super();
 
-		this.foo = require('./foo');
-		this.num = Number;
-	}
+        this.foo = require('./foo');
+        this.num = Number;
+    }
 }
 
 module.exports = Bar;
