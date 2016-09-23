@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-var Document = require('../../index').Document;
-//var Foo = require('./foo');
+const Document = require('../../index').Document;
+//const Foo = require('./foo');
 
 class Bar extends Document {
     constructor() {

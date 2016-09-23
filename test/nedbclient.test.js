@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var validateId = require('./util').validateId;
+const _ = require('lodash');
+const fs = require('fs');
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const validateId = require('./util').validateId;
 
 describe('NeDbClient', function() {
 
-    var url = 'nedb://memory';
-    var database = null;
+    const url = 'nedb://memory';
+    let database = null;
 
     // TODO: This is acting weird. Randomly passes/fails. Seems to
     // be caused by document.test.js. When that one doesn't run,
@@ -42,8 +42,8 @@ describe('NeDbClient', function() {
 
             console.log('here-2');
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             console.log('here-22');
 
@@ -61,7 +61,7 @@ describe('NeDbClient', function() {
                 return new Promise(function(resolve, reject) {
                     console.log('here1');
                     fs.readdir(database._path, function(error, files) {
-                        var dbFiles = [];
+                        let dbFiles = [];
                         files.forEach(function(f) {
                             if (_.endsWith(f, '.db')) dbFiles.push(f);
                         });
@@ -79,7 +79,7 @@ describe('NeDbClient', function() {
                 return new Promise(function(resolve, reject) {
                     console.log('here4');
                     fs.readdir(database._path, function(error, files) {
-                        var dbFiles = [];
+                        let dbFiles = [];
                         files.forEach(function(f) {
                             if (_.endsWith(f, '.db')) dbFiles.push(f);
                         });
@@ -101,7 +101,7 @@ describe('NeDbClient', function() {
                 }
             }
 
-            var school = School.create();
+            let school = School.create();
             school._id = '1234567890abcdef';
             school.name = 'South Park Elementary';
 
@@ -132,11 +132,11 @@ describe('NeDbClient', function() {
                 }
             }
 
-            var user1 = User.create();
+            let user1 = User.create();
             user1.name = 'Bill';
             user1.email = 'billy@example.com';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user1.name = 'Billy';
             user2.email = 'billy@example.com';
 
@@ -162,11 +162,11 @@ describe('NeDbClient', function() {
                 }
             }
 
-            var user1 = User.create();
+            let user1 = User.create();
             user1.name = 'Bill';
             user1.email = 'billy@example.com';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user1.name = 'Billy';
             user2.email = 'billy@example.com';
 

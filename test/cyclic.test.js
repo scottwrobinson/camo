@@ -1,19 +1,19 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var validateId = require('./util').validateId;
-var Foo = require('./cyclic/foo');
-var Bar = require('./cyclic/bar');
+const _ = require('lodash');
+const fs = require('fs');
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const validateId = require('./util').validateId;
+const Foo = require('./cyclic/foo');
+const Bar = require('./cyclic/bar');
 
 describe('Cyclic', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'nedb://memory';
+    //const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -38,9 +38,9 @@ describe('Cyclic', function() {
 
     describe('schema', function() {
         it('should allow cyclic dependencies', function(done) {
-            var f = Foo.create();
+            let f = Foo.create();
             f.num = 26;
-            var b = Bar.create();
+            let b = Bar.create();
             b.num = 99;
 
             f.save().then(function(foo) {

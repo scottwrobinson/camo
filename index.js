@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 exports.connect = require('./lib/db').connect;
 exports.getClient = require('./lib/clients').getClient;

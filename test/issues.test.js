@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var EmbeddedDocument = require('../index').EmbeddedDocument;
-var ValidationError = require('../lib/errors').ValidationError;
-var validateId = require('./util').validateId;
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const EmbeddedDocument = require('../index').EmbeddedDocument;
+const ValidationError = require('../lib/errors').ValidationError;
+const validateId = require('./util').validateId;
 
 describe('Issues', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'nedb://memory';
+    //const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -61,12 +61,12 @@ describe('Issues', function() {
                 }
             }
 
-            var user1 = User.create();
-            var user2 = User.create();
-            var eye1 = Eye.create({color: 'blue'});
-            var eye2 = Eye.create({color: 'brown'});
+            let user1 = User.create();
+            let user2 = User.create();
+            let eye1 = Eye.create({color: 'blue'});
+            let eye2 = Eye.create({color: 'brown'});
 
-            var id;
+            let id;
 
             eye1.save().then(function(e) {
                 validateId(e);
@@ -86,13 +86,13 @@ describe('Issues', function() {
                 expect(users).to.have.length(2);
 
                 // Get user1
-                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+                let u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
 
                 // Ensure we have correct number of eyes...
                 expect(u1.eyes).to.have.length(2);
 
-                var e1 = String(u1.eyes[0]._id) === String(eye1._id) ? u1.eyes[0] : u1.eyes[1];
-                var e2 = String(u1.eyes[1]._id) === String(eye2._id) ? u1.eyes[1] : u1.eyes[0];
+                let e1 = String(u1.eyes[0]._id) === String(eye1._id) ? u1.eyes[0] : u1.eyes[1];
+                let e2 = String(u1.eyes[1]._id) === String(eye2._id) ? u1.eyes[1] : u1.eyes[0];
 
                 // ...and that we have the correct eyes
                 expect(String(e1._id)).to.be.equal(String(eye1._id));
@@ -127,8 +127,8 @@ describe('Issues', function() {
                 }
             }
 
-            var user = User.create();
-            var eye = Eye.create({color: 'blue'});
+            let user = User.create();
+            let eye = Eye.create({color: 'blue'});
 
             eye.save().then(function(e) {
                 validateId(e);
@@ -141,7 +141,7 @@ describe('Issues', function() {
                 expect(users).to.have.length(1);
                 expect(users[0].eyes).to.have.length(2);
 
-                var eyeRefs = users[0].eyes.map(function(e) {return e._id;});
+                let eyeRefs = users[0].eyes.map(function(e) {return e._id;});
 
                 expect(eyeRefs).to.include(eye._id);
             }).then(done, done);
@@ -165,7 +165,7 @@ describe('Issues', function() {
                 }
 
                 set fullName(name) {
-                    var split = name.split(' ');
+                    let split = name.split(' ');
                     this.firstName = split[0];
                     this.lastName = split[1];
                 }
@@ -175,7 +175,7 @@ describe('Issues', function() {
                 }
             }
 
-            var user = User.create({
+            let user = User.create({
                 fullName: 'Billy Bob'
             });
 
@@ -204,7 +204,7 @@ describe('Issues', function() {
                 }
             }
 
-            var user = User.create({
+            let user = User.create({
                 name: 'Billy Bob'
             });
 
@@ -247,7 +247,7 @@ describe('Issues', function() {
                 }
             }
 
-            var foo = Foo.create({bar: [1, 2, 3]});
+            let foo = Foo.create({bar: [1, 2, 3]});
 
             foo.save().then(function(f) {
                 expect(f.bar).to.have.length(3);
@@ -274,7 +274,7 @@ describe('Issues', function() {
                 }
             }
 
-            var foo = Foo.create({bar: [1, 2, 3]});
+            let foo = Foo.create({bar: [1, 2, 3]});
 
             foo.save().then(function(f) {
                 expect(f.bar).to.have.length(3);
@@ -323,7 +323,7 @@ describe('Issues', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'John Doe',
                 contact: {
                     email: 'john@doe.info',

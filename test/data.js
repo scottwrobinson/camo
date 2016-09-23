@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-var Document = require('../index').Document;
+const Document = require('../index').Document;
 
 class Data extends Document {
     constructor() {

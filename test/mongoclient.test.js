@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var expect = require('chai').expect;
-var ObjectId = require('mongodb').ObjectId;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var validateId = require('./util').validateId;
+const _ = require('lodash');
+const expect = require('chai').expect;
+const ObjectId = require('mongodb').ObjectId;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const validateId = require('./util').validateId;
 
 describe('MongoClient', function() {
 
-    var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -43,7 +43,7 @@ describe('MongoClient', function() {
                 }
             }
 
-            var school = School.create();
+            let school = School.create();
             school._id = new ObjectId('1234567890abcdef12345678');
             school.name = 'Springfield Elementary';
 
@@ -73,14 +73,14 @@ describe('MongoClient', function() {
          * successfully cast.
          */
         it('should automatically cast string ID in query to ObjectID', function(done) {
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
             user.save().then(function() {
                 validateId(user);
 
-                var id = String(user._id);
+                let id = String(user._id);
                 return User.findOne({_id: id});
             }).then(function(u) {
                 validateId(u);
@@ -92,7 +92,7 @@ describe('MongoClient', function() {
          * where user actually passes an ObjectId
          */
         it('should automatically cast string ID in query to ObjectID', function(done) {
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
@@ -110,15 +110,15 @@ describe('MongoClient', function() {
          * queries. In this case we try it with '$in'.
          */
         it('should automatically cast string IDs in \'$in\' operator to ObjectIDs', function(done) {
-            var user1 = User.create();
+            let user1 = User.create();
             user1.firstName = 'Billy';
             user1.lastName = 'Bob';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user2.firstName = 'Jenny';
             user2.lastName = 'Jane';
 
-            var user3 = User.create();
+            let user3 = User.create();
             user3.firstName = 'Danny';
             user3.lastName = 'David';
 
@@ -126,14 +126,14 @@ describe('MongoClient', function() {
                 validateId(user1);
                 validateId(user2);
 
-                var id1 = String(user1._id);
-                var id3 = String(user3._id);
+                let id1 = String(user1._id);
+                let id3 = String(user3._id);
                 return User.find({ _id: { '$in': [ id1, id3 ] } });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
-                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
-                var u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
+                let u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+                let u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
 
                 expect(String(u1._id)).to.be.equal(String(user1._id));
                 expect(String(u3._id)).to.be.equal(String(user3._id));
@@ -141,15 +141,15 @@ describe('MongoClient', function() {
         });
 
         it('should automatically cast string IDs in deep query objects', function(done) {
-            var user1 = User.create();
+            let user1 = User.create();
             user1.firstName = 'Billy';
             user1.lastName = 'Bob';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user2.firstName = 'Jenny';
             user2.lastName = 'Jane';
 
-            var user3 = User.create();
+            let user3 = User.create();
             user3.firstName = 'Danny';
             user3.lastName = 'David';
 
@@ -157,14 +157,14 @@ describe('MongoClient', function() {
                 validateId(user1);
                 validateId(user2);
 
-                var id1 = String(user1._id);
-                var id3 = String(user3._id);
+                let id1 = String(user1._id);
+                let id3 = String(user3._id);
                 return User.find({ $or: [ {_id: id1 }, {_id: id3 } ] });
             }).then(function(users) {
                 expect(users).to.have.length(2);
 
-                var u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
-                var u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
+                let u1 = String(users[0]._id) === String(user1._id) ? users[0] : users[1];
+                let u3 = String(users[1]._id) === String(user3._id) ? users[1] : users[0];
 
                 expect(String(u1._id)).to.be.equal(String(user1._id));
                 expect(String(u3._id)).to.be.equal(String(user3._id));
@@ -188,11 +188,11 @@ describe('MongoClient', function() {
                 }
             }
 
-            var user1 = User.create();
+            let user1 = User.create();
             user1.name = 'Bill';
             user1.email = 'billy@example.com';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user1.name = 'Billy';
             user2.email = 'billy@example.com';
 
@@ -218,11 +218,11 @@ describe('MongoClient', function() {
                 }
             }
 
-            var user1 = User.create();
+            let user1 = User.create();
             user1.name = 'Bill';
             user1.email = 'billy@example.com';
 
-            var user2 = User.create();
+            let user2 = User.create();
             user1.name = 'Billy';
             user2.email = 'billy@example.com';
 

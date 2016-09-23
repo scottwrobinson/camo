@@ -1,25 +1,25 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var isDocument = require('../lib/validate').isDocument;
-var ValidationError = require('../lib/errors').ValidationError;
-var Data = require('./data');
-var getData1 = require('./util').data1;
-var getData2 = require('./util').data2;
-var validateId = require('./util').validateId;
-var fail = require('./util').fail;
-var expectError = require('./util').expectError;
+const _ = require('lodash');
+const fs = require('fs');
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const isDocument = require('../lib/validate').isDocument;
+const ValidationError = require('../lib/errors').ValidationError;
+const Data = require('./data');
+const getData1 = require('./util').data1;
+const getData2 = require('./util').data2;
+const validateId = require('./util').validateId;
+const fail = require('./util').fail;
+const expectError = require('./util').expectError;
 
 describe('Document', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'nedb://memory';
+    //const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -53,7 +53,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
@@ -75,7 +75,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
@@ -95,7 +95,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create({
+            let user = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 nicknames: ['Bill', 'William', 'Will']
@@ -127,11 +127,11 @@ describe('Document', function() {
                 }
             }
 
-            var coffee = Coffee.create();
+            let coffee = Coffee.create();
             coffee.temp = 105;
 
             coffee.save().then(function() {
-                var user = User.create({ drinks: [coffee] });
+                let user = User.create({ drinks: [coffee] });
                 expect(user.drinks).to.have.length(1);
             }).then(done, done);
         });
@@ -152,7 +152,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
@@ -176,13 +176,13 @@ describe('Document', function() {
                 }
 
                 set fullName(name) {
-                    var nameArr = name.split(' ');
+                    let nameArr = name.split(' ');
                     this.firstName = nameArr[0];
                     this.lastName = nameArr[1];
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
             user.fullName = 'Billy Bob';
 
             user.save().then(function() {
@@ -206,7 +206,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
 
@@ -233,7 +233,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = ProUser.create();
+            let user = ProUser.create();
             user.firstName = 'Billy';
             user.lastName = 'Bob';
             user.paymentMethod = 'cash';
@@ -268,7 +268,7 @@ describe('Document', function() {
                 }
             }
 
-            var bike = Motorcycle.create();
+            let bike = Motorcycle.create();
 
             bike.save().then(function() {
                 validateId(bike);
@@ -284,7 +284,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
 
             expect(user.collectionName()).to.be.equal('users');
             expect(User.collectionName()).to.be.equal('users');
@@ -306,7 +306,7 @@ describe('Document', function() {
                 }
             }
 
-            var pro = ProUser.create();
+            let pro = ProUser.create();
 
             expect(pro.collectionName()).to.be.equal('prousers');
             expect(ProUser.collectionName()).to.be.equal('prousers');
@@ -326,7 +326,7 @@ describe('Document', function() {
                 }
             }
 
-            var user = User.create();
+            let user = User.create();
 
             expect(user.collectionName()).to.be.equal('sheeple');
             expect(User.collectionName()).to.be.equal('sheeple');
@@ -361,7 +361,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ReferencerModel.create();
+            let data = ReferencerModel.create();
             data.ref = ReferenceeModel.create();
             data.ref.str = 'some data';
             data.num = 1;
@@ -405,7 +405,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ReferencerModel.create();
+            let data = ReferencerModel.create();
             data.refs.push(ReferenceeModel.create());
             data.refs.push(ReferenceeModel.create());
             data.refs[0].str = 'string1';
@@ -457,9 +457,9 @@ describe('Document', function() {
                 }
             }
 
-            var data = ReferencerModel.create();
+            let data = ReferencerModel.create();
             data.ref1 = ReferenceeModel.create();
-            var ref2 = ReferenceeModel.create();
+            let ref2 = ReferenceeModel.create();
             data.ref1.str = 'string1';
             ref2.str = 'string2';
             data.num = 1;
@@ -508,9 +508,9 @@ describe('Document', function() {
                 }
             }
 
-            var data = ReferencerModel.create();
+            let data = ReferencerModel.create();
             data.refs.push(ReferenceeModel.create());
-            var ref2 = ReferenceeModel.create();
+            let ref2 = ReferenceeModel.create();
             data.refs[0].str = 'string1';
             ref2.str = 'string2';
             data.num = 1;
@@ -556,10 +556,10 @@ describe('Document', function() {
                 }
             }
 
-            var employee = Employee.create();
+            let employee = Employee.create();
             employee.name = 'Scott';
 
-            var boss = Boss.create();
+            let boss = Boss.create();
             boss.salary = 10000000;
 
             employee.boss = boss;
@@ -609,7 +609,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = StringModel.create();
+            let data = StringModel.create();
             data.str = 'hello';
 
             data.save().then(function() {
@@ -631,7 +631,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = NumberModel.create();
+            let data = NumberModel.create();
             data.num = 26;
 
             data.save().then(function() {
@@ -649,7 +649,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = BooleanModel.create();
+            let data = BooleanModel.create();
             data.bool = true;
 
             data.save().then(function() {
@@ -667,8 +667,8 @@ describe('Document', function() {
                 }
             }
 
-            var data = DateModel.create();
-            var date = new Date();
+            let data = DateModel.create();
+            let date = new Date();
             data.date = date;
 
             data.save().then(function() {
@@ -686,7 +686,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ObjectModel.create();
+            let data = ObjectModel.create();
             data.obj = { hi: 'bye'};
 
             data.save().then(function() {
@@ -705,7 +705,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = BufferModel.create();
+            let data = BufferModel.create();
             data.buf = new Buffer('hello');
 
             data.save().then(function() {
@@ -723,7 +723,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ArrayModel.create();
+            let data = ArrayModel.create();
             data.arr = [1, 'number', true];
 
             data.save().then(function() {
@@ -744,7 +744,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ArrayModel.create();
+            let data = ArrayModel.create();
             data.arr = ['1', '2', '3'];
 
             data.save().then(function() {
@@ -769,7 +769,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = NumberModel.create();
+            let data = NumberModel.create();
             data.num = '1';
 
             data.save().then(function() {
@@ -788,7 +788,7 @@ describe('Document', function() {
                 }
             }
 
-            var data = ArrayModel.create();
+            let data = ArrayModel.create();
             data.arr = [1, 2, 3];
 
             data.save().then(function() {
@@ -802,7 +802,7 @@ describe('Document', function() {
     describe('defaults', function() {
         it('should assign default value if unassigned', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
 
             data.save().then(function() {
                 validateId(data);
@@ -812,7 +812,7 @@ describe('Document', function() {
 
         it('should assign default value via function if unassigned', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
 
             data.save().then(function() {
                 validateId(data);
@@ -834,7 +834,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott'
             });
 
@@ -852,7 +852,7 @@ describe('Document', function() {
     describe('choices', function() {
         it('should accept value specified in choices', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.source = 'wired';
 
             data.save().then(function() {
@@ -863,7 +863,7 @@ describe('Document', function() {
 
         it('should reject values not specified in choices', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.source = 'google';
 
             data.save().then(function() {
@@ -877,7 +877,7 @@ describe('Document', function() {
     describe('min', function() {
         it('should accept value > min', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = 1;
 
             data.save().then(function() {
@@ -888,7 +888,7 @@ describe('Document', function() {
 
         it('should accept value == min', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = 0;
 
             data.save().then(function() {
@@ -899,7 +899,7 @@ describe('Document', function() {
 
         it('should reject value < min', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = -1;
 
             data.save().then(function() {
@@ -913,7 +913,7 @@ describe('Document', function() {
     describe('max', function() {
         it('should accept value < max', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = 99;
 
             data.save().then(function() {
@@ -924,7 +924,7 @@ describe('Document', function() {
 
         it('should accept value == max', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = 100;
 
             data.save().then(function() {
@@ -935,7 +935,7 @@ describe('Document', function() {
 
         it('should reject value > max', function(done) {
 
-            var data = Data.create();
+            let data = Data.create();
             data.item = 101;
 
             data.save().then(function() {
@@ -960,7 +960,7 @@ describe('Document', function() {
                 }
             }
 
-            var product = Product.create();
+            let product = Product.create();
             product.name = 'Dark Roast Coffee';
             product.cost = '$1.39';
 
@@ -984,7 +984,7 @@ describe('Document', function() {
                 }
             }
 
-            var product = Product.create();
+            let product = Product.create();
             product.name = 'Light Roast Coffee';
             product.cost = '$1..39';
 
@@ -1016,7 +1016,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott'
             });
 
@@ -1045,7 +1045,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Matt'
             });
 
@@ -1072,9 +1072,9 @@ describe('Document', function() {
                 }
             }
 
-            var now = new Date();
+            let now = new Date();
 
-            var person = Person.create({
+            let person = Person.create({
                 birthday: now
             });
 
@@ -1099,11 +1099,11 @@ describe('Document', function() {
                 }
             }
 
-            var birthday = new Date(Date.UTC(2016, 1, 17, 5, 6, 8, 0));
-            var graduationDate = new Date(2016, 1, 17, 0, 0, 0, 0);
-            var weddingDate = new Date(2016, 1, 17, 0, 0, 0, 0);
+            let birthday = new Date(Date.UTC(2016, 1, 17, 5, 6, 8, 0));
+            let graduationDate = new Date(2016, 1, 17, 0, 0, 0, 0);
+            let weddingDate = new Date(2016, 1, 17, 0, 0, 0, 0);
 
-            var person = Person.create({
+            let person = Person.create({
                 birthday: '2016-02-17T05:06:08+00:00',
                 graduationDate: 'February 17, 2016',
                 weddingDate: '2016/02/17'
@@ -1136,7 +1136,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: ''
             });
 
@@ -1163,7 +1163,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott'
             });
 
@@ -1191,7 +1191,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create();
+            let person = Person.create();
 
             person.save().then(function() {
                 validateId(person);
@@ -1220,7 +1220,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 isMerried: true,
                 isSingle: false
             });
@@ -1249,9 +1249,9 @@ describe('Document', function() {
                 }
             }
 
-            var myBirthDate = new Date();
+            let myBirthDate = new Date();
 
-            var person = Person.create({
+            let person = Person.create({
                 birthDate: myBirthDate
             });
 
@@ -1282,7 +1282,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 age: 21,
                 level: 0
             });
@@ -1311,7 +1311,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create();
+            let person = Person.create();
 
             person.save().then(function() {
                 fail(null, Error, 'Expected error, but got none.');
@@ -1338,7 +1338,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create();
+            let person = Person.create();
 
             person.save().then(function() {
                 fail(null, Error, 'Expected error, but got none.');
@@ -1364,7 +1364,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: null
             });
 
@@ -1392,7 +1392,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 names: []
             });
 
@@ -1420,7 +1420,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: ''
             });
 
@@ -1448,7 +1448,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 names: {}
             });
 
@@ -1463,13 +1463,13 @@ describe('Document', function() {
     describe('hooks', function() {
         it('should call all pre and post functions', function(done) {
 
-            var preValidateCalled = false;
-            var preSaveCalled = false;
-            var preDeleteCalled = false;
+            let preValidateCalled = false;
+            let preSaveCalled = false;
+            let preDeleteCalled = false;
 
-            var postValidateCalled = false;
-            var postSaveCalled = false;
-            var postDeleteCalled = false;
+            let postValidateCalled = false;
+            let postSaveCalled = false;
+            let postDeleteCalled = false;
 
             class Person extends Document {
                 constructor() {
@@ -1505,7 +1505,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create();
+            let person = Person.create();
 
             person.save().then(function() {
                 validateId(person);
@@ -1551,7 +1551,7 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott',
                 age: 28,
                 isAlive: true,
@@ -1567,7 +1567,7 @@ describe('Document', function() {
                 expect(person.children).to.have.length(2);
                 expect(person.spouse).to.be.null;
 
-                var json = person.toJSON();
+                let json = person.toJSON();
 
                 expect(json.name).to.be.equal('Scott');
                 expect(json.age).to.be.equal(28);
@@ -1596,19 +1596,19 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott'
             });
 
-            var spouse = Person.create({
+            let spouse = Person.create({
                 name: 'Jane'
             });
 
-            var kid1 = Person.create({
+            let kid1 = Person.create({
                 name: 'Billy'
             });
 
-            var kid2 = Person.create({
+            let kid2 = Person.create({
                 name: 'Timmy'
             });
 
@@ -1637,7 +1637,7 @@ describe('Document', function() {
                 expect(person.children[0]).to.be.an.instanceof(Person);
                 expect(person.children[1]).to.be.an.instanceof(Person);
 
-                var json = person.toJSON();
+                let json = person.toJSON();
 
                 expect(json.name).to.be.equal('Scott');
                 expect(json.children).to.have.length(2);
@@ -1667,11 +1667,11 @@ describe('Document', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott'
             });
 
-            var json = person.toJSON();
+            let json = person.toJSON();
             expect(json).to.have.keys(['_id', 'name']);
             done();
         });

@@ -1,24 +1,24 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var EmbeddedDocument = require('../index').EmbeddedDocument;
-var isDocument = require('../lib/validate').isDocument;
-var ValidationError = require('../lib/errors').ValidationError;
-var Data = require('./data');
-var getData1 = require('./util').data1;
-var getData2 = require('./util').data2;
-var validateId = require('./util').validateId;
+const _ = require('lodash');
+const fs = require('fs');
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const EmbeddedDocument = require('../index').EmbeddedDocument;
+const isDocument = require('../lib/validate').isDocument;
+const ValidationError = require('../lib/errors').ValidationError;
+const Data = require('./data');
+const getData1 = require('./util').data1;
+const getData2 = require('./util').data2;
+const validateId = require('./util').validateId;
 
 describe('Embedded', function() {
 
     // TODO: Should probably use mock database client...
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'nedb://memory';
+    //const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -59,7 +59,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var data = DocumentModel.create();
+            let data = DocumentModel.create();
             data.mod = EmbeddedModel.create();
             data.mod.str = 'some data';
             data.num = 1;
@@ -91,7 +91,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var data = DocumentModel.create();
+            let data = DocumentModel.create();
             data.mod = EmbeddedModel.create();
             data.mod.str = 'some data';
             data.num = 1;
@@ -129,7 +129,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var person = Person.create();
+            let person = Person.create();
             person.name = 'Scott';
             person.limbs.push(Limb.create());
             person.limbs[0].type = 'left arm';
@@ -179,11 +179,11 @@ describe('Embedded', function() {
                 }
             }
 
-            var map = WorldMap.create();
-            var polygon1 = Polygon.create();
-            var polygon2 = Polygon.create();
-            var point1 = Point.create({ x: 123.45, y: 678.90 });
-            var point2 = Point.create({ x: 543.21, y: 987.60 });
+            let map = WorldMap.create();
+            let polygon1 = Polygon.create();
+            let polygon2 = Polygon.create();
+            let point1 = Point.create({ x: 123.45, y: 678.90 });
+            let point2 = Point.create({ x: 543.21, y: 987.60 });
 
             map.polygons.push(polygon1);
             map.polygons.push(polygon2);
@@ -220,7 +220,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var product = Product.create({
+            let product = Product.create({
                 name: 'bike',
                 discount: {
                     authorized: true,
@@ -256,7 +256,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var product = Product.create({
+            let product = Product.create({
                 name: 'bike',
                 discounts: [{
                     authorized: true,
@@ -300,7 +300,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var data = DocumentModel.create();
+            let data = DocumentModel.create();
             data.emb = EmbeddedModel.create();
             data.num = 1;
 
@@ -330,7 +330,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var wallet = Wallet.create();
+            let wallet = Wallet.create();
             wallet.owner = 'Scott';
             wallet.contents.push(Money.create());
             wallet.contents.push(Money.create());
@@ -367,7 +367,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var data = DocumentModel.create();
+            let data = DocumentModel.create();
             data.emb = EmbeddedModel.create();
             data.emb.num = 26;
 
@@ -395,7 +395,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var wallet = Wallet.create();
+            let wallet = Wallet.create();
             wallet.contents.push(Money.create());
             wallet.contents[0].value = 5;
             wallet.contents.push(Money.create());
@@ -439,9 +439,9 @@ describe('Embedded', function() {
                 }
             }
 
-            var now = new Date();
+            let now = new Date();
 
-            var person = Person.create({
+            let person = Person.create({
                 gradSchool: {
                     school: 'CMU',
                     major: 'ECE',
@@ -465,13 +465,13 @@ describe('Embedded', function() {
 
         it('should call all pre and post functions on embedded models', function(done) {
 
-            var preValidateCalled = false;
-            var preSaveCalled = false;
-            var preDeleteCalled = false;
+            let preValidateCalled = false;
+            let preSaveCalled = false;
+            let preDeleteCalled = false;
 
-            var postValidateCalled = false;
-            var postSaveCalled = false;
-            var postDeleteCalled = false;
+            let postValidateCalled = false;
+            let postSaveCalled = false;
+            let postDeleteCalled = false;
 
             class Coffee extends EmbeddedDocument {
                 constructor() {
@@ -511,7 +511,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var cup = Cup.create();
+            let cup = Cup.create();
             cup.contents = Coffee.create();
 
             cup.save().then(function() {
@@ -538,13 +538,13 @@ describe('Embedded', function() {
 
         it('should call all pre and post functions on array of embedded models', function(done) {
 
-            var preValidateCalled = false;
-            var preSaveCalled = false;
-            var preDeleteCalled = false;
+            let preValidateCalled = false;
+            let preSaveCalled = false;
+            let preDeleteCalled = false;
 
-            var postValidateCalled = false;
-            var postSaveCalled = false;
-            var postDeleteCalled = false;
+            let postValidateCalled = false;
+            let postSaveCalled = false;
+            let postDeleteCalled = false;
 
             class Money extends EmbeddedDocument {
                 constructor() {
@@ -584,7 +584,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var wallet = Wallet.create();
+            let wallet = Wallet.create();
             wallet.contents.push(Money.create());
             wallet.contents.push(Money.create());
 
@@ -640,7 +640,7 @@ describe('Embedded', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott',
                 address: {
                     street: '123 Fake St.',
@@ -659,7 +659,7 @@ describe('Embedded', function() {
                 expect(person.address.zipCode).to.be.equal(12345);
                 expect(person.address.isPoBox).to.be.equal(false);
 
-                var json = person.toJSON();
+                let json = person.toJSON();
 
                 expect(json.name).to.be.equal('Scott');
                 expect(json.address).to.not.be.an.instanceof(Address);
@@ -699,14 +699,14 @@ describe('Embedded', function() {
                 }
             }
 
-            var person = Person.create({
+            let person = Person.create({
                 name: 'Scott',
                 address : {
                     street : 'Bar street'
                 }
             });
 
-            var json = person.toJSON();
+            let json = person.toJSON();
             expect(json).to.have.keys(['_id', 'name', 'address']);
             expect(json.address).to.have.keys(['street']);
 

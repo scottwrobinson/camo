@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var expect = require('chai').expect;
-var connect = require('../index').connect;
-var Document = require('../index').Document;
-var Data = require('./data');
-var getData1 = require('./util').data1;
-var getData2 = require('./util').data2;
-var validateData1 = require('./util').validateData1;
-var validateData2 = require('./util').validateData2;
-var validateId = require('./util').validateId;
-var isNativeId = require('../lib/validate').isNativeId;
+const _ = require('lodash');
+const expect = require('chai').expect;
+const connect = require('../index').connect;
+const Document = require('../index').Document;
+const Data = require('./data');
+const getData1 = require('./util').data1;
+const getData2 = require('./util').data2;
+const validateData1 = require('./util').validateData1;
+const validateData2 = require('./util').validateData2;
+const validateId = require('./util').validateId;
+const isNativeId = require('../lib/validate').isNativeId;
 
 describe('Client', function() {
 
-    var url = 'nedb://memory';
-    //var url = 'mongodb://localhost/camo_test';
-    var database = null;
+    const url = 'nedb://memory';
+    //const url = 'mongodb://localhost/camo_test';
+    let database = null;
 
     before(function(done) {
         connect(url).then(function(db) {
@@ -42,7 +42,7 @@ describe('Client', function() {
     describe('#save()', function() {
         it('should persist the object and its members to the database', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -92,7 +92,7 @@ describe('Client', function() {
     describe('#findOne()', function() {
         it('should load a single object from the collection', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -104,18 +104,18 @@ describe('Client', function() {
         });
 
         it('should populate all fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user = User.create({
+            let user = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
@@ -136,18 +136,18 @@ describe('Client', function() {
         });
 
         it('should not populate any fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user = User.create({
+            let user = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
@@ -168,18 +168,18 @@ describe('Client', function() {
         });
 
         it('should populate specified fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user = User.create({
+            let user = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
@@ -203,7 +203,7 @@ describe('Client', function() {
     describe('#findOneAndUpdate()', function() {
         it('should load and update a single object from the collection', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -233,7 +233,7 @@ describe('Client', function() {
     describe('#findOneAndDelete()', function() {
         it('should load and delete a single object from the collection', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -334,12 +334,12 @@ describe('Client', function() {
         });
 
         it('should sort results using multiple keys', function(done) {
-            var AlphaVille = City.create({
+            let AlphaVille = City.create({
                 name: 'Alphaville',
                 population: 4388
             });
 
-            var BetaTown = City.create({
+            let BetaTown = City.create({
                 name: 'Beta Town',
                 population: 4388
             });
@@ -385,25 +385,25 @@ describe('Client', function() {
         });
 
         it('should populate all fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user1 = User.create({
+            let user1 = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
                 address: address
             });
 
-            var user2 = User.create({
+            let user2 = User.create({
                 firstName: 'Sally',
                 lastName: 'Bob',
                 pet: dog,
@@ -427,25 +427,25 @@ describe('Client', function() {
         });
 
         it('should not populate any fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user1 = User.create({
+            let user1 = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
                 address: address
             });
 
-            var user2 = User.create({
+            let user2 = User.create({
                 firstName: 'Sally',
                 lastName: 'Bob',
                 pet: dog,
@@ -469,25 +469,25 @@ describe('Client', function() {
         });
 
         it('should populate specified fields', function(done) {
-            var address = Address.create({
+            let address = Address.create({
                 street: '123 Fake St.',
                 city: 'Cityville',
                 zipCode: 12345
             });
 
-            var dog = Pet.create({
+            let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
             });
 
-            var user1 = User.create({
+            let user1 = User.create({
                 firstName: 'Billy',
                 lastName: 'Bob',
                 pet: dog,
                 address: address
             });
 
-            var user2 = User.create({
+            let user2 = User.create({
                 firstName: 'Sally',
                 lastName: 'Bob',
                 pet: dog,
@@ -514,8 +514,8 @@ describe('Client', function() {
     describe('#count()', function() {
         it('should return 0 objects from the collection', function(done) {
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             Promise.all([data1.save(), data2.save()]).then(function() {
                 validateId(data1);
@@ -528,8 +528,8 @@ describe('Client', function() {
 
         it('should return 2 matching objects from the collection', function(done) {
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             Promise.all([data1.save(), data2.save()]).then(function() {
                 validateId(data1);
@@ -544,7 +544,7 @@ describe('Client', function() {
     describe('#delete()', function() {
         it('should remove instance from the collection', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -561,7 +561,7 @@ describe('Client', function() {
     describe('#deleteOne()', function() {
         it('should remove the object from the collection', function(done) {
 
-            var data = getData1();
+            let data = getData1();
 
             data.save().then(function() {
                 validateId(data);
@@ -578,8 +578,8 @@ describe('Client', function() {
     describe('#deleteMany()', function() {
         it('should remove multiple objects from the collection', function(done) {
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             Promise.all([data1.save(), data2.save()]).then(function() {
                 validateId(data1);
@@ -595,8 +595,8 @@ describe('Client', function() {
 
         it('should remove all objects when query is not provided', function(done) {
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             Promise.all([data1.save(), data2.save()]).then(function() {
                 validateId(data1);
@@ -614,8 +614,8 @@ describe('Client', function() {
     describe('#clearCollection()', function() {
         it('should remove all objects from the collection', function(done) {
 
-            var data1 = getData1();
-            var data2 = getData2();
+            let data1 = getData1();
+            let data2 = getData2();
 
             Promise.all([data1.save(), data2.save()]).then(function() {
                 validateId(data1);

@@ -1,6 +1,8 @@
-var expect = require('chai').expect;
-var inherits = require('util').inherits;
-var Data = require('./data');
+'use strict';
+
+const expect = require('chai').expect;
+const inherits = require('util').inherits;
+const Data = require('./data');
 
 exports.validateId = function(obj) {
     expect(obj).to.not.be.null;
@@ -10,7 +12,7 @@ exports.validateId = function(obj) {
 };
 
 exports.data1 = function() {
-    var data = Data.create();
+    let data = Data.create();
     data.number = 1;
     data.source = 'arstechnica';
     data.item = 99;
@@ -28,7 +30,7 @@ exports.validateData1 = function(d) {
 };
 
 exports.data2 = function() {
-    var data = Data.create();
+    let data = Data.create();
     data.number = 2;
     data.source = 'reddit';
     data.item = 26;
@@ -51,7 +53,7 @@ exports.validateData2 = function(d) {
 // a false positive.
 //
 // This is my dumb way of getting around that.
-var FailError = function(expected, actual, message) {
+const FailError = function(expected, actual, message) {
   Error.call(this);
   Error.captureStackTrace(this, FailError);
   this.name = 'FailError';
