@@ -32,7 +32,6 @@
     "test": "mocha"
   },
   "engines": {
-    "iojs": "~2.2.1",
     "node": ">=2.0.0"
   },
   "dependencies": {
