@@ -229,6 +229,126 @@ describe('Issues', function() {
         });
     });
 
+    describe('#43', function() {
+        /*
+         * Changes made to the model in postValidate and preSave hooks
+         * should be saved to the database
+         */
+        it('should save changes made in postValidate hook', function(done) {
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.postValidateChange = {
+                        type: Boolean,
+                        default: false
+                    };
+                    this.pet = Pet;
+                    this.pets = [Pet];
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+
+                postValidate() {
+                    this.postValidateChange = true;
+                    this.pet.postValidateChange = true;
+                    this.pets[0].postValidateChange = true;
+
+                    this.pets.push(Pet.create({
+                        postValidateChange: true
+                    }));
+                }
+            }
+
+            class Pet extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.postValidateChange = Boolean;
+                }
+
+                static collectionName() {
+                    return 'pets';
+                }
+            }
+
+            let person = Person.create();
+            person.pet = Pet.create();
+            person.pets.push(Pet.create());
+
+            person.save().then(function() {
+                validateId(person);
+                return Person
+                    .findOne({ _id: person._id }, { populate: true })
+                    .then((p) => {
+                        expect(p.postValidateChange).to.be.equal(true);
+                        expect(p.pet.postValidateChange).to.be.equal(true);
+                        expect(p.pets[0].postValidateChange).to.be.equal(true);
+                        expect(p.pets[1].postValidateChange).to.be.equal(true);
+                    });
+            }).then(done, done);
+        });
+
+        it('should save changes made in preSave hook', function(done) {
+            class Person extends Document {
+                constructor() {
+                    super();
+
+                    this.preSaveChange = {
+                        type: Boolean,
+                        default: false
+                    };
+                    this.pet = Pet;
+                    this.pets = [Pet];
+                }
+
+                static collectionName() {
+                    return 'people';
+                }
+
+                postValidate() {
+                    this.preSaveChange = true;
+                    this.pet.preSaveChange = true;
+                    this.pets[0].preSaveChange = true;
+
+                    this.pets.push(Pet.create({
+                        preSaveChange: true
+                    }));
+                }
+            }
+
+            class Pet extends EmbeddedDocument {
+                constructor() {
+                    super();
+
+                    this.preSaveChange = Boolean;
+                }
+
+                static collectionName() {
+                    return 'pets';
+                }
+            }
+
+            let person = Person.create();
+            person.pet = Pet.create();
+            person.pets.push(Pet.create());
+
+            person.save().then(function() {
+                validateId(person);
+                return Person
+                    .findOne({ _id: person._id }, { populate: true })
+                    .then((p) => {
+                        expect(p.preSaveChange).to.be.equal(true);
+                        expect(p.pet.preSaveChange).to.be.equal(true);
+                        expect(p.pets[0].preSaveChange).to.be.equal(true);
+                        expect(p.pets[1].preSaveChange).to.be.equal(true);
+                    });
+            }).then(done, done);
+        });
+    });
+
     describe('#53', function() {
         /* 
          * Camo should validate that all properties conform to
