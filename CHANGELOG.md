@@ -1,3 +1,7 @@
+## 0.12.3 (2016-11-04)
+Bugfixes:
+ - Merged PR that allows changes to persist in `postValidate` and `preSave` hooks ([#85](https://github.com/scottwrobinson/camo/pull/85)). Fixes [#43](https://github.com/scottwrobinson/camo/pull/43).
+
 ## 0.12.2 (2016-06-27)
 Bugfixes:
  - Merged PR that prevents methods from being serialized in `toJSON()` ([#79](https://github.com/scottwrobinson/camo/pull/79))
