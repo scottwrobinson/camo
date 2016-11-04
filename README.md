@@ -37,7 +37,7 @@ So, why use Camo?
 \* Support coming soon.
 
 ## Install and Run
-To use Camo, you must first have installed **Node >2.0.x** or **io.js >2.0.x**, then run the following commands:
+To use Camo, you must first have installed **Node >2.0.x**, then run the following commands:
 
     npm install camo --save
 
