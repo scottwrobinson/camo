@@ -9,7 +9,7 @@ const validateId = require('./util').validateId;
 
 describe('MongoClient', function() {
 
-    const url = 'mongodb://localhost/camo_test';
+    const url = 'mongodb://localhost:45454/camo_test';
     let database = null;
 
     before(function(done) {

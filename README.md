@@ -324,6 +324,7 @@ Hooks can be used not only on `Document` objects, but `EmbeddedDocument` objects
 
 In order to create a hook, you must override a class method. The hooks currently provided, and their corresponding methods, are:
 
+- pre-init: `preInit()`
 - pre-validate: `preValidate()`
 - post-validate: `postValidate()`
 - pre-save: `preSave()`
