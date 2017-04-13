@@ -57,7 +57,7 @@ For a short tutorial on using Camo, check out [this](http://stackabuse.com/getti
 ### Connect to the Database
 Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URI string used for connecting. The URI string usually describes the network location or file location of the database. However, some databases support more than just network or file locations. NeDB, for example, supports storing data in-memory, which can be specified to Camo via `nedb://memory`. See below for details:
 
-- MongoDB: 
+- MongoDB:
   - Format: mongodb://[username:password@]host[:port][/db-name]
   - Example: `var uri = 'mongodb://scott:abc123@localhost:27017/animals';`
 - NeDB:
@@ -277,13 +277,17 @@ Dog.findOne({ name: 'Lassie' }).then(function(l) {
 
 - `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
   - `Person.findOne({name: 'Billy'}, {populate: true})` populates all references in `Person` object
-  - `Person.findOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':false, 'spouse':false}})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':true, 'spouse':true}})` populates only 'address' and 'spouse' in `Person` object, and all its references.
+    - `Person.findOne({name: 'Billy'}, {populate: {'address': {'city':false}}})` populates only 'address' in `Person` object, and 'city' in `Address` object, but none of the `City` references.
 
 `.find()` currently accepts the following options:
 
 - `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
   - `Person.find({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
-  - `Person.find({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':false, 'spouse':false}})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':true, 'spouse':true}})` populates only 'address' and 'spouse' in `Person` object, and all its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address': {'city':false}}})` populates only 'address' in `Person` object, and 'city' in `Address` object, but none of the `City` references.
 - `sort`: Sort the documents by the given field(s)
   - `Person.find({}, {sort: '-age'})` sorts by age in descending order
   - `Person.find({}, {sort: ['age', 'name']})` sorts by ascending age and then name, alphabetically

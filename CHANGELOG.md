@@ -1,3 +1,7 @@
+## 0.13.0 (2017-04-13)
+Features:
+ - Added support for deep populate option ([#13](https://github.com/scottwrobinson/camo/issues/13))
+
 ## 0.12.3 (2016-11-04)
 Bugfixes:
  - Merged PR that allows changes to persist in `postValidate` and `preSave` hooks ([#85](https://github.com/scottwrobinson/camo/pull/85)). Fixes [#43](https://github.com/scottwrobinson/camo/pull/43).
@@ -39,7 +43,7 @@ Bugfixes:
  - Improved some validation tests
  - Fixed min validation
  - Fixed validation for array of embedded documents
- - Moved `collectionName` method to `BaseDocument` so `EmbeddedDocument` can use it ([#26](https://github.com/scottwrobinson/camo/issues/26)) 
+ - Moved `collectionName` method to `BaseDocument` so `EmbeddedDocument` can use it ([#26](https://github.com/scottwrobinson/camo/issues/26))
  - Deprecated `id` alias from document object ([#20](https://github.com/scottwrobinson/camo/issues/20))
  - Fixed serialization test for MongoDB IDs
 
