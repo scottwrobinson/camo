@@ -37,7 +37,7 @@ describe('Client', function() {
 
     after(function(done) {
         database.dropDatabase().then(function() {}).then(done, done);
-    }); 
+    });
 
     describe('#save()', function() {
         it('should persist the object and its members to the database', function(done) {
@@ -65,6 +65,16 @@ describe('Client', function() {
         }
     }
 
+    class Breed extends Document {
+        constructor() {
+
+            super();
+
+            this.name = String;
+
+        }
+    }
+
     class Pet extends Document {
         constructor() {
             super();
@@ -72,6 +82,7 @@ describe('Client', function() {
             this.schema({
                 type: String,
                 name: String,
+                breed: Breed
             });
         }
     }
@@ -174,9 +185,14 @@ describe('Client', function() {
                 zipCode: 12345
             });
 
+            let germanShepherd = Breed.create({
+                name: 'German Shepherd'
+            });
+
             let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
+                breed: germanShepherd
             });
 
             let user = User.create({
@@ -186,15 +202,19 @@ describe('Client', function() {
                 address: address
             });
 
-            Promise.all([address.save(), dog.save()]).then(function() {
+            Promise.all([address.save(), germanShepherd.save()]).then(function() {
                 validateId(address);
-                validateId(dog);
-                return user.save();
+                validateId(germanShepherd);
+                return dog.save().then(function() {
+                    validateId(dog);
+                    return user.save();
+                })
             }).then(function() {
                 validateId(user);
-                return User.findOne({_id: user._id}, {populate: ['pet']});
+                return User.findOne({_id: user._id}, {populate: {'pet': false}});
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
+                expect(isNativeId(u.pet.breed)).to.be.true;
                 expect(isNativeId(u.address)).to.be.true;
             }).then(done, done);
         });
@@ -288,7 +308,7 @@ describe('Client', function() {
                 validateId(SouthPark);
                 validateId(Quahog);
                 done();
-            }); 
+            });
         });
 
         it('should load multiple objects from the collection', function(done) {
@@ -475,9 +495,14 @@ describe('Client', function() {
                 zipCode: 12345
             });
 
+            let germanShepherd = Breed.create({
+                name: 'German Shepherd'
+            });
+
             let dog = Pet.create({
                 type: 'dog',
                 name: 'Fido',
+                breed: germanShepherd
             });
 
             let user1 = User.create({
@@ -494,18 +519,23 @@ describe('Client', function() {
                 address: address
             });
 
-            Promise.all([address.save(), dog.save()]).then(function() {
+            Promise.all([address.save(), germanShepherd.save()]).then(function() {
                 validateId(address);
-                validateId(dog);
-                return Promise.all([user1.save(), user2.save()]);
+                validateId(germanShepherd);
+                return dog.save().then(function() {
+                    validateId(dog);
+                    return Promise.all([user1.save(), user2.save()]);
+                })
             }).then(function() {
                 validateId(user1);
                 validateId(user2);
-                return User.find({}, {populate: ['pet']});
+                return User.find({}, {populate: {'pet': true}});
             }).then(function(users) {
                 expect(users[0].pet).to.be.an.instanceof(Pet);
+                expect(users[0].pet.breed).to.be.an.instanceof(Breed);
                 expect(isNativeId(users[0].address)).to.be.true;
                 expect(users[1].pet).to.be.an.instanceof(Pet);
+                expect(users[1].pet.breed).to.be.an.instanceof(Breed);
                 expect(isNativeId(users[1].address)).to.be.true;
             }).then(done, done);
         });
