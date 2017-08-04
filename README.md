@@ -1,5 +1,7 @@
 # Camo
 
+**Camo needs your help!** Interested in contributing? [Let me know](mailto:s.w.robinson+camo@gmail.com)!
+
 ## Jump To
 * <a href="#why-do-we-need-another-odm">Why do we need another ODM?</a>
 * <a href="#advantages">Advantages</a>
@@ -18,8 +20,6 @@
 * <a href="#contributing">Contributing</a>
 * <a href="#contact">Contact</a>
 * <a href="#copyright-license">Copyright & License</a>
-
-**Note**: Since Camo is still pre-1.0, the API will likely change often. Please see the [CHANGELOG](https://github.com/scottwrobinson/camo/blob/master/CHANGELOG.md) for the latest API changes and bug fixes.
 
 ## Why do we need another ODM?
 Short answer, we probably don't. Camo was created for two reasons: to bring traditional-style classes to [MongoDB](https://www.mongodb.com/) JavaScript, and to support [NeDB](https://github.com/louischatriot/nedb) as a backend (which is much like the SQLite-alternative to Mongo).
