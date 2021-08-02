@@ -2,6 +2,10 @@
 
 **Camo needs your help!** Interested in contributing? [Let me know](mailto:s.w.robinson+camo@gmail.com)!
 
+Development supported by:
+
+- [HireRemote.io](https://hireremote.io?ref=github-camo)
+
 ## Jump To
 * <a href="#why-do-we-need-another-odm">Why do we need another ODM?</a>
 * <a href="#advantages">Advantages</a>
@@ -57,7 +61,7 @@ For a short tutorial on using Camo, check out [this](http://stackabuse.com/getti
 ### Connect to the Database
 Before using any document methods, you must first connect to your underlying database. All supported databases have their own unique URI string used for connecting. The URI string usually describes the network location or file location of the database. However, some databases support more than just network or file locations. NeDB, for example, supports storing data in-memory, which can be specified to Camo via `nedb://memory`. See below for details:
 
-- MongoDB: 
+- MongoDB:
   - Format: mongodb://[username:password@]host[:port][/db-name]
   - Example: `var uri = 'mongodb://scott:abc123@localhost:27017/animals';`
 - NeDB:
@@ -404,7 +408,7 @@ You can contact me with questions, issues, or ideas at either of the following:
 For short questions and faster responses, try Twitter.
 
 ## Copyright & License
-Copyright (c) 2016 Scott Robinson
+Copyright (c) 2021 Scott Robinson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
