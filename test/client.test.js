@@ -37,7 +37,7 @@ describe('Client', function() {
 
     after(function(done) {
         database.dropDatabase().then(function() {}).then(done, done);
-    }); 
+    });
 
     describe('#save()', function() {
         it('should persist the object and its members to the database', function(done) {
@@ -51,17 +51,36 @@ describe('Client', function() {
         });
     });
 
+    class City extends Document {
+        constructor() {
+            super();
+
+            this.name = String;
+            this.county = String;
+        }
+    }
+
     class Address extends Document {
         constructor() {
             super();
 
             this.street = String;
-            this.city = String;
+            this.city = City;
             this.zipCode = Number;
         }
 
         static collectionName() {
             return 'addresses';
+        }
+    }
+
+    class Breed extends Document {
+        constructor() {
+
+            super();
+
+            this.name = String;
+
         }
     }
 
@@ -72,6 +91,7 @@ describe('Client', function() {
             this.schema({
                 type: String,
                 name: String,
+                breed: Breed
             });
         }
     }
@@ -106,7 +126,6 @@ describe('Client', function() {
         it('should populate all fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -138,7 +157,6 @@ describe('Client', function() {
         it('should not populate any fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -170,7 +188,6 @@ describe('Client', function() {
         it('should populate specified fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -196,6 +213,55 @@ describe('Client', function() {
             }).then(function(u) {
                 expect(u.pet).to.be.an.instanceof(Pet);
                 expect(isNativeId(u.address)).to.be.true;
+            }).then(done, done);
+        });
+
+        it('should deeply populate specified fields', function(done) {
+
+            let city = City.create({
+                name: 'Cityville',
+                county: 'County'
+            });
+
+            let address = Address.create({
+                street: '123 Fake St.',
+                city: city,
+                zipCode: 12345
+            });
+
+            let germanShepherd = Breed.create({
+                name: 'German Shepherd'
+            });
+
+            let dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+                breed: germanShepherd
+            });
+
+            let user = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([city.save(), germanShepherd.save()]).then(function() {
+                validateId(city);
+                validateId(germanShepherd);
+                return Promise.all([address.save(), dog.save()]).then(function() {
+                    validateId(address);
+                    validateId(dog);
+                    return user.save();
+                })
+            }).then(function() {
+                validateId(user);
+                return User.findOne({_id: user._id}, {populate: {'pet': false, 'address':['city']}});
+            }).then(function(u) {
+                expect(u.pet).to.be.an.instanceof(Pet);
+                expect(isNativeId(u.pet.breed)).to.be.true;
+                expect(u.address).to.be.an.instanceof(Address);
+                expect(u.address.city).to.be.an.instanceof(City);
             }).then(done, done);
         });
     });
@@ -288,7 +354,7 @@ describe('Client', function() {
                 validateId(SouthPark);
                 validateId(Quahog);
                 done();
-            }); 
+            });
         });
 
         it('should load multiple objects from the collection', function(done) {
@@ -387,7 +453,6 @@ describe('Client', function() {
         it('should populate all fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -429,7 +494,6 @@ describe('Client', function() {
         it('should not populate any fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -471,7 +535,6 @@ describe('Client', function() {
         it('should populate specified fields', function(done) {
             let address = Address.create({
                 street: '123 Fake St.',
-                city: 'Cityville',
                 zipCode: 12345
             });
 
@@ -507,6 +570,66 @@ describe('Client', function() {
                 expect(isNativeId(users[0].address)).to.be.true;
                 expect(users[1].pet).to.be.an.instanceof(Pet);
                 expect(isNativeId(users[1].address)).to.be.true;
+            }).then(done, done);
+        });
+
+        it('should deeply populate specified fields', function(done) {
+            let city = City.create({
+                name: 'Cityville',
+                county: 'County'
+            });
+
+            let address = Address.create({
+                street: '123 Fake St.',
+                city: city,
+                zipCode: 12345
+            });
+
+            let germanShepherd = Breed.create({
+                name: 'German Shepherd'
+            });
+
+            let dog = Pet.create({
+                type: 'dog',
+                name: 'Fido',
+                breed: germanShepherd
+            });
+
+            let user1 = User.create({
+                firstName: 'Billy',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            let user2 = User.create({
+                firstName: 'Sally',
+                lastName: 'Bob',
+                pet: dog,
+                address: address
+            });
+
+            Promise.all([city.save(), germanShepherd.save()]).then(function() {
+                validateId(city);
+                validateId(germanShepherd);
+                return Promise.all([address.save(), dog.save()]).then(function() {
+                    validateId(address);
+                    validateId(dog);
+                    return Promise.all([user1.save(), user2.save()]);
+                })
+            }).then(function() {
+                validateId(user1);
+                validateId(user2);
+                return User.find({}, {populate: {'pet': true, 'address': false}});
+            }).then(function(users) {
+                expect(users[0].pet).to.be.an.instanceof(Pet);
+                expect(users[0].pet.breed).to.be.an.instanceof(Breed);
+                expect(users[0].address).to.be.an.instanceof(Address);
+                expect(isNativeId(users[0].address.city)).to.be.true;
+                expect(users[1].pet).to.be.an.instanceof(Pet);
+                expect(users[1].pet.breed).to.be.an.instanceof(Breed);
+                expect(users[1].address).to.be.an.instanceof(Address);
+                expect(isNativeId(users[1].address.city)).to.be.true;
             }).then(done, done);
         });
     });
