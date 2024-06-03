@@ -1,10 +1,11 @@
 # Camo
 
-**Camo needs your help!** Interested in contributing? [Let me know](mailto:s.w.robinson+camo@gmail.com)!
+## Supporters
 
-Development supported by:
-
-- [HireRemote.io](https://hireremote.io?ref=github-camo)
+<a href="https://pingbot.dev?ref=github-camo">
+    PingBot.dev
+    <img alt="Monitoring for your servers, vendors, and infrastructure." src="https://s3.pingbot.dev/images/landing-header.png" />
+</a>
 
 ## Jump To
 * <a href="#why-do-we-need-another-odm">Why do we need another ODM?</a>
