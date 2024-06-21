@@ -280,15 +280,23 @@ Dog.findOne({ name: 'Lassie' }).then(function(l) {
 
 `.findOne()` currently accepts the following option:
 
-- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
+- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references or an Object to deeply populate specified references
   - `Person.findOne({name: 'Billy'}, {populate: true})` populates all references in `Person` object
-  - `Person.findOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+  - `Person.findOne({name: 'Billy'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':false, 'spouse':false}})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address':true, 'spouse':true}})` populates only 'address' and 'spouse' in `Person` object, and all its references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address': {'city':true}}})` populates only 'address' in `Person` object, and 'city' in `Address` object, and all of the `City` references.
+  - `Person.findOne({name: 'Billy'}, {populate: {'address': ['city']}})` populates only 'address' in `Person` object, and 'city' in `Address` object, but none of the `City` references.
 
 `.find()` currently accepts the following options:
 
-- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references
+- `populate`: Boolean value to load all or no references. Pass an array of field names to only populate the specified references or an Object to deeply populate specified references
   - `Person.find({lastName: 'Smith'}, {populate: true})` populates all references in `Person` object
-  - `Person.find({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object
+  - `Person.findOne({lastName: 'Smith'}, {populate: ['address', 'spouse']})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({lastName: 'Smith'}, {populate: {'address':false, 'spouse':false}})` populates only 'address' and 'spouse' in `Person` object, but not its references.
+  - `Person.findOne({lastName: 'Smith'}, {populate: {'address':true, 'spouse':true}})` populates only 'address' and 'spouse' in `Person` object, and all its references.
+  - `Person.findOne({lastName: 'Smith'}, {populate: {'address': {'city':true}}})` populates only 'address' in `Person` object, and 'city' in `Address` object, and all of the `City` references.
+  - `Person.findOne({lastName: 'Smith'}, {populate: {'address': ['city']}})` populates only 'address' in `Person` object, and 'city' in `Address` object, but none of the `City` references.
 - `sort`: Sort the documents by the given field(s)
   - `Person.find({}, {sort: '-age'})` sorts by age in descending order
   - `Person.find({}, {sort: ['age', 'name']})` sorts by ascending age and then name, alphabetically
